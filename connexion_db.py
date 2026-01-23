@@ -1,16 +1,32 @@
 from flask import Flask, request, render_template, redirect, url_for, abort, flash, session, g
-
+from dotenv import load_dotenv
+import os
 import pymysql.cursors
+
+# Load variables from .env into os.environ
+load_dotenv()
+
+HOST=(os.getenv("HOST"))
+USER=(os.getenv("USER"))
+PASSWORD=os.getenv("PASSWORD")
+DATABASE=(os.getenv("DATABASE"))
+
+
+
+
+
+
+
 
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
         #
         db = g._database = pymysql.connect(
-            host="serveurmysql.iut-bm.univ-fcomte.fr",  # à modifier
-            user="stacher2",  # à modifier
-            password="secret",  # à modifier
-            database="BDD_stacher2",  # à modifier
+            host=HOST,  # à modifier
+            user=USER,  # à modifier
+            password=PASSWORD,  # à modifier
+            database=DATABASE,  # à modifier
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
         )
