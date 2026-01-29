@@ -13,10 +13,10 @@
 
 ## Description du projet
 Projet de groupe dans lequel nous allons réaliser un site web d'e-commerce sur PyCharm :
-- Site de e-commerce qui permet d’acheter des articles, mais aussi :
-  - Rechercher des articles (filtre) qui peuvent se décliner
-  - Commenter/noter des articles
+- Site de e-commerce qui permet d’acheter des chaussures, mais aussi :
+  - Rechercher des chaussures (filtre) qui peuvent se décliner
+  - Commenter/noter des chaussures
   - Définir une(des) adresse(s) pour l’expédition
-  - Sélectionner des articles dans une liste de souhaits et avoir un historique des derniers articles consultés
+  - Sélectionner des chaussures dans une liste de souhaits et avoir un historique des derniers chaussures consultés
 
 ---

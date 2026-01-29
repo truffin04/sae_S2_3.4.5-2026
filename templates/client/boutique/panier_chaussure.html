@@ -1,0 +1,95 @@
+{#  chaussures_panier  : tableau de dictionnaires
+        * dictionnaire : nom quantite prix chaussure_id [stock]
+        *
+#}
+
+{% extends "client/layout_client.html" %}
+{% block body %}
+    <div class="container">
+        <div class="row align-self-right">
+        {% include('client/boutique/_panier.html') %}
+            <div class="col">
+              <h3>Les filtres</h3>
+              chaussures dont le nom est composé par :<br>
+                 {% include('client/boutique/_filtre.html') %}
+            </div>
+        </div>
+
+        <div class="bg-light p-3">
+            <h1>Les chaussures</h1>
+        </div>
+
+        <div class="row">
+                {% for chaussure in chaussures  %}
+                        <div class="card col-4 mt-4 p-1">
+                            <div class="card-body border-dark rounded p-1">
+                                <a href="/client/chaussure/details?id_chaussure={{ chaussure.id_chaussure }}" >
+                                <h3 class="card-title">
+                                    <span style="color: #0b2e13">{{ chaussure.nom }}</span><br>
+                                    {{ chaussure.prix }}
+                                    €
+                                </h3>
+                                     {%  if chaussure.image is not none %}
+                                        <img class="card-img-top rounded mx-auto d-block"  style="width:100px;height:100px"  src="{{ url_for('static', filename = 'images/')}}{{ chaussure.image }}"  alt="image  de {{ chaussure.nom }}" >
+                                    {% else %} <img class="card-img-top rounded mx-auto d-block"   style="width:100px;height:100px"   src="{{ url_for('static', filename='images/no_photo.jpeg')}}"  alt="image  de {{ chaussure.nom }}" >
+                                    {% endif %}
+                                    <hr>
+                                </a>
+                                <div class="row">
+{# #}                                {% if  chaussure.stock is defined and chaussure.stock != None %}
+{# #}                                    {% if chaussure.stock > 0 %}
+                                        <form  action="/client/panier/add"  method="post" class="col-5">
+                                            <input type="hidden" name="id_chaussure" value="{{ chaussure.id_chaussure }}">
+                                            <div class="input-group">
+                                            <button class="btn  btn-success"  id="button-addon1">
+                                                <i class="fas fa-shopping-cart">Ajouter</i>
+                                            </button>
+                                            <input type="number" id="input-{{ chaussure.id_chaussure }}" step="1" min="0" max="{{ chaussure.stock }}" class="form-control" value="1" name="quantite"  aria-describedby="button-addon1">
+                                            </div>
+                                        </form>
+{# #}                                    {% endif %}
+{# #}                                {% endif %}
+                                     <div class="col-2 align-content-end">
+                                    {% if chaussure.liste_envie is defined %}
+                                         {%if  chaussure.liste_envie== 1%}
+                                             <a href="/client/envie/add?id_chaussure={{ chaussure.id_chaussure }}" style="text-decoration: none">💛</a>
+                                         {% else %}
+                                             <a href="/client/envie/add?id_chaussure={{ chaussure.id_chaussure }}" style="text-decoration: none">🤍</a>
+                                         {% endif %}
+                                    {% endif %}
+                                     </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                            {% if chaussure.stock is defined and chaussure.stock != None %}
+                                 {% if chaussure.stock > 0 %}
+                                    <small class="text-muted">Stock restant : {{ chaussure.stock }}</small>
+                                 {% else %}
+                                    <small class="text-muted">chaussure  momentanément indisponible</small>
+                                 {% endif %}
+                                {% if chaussure.nb_declinaison is defined and chaussure.nb_declinaison != None %}
+                                    ({{ chaussure.nb_declinaison }} d.)
+                                {% endif %}
+                                <br>
+                            {% endif %}
+                            {% if chaussure.nb_notes is defined %}
+                                {% if chaussure.nb_notes > 0 %}
+                                 <a  href="/client/chaussure/details?id_chaussure={{ chaussure.id_chaussure }}" >
+                                    <span style="color: #3A7734"> note : {{  "{:,.1f}".format(chaussure.moy_notes) }}({{ chaussure.nb_notes }})</span>
+                                 </a>
+                                {% endif %}
+                            {% endif %}
+                            {% if chaussure.nb_avis is defined %}
+                                {% if chaussure.nb_avis > 0 %}
+                                 <a href="/client/chaussure/details?id_chaussure={{ chaussure.id_chaussure }}" >
+                                    <span style="color: #3A7734">({{ chaussure.nb_avis }} avis)</span>
+                                 </a>
+                                {% endif %}
+                            {% endif %}
+                            </div>
+                        </div>
+                {% endfor %}
+        </div>
+    </div>
+{#    {{ chaussures | pprint }}#}
+{% endblock %}

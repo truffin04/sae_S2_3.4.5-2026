@@ -13,37 +13,37 @@ client_liste_envies = Blueprint('client_liste_envies', __name__,
 def client_liste_envies_add():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    id_article = request.args.get('id_article')
-    return redirect('/client/article/show')
+    id_chaussure = request.args.get('id_chaussure')
+    return redirect('/client/chaussure/show')
 
 @client_liste_envies.route('/client/envie/delete', methods=['get'])
 def client_liste_envies_delete():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    id_article = request.args.get('id_article')
+    id_chaussure = request.args.get('id_chaussure')
     return redirect('/client/envies/show')
 
 @client_liste_envies.route('/client/envies/show', methods=['get'])
 def client_liste_envies_show():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    articles_liste_envies = []
-    articles_historique = []
+    chaussures_liste_envies = []
+    chaussures_historique = []
     return render_template('client/liste_envies/liste_envies_show.html'
-                           ,articles_liste_envies=articles_liste_envies
-                           , articles_historique=articles_historique
+                           ,chaussures_liste_envies=chaussures_liste_envies
+                           , chaussures_historique=chaussures_historique
                            #, nb_liste_envies= nb_liste_envies
                            )
 
 
 
-def client_historique_add(article_id, client_id):
+def client_historique_add(chaussure_id, client_id):
     mycursor = get_db().cursor()
     client_id = session['id_user']
-    # rechercher si l'article pour cet utilisateur est dans l'historique
+    # rechercher si l'chaussure pour cet utilisateur est dans l'historique
     # si oui mettre
     sql ='''   '''
-    mycursor.execute(sql, (article_id, client_id))
+    mycursor.execute(sql, (chaussure_id, client_id))
     historique_produit = mycursor.fetchall()
     sql ='''   '''
     mycursor.execute(sql, (client_id))
@@ -54,9 +54,9 @@ def client_historique_add(article_id, client_id):
 @client_liste_envies.route('/client/envies/down', methods=['get'])
 @client_liste_envies.route('/client/envies/last', methods=['get'])
 @client_liste_envies.route('/client/envies/first', methods=['get'])
-def client_liste_envies_article_move():
+def client_liste_envies_chaussure_move():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    id_article = request.args.get('id_article')
+    id_chaussure = request.args.get('id_chaussure')
   
     return redirect('/client/envies/show')

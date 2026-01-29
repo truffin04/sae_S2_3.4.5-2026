@@ -44,7 +44,7 @@ CREATE TABLE utilisateur(
     '''
     mycursor.execute(sql)
 #     sql='''
-# INSERT INTO type_article
+# INSERT INTO type_chaussure
 #     '''
 #     mycursor.execute(sql)
     sql='''CREATE TABLE pointure(
@@ -94,7 +94,7 @@ CREATE TABLE utilisateur(
      '''
     mycursor.execute(sql)
     # sql = '''
-    # INSERT INTO article (
+    # INSERT INTO chaussure (
     #
     #      '''
     # mycursor.execute(sql)

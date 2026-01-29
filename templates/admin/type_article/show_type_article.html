@@ -1,37 +1,37 @@
 {% extends 'admin/layout_admin.html' %}
 
 {% block title %}
-    <title>afficher les types d'article</title>
+    <title>afficher les types d'chaussure</title>
 {% endblock %}
 
 {% block body %}
-<h3>Déclinaison et/ou type d'article (catégorie)</h3>
-<a class="btn btn-outline-success" href="/admin/type-article/add">ajouter un type d'article</a>
+<h3>Déclinaison et/ou type d'chaussure (catégorie)</h3>
+<a class="btn btn-outline-success" href="/admin/type-chaussure/add">ajouter un type d'chaussure</a>
 <br><br>
 
 <table class="table">
     <thead class="thead-dark">
         <tr>
-           <th>designation</th> <th>(id_type_article)</th><th>nombre d'articles</th><th>opération</th>
+           <th>designation</th> <th>(id_type_chaussure)</th><th>nombre d'chaussures</th><th>opération</th>
         </tr>
     </thead>
     <tbody>
-    {% if types_article | length >= 1 %}
-        {% for ligne in types_article %}
+    {% if types_chaussure | length >= 1 %}
+        {% for ligne in types_chaussure %}
            <tr>
                   <td>{{ ligne.libelle }}</td>
-                  <td>{{ ligne.id_type_article }}</td>
-                   <td><span style="color: red">{{ ligne.nbr_articles }}</span></td>
+                  <td>{{ ligne.id_type_chaussure }}</td>
+                   <td><span style="color: red">{{ ligne.nbr_chaussures }}</span></td>
                   <td>
-                      <a class="btn btn-outline-danger" href="/admin/type-article/edit?id_type_article={{ ligne.id_type_article }}">editer</a>&nbsp;
-                      <a class="btn btn-outline-warning" href="/admin/type-article/delete?id_type_article={{ ligne.id_type_article }}">supprimer</a>
+                      <a class="btn btn-outline-danger" href="/admin/type-chaussure/edit?id_type_chaussure={{ ligne.id_type_chaussure }}">editer</a>&nbsp;
+                      <a class="btn btn-outline-warning" href="/admin/type-chaussure/delete?id_type_chaussure={{ ligne.id_type_chaussure }}">supprimer</a>
                   </td>
            </tr>
         {% endfor %}
     {% else %}
             <tr>
                   <td>
-                      pas de type d'article
+                      pas de type d'chaussure
                   </td>
            </tr>
     {% endif %}
