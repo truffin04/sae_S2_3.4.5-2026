@@ -25,7 +25,7 @@ def show_article():
 
 
 @admin_article.route('/admin/article/add', methods=['GET'])
-def add_article():a
+def add_article():
     mycursor = get_db().cursor()
 
     return render_template('admin/article/add_article.html'
