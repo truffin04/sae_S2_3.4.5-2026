@@ -107,7 +107,52 @@ VALUES ('client1',NULL,
         ,'ROLE_client');
 
 
+INSERT INTO chaussure (id_chaussure, nom_chaussure, sexe, entretien, prix_chaussure, pointure_id, type_chaussure_id, fournisseur, marque, photo, stock)
+VALUES (NULL,BasketViolette,femme,neuf,79.99,8,1,BFl,NILE,basket_f_violette_rose.jpg,50),
+       (NULL,BasketAd, homme , neuf,49.99,6,1,BFL,Laco,basket_h_addidas.png,5),
+       (NULL,BasketUni, unisex, neuf, 99.99,6,1,BFL,uni,basket_uni_blanche_noire.png,6),
+       (NULL,BasketRose, femme, neuf,74.99,8,1,BFl,Laco,baskets_f_rose.jpg,4),
+       (NULL,BotteMaron,femme,neuf,64.99,8,2,BOFL,bolt,botte_f_marron.jpg,7),
+       (NULL,botteneuniBrune,unisex,neuf,74.99,6,2,BOLF,bolt,botte_uni_brune.png,3),
+       (NULL,ChaussureClasN,femme,neuf,566.99,8,3,CHL,conver,chaussure_classique_f_noire.png,9),
+       (NULL,ChaussureClasR,femme,neuf,249.99,8,3,CHL,conver,chaussure_classique_f_rouge.png,14),
+       (NULL,ChaussureClasB,homme,neuf,290.99,6,3,CHL,conver,chaussure_classique_h_brune.png,25),
+       (NULL,ChaussureCLassMF,homme,neuf,229.99,6,3,CHL,conver,chaussure_classique_h_maron_foncée.png,18),
+       (NULL,ChaussureVilleN,femme,neuf,98.99,8,4,VHL,villy,chaussure_de_ville_f_noire.png,12),
+       (NULL, ChaussureRandoR,femme,neuf,99.99,8,5,RHL,randim,chaussure_rando_f_rose.png,26),
+       (NULL,ChaussureRandoN,homme,neuf,89.99,6,5,RHL,randim,chaussure_rando_h_noire.png,2),
+       (NULL,ChaussureVilleB,unisex,neuf,79.69,6,4,VHL,villy,chaussure_ville_uni_bleue.png,41),
+       (NULL,ChaussureVilleO,unisex,neuf,69.99,6,4,VHL,villy,chaussure_ville_uni_orange.png,9);
 
+
+INSERT INTO pointure (id_pointure, libelle_pointure)
+VALUES
+    (NULL,45),
+    (NULL,44),
+    (NULL,43),
+    (NULL,42),
+    (NULL,41),
+    (NULL,40),
+    (NULL,39),
+    (NULL,38),
+    (NULL,37),
+    (NULL,36),
+    (NULL,35);
+
+INSERT INTO type_chaussure (id_type_chaussure, libelle_type_chaussure)
+VALUES (NULL,basket),
+       (NULL,botte),
+       (NULL,classique),
+       (NULL,ville),
+       (NULL,rando);
+
+INSERT INTO ligne_commande (commande_id, chaussure_id, prix, quantite)
+VALUES (NULL,NULL,64.99,1),
+       (NULL,10,229.99,1);
+
+INSERT INTO ligne_panier (utilisateur_id, chaussure_id, quantite, date_ajout)
+VALUES (NULL,NULL,5,12/01/2026),
+       (NULL,NULL,15,25/10/2025);
 
 
 

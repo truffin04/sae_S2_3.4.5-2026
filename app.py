@@ -48,6 +48,8 @@ def show_accueil():
             return redirect('/client/article/show')
     return render_template('auth/layout.html')
 
+
+
 ##################
 # Authentification
 ##################
