@@ -70,10 +70,11 @@ def auth_signup_post():
     sql = """  INSERT INTO utilisateur (login,email,password,role) VALUES (%s,%s,%s,%s) """
     mycursor.execute(sql, tuple_insert)
     get_db().commit()
-    sql = """SELECT last_insert_id() AS last_insert_id;"""
+
+    sql = """ SELECT last_insert_id() AS last_insert_id; """
     mycursor.execute(sql)
-    info_last_id = mycursor.fetchone()["last_insert_id"]
-    id_user = info_last_id['id_utilisateur']
+    info_last_id = mycursor.fetchone()
+    id_user = info_last_id['last_insert_id']
     print('last_insert_id', id_user)
     session.pop('login', None)
     session.pop('role', None)
@@ -82,7 +83,6 @@ def auth_signup_post():
     session['role'] = 'ROLE_client'
     session['id_user'] = id_user
     return redirect('/client/article/show')
-
 
 @auth_security.route('/logout')
 def auth_logout():
