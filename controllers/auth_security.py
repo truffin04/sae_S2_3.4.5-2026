@@ -94,4 +94,3 @@ def auth_logout():
 @auth_security.route('/forget-password', methods=['GET'])
 def forget_password():
     return render_template('auth/forget_password.html')
-
