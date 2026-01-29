@@ -15,6 +15,7 @@ CREATE TABLE utilisateur(
     password VARCHAR(1000),
     role VARCHAR(20)
 );
+
 CREATE TABLE etat(
     id_etat INT PRIMARY KEY AUTO_INCREMENT,
     libelle VARCHAR(20)
@@ -89,8 +90,24 @@ CREATE TABLE ligne_panier(
     constraint fk_chaussure_panier
         FOREIGN KEY (chaussure_id) REFERENCES chaussure(id_chaussure),
     PRIMARY KEY (utilisateur_id,chaussure_id)
-
 );
+
+
+
+INSERT INTO utilisateur (login,email,nom,password,role)
+VALUES ('client1',NULL,
+        NULL,
+        'pbkdf2:sha256:1000000$fAvViQy457fTur0F$c3db8906c14da1af31fd17fae585c2f59b1dcc1a73ca754d58952dff10e0c4cc'
+        ,'ROLE_client'
+        ),
+        ('client2',
+           NULL,
+           NULL,
+           'pbkdf2:sha256:1000000$3WHRHX5U6wMYkJZj$7bc4cbcc391a299d9e14cf2efa4fb2df249464de3b7afe889baa4b78d3f5df3f'
+        ,'ROLE_client');
+
+
+
 
 
 

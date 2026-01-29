@@ -3,13 +3,9 @@ from dotenv import load_dotenv
 import os
 import pymysql.cursors
 
-# Load variables from .env into os.environ
 load_dotenv()
 
-HOST=(os.getenv("HOST"))
-USER=(os.getenv("USER"))
-PASSWORD=os.getenv("PASSWORD")
-DATABASE=(os.getenv("DATABASE"))
+
 
 
 
@@ -21,7 +17,10 @@ DATABASE=(os.getenv("DATABASE"))
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
-        #
+        HOST=(os.getenv("HOST"))
+        USER=(os.getenv("USER"))
+        PASSWORD=os.getenv("PASSWORD")
+        DATABASE=(os.getenv("DATABASE"))
         db = g._database = pymysql.connect(
             host=HOST,  # à modifier
             user=USER,  # à modifier
