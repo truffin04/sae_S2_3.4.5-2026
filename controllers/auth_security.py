@@ -70,9 +70,9 @@ def auth_signup_post():
     sql = """  INSERT INTO utilisateur (login,email,password,role) VALUES (%s,%s,%s,%s) """
     mycursor.execute(sql, tuple_insert)
     get_db().commit()
-    sql = """SELECT * FROM utilisateur WHERE utilisateur.login = %s"""
-    mycursor.execute(sql, (login,))
-    info_last_id = mycursor.fetchone()
+    sql = """SELECT last_insert_id() AS last_insert_id;"""
+    mycursor.execute(sql)
+    info_last_id = mycursor.fetchone()["last_insert_id"]
     id_user = info_last_id['id_utilisateur']
     print('last_insert_id', id_user)
     session.pop('login', None)
