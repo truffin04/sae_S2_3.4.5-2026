@@ -13,12 +13,29 @@ client_chaussure = Blueprint('client_chaussure', __name__,
 def client_chaussure_show():                                 # remplace client_index
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    sql = '''   selection des chaussures   '''
+    sql = '''
+          SELECT
+              chaussure.id_chaussure,
+              chaussure.nom_chaussure as nom, 
+              chaussure.sexe,
+              chaussure.entretien,
+              chaussure.prix_chaussure as prix,
+              chaussure.type_chaussure_id,
+              chaussure.fournisseur,
+              chaussure.marque,
+              chaussure.photo as image,
+              chaussure.stock
+     FROM chaussure'''
+    mycursor.execute(sql)
+
+    chaussures = mycursor.fetchall()
+    print(chaussures)
+
     list_param = []
     condition_and = ""
     # utilisation du filtre
     sql3=''' prise en compte des commentaires et des notes dans le SQL    '''
-    chaussures =[]
+    # chaussures =[]
 
 
     # pour le filtre
