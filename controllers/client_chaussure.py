@@ -39,7 +39,10 @@ def client_chaussure_show():                                 # remplace client_i
 
 
     # pour le filtre
-    types_chaussure = []
+    sql = '''SELECT type_chaussure.id_type_chaussure,
+    type_chaussure.libelle_type_chaussure as libelle FROM type_chaussure'''
+    mycursor.execute(sql)
+    types_chaussure = mycursor.fetchall()
 
 
     chaussures_panier = []
