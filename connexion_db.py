@@ -17,15 +17,18 @@ load_dotenv()
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
-        HOST=(os.getenv("HOST"))
-        LOGIN=(os.getenv("LOGIN"))
-        PASSWORD=os.getenv("PASSWORD")
-        DATABASE=(os.getenv("DATABASE"))
+        HOST = os.getenv('MYSQLHOST') or os.getenv('HOST', 'localhost')
+        LOGIN = os.getenv('MYSQLUSER') or os.getenv('LOGIN', 'root')  # DB_USER plutôt que USER
+        PASSWORD = os.getenv('MYSQLPASSWORD') or os.getenv('PASSWORD', '')
+        DATABASE = os.getenv('MYSQLDATABASE') or os.getenv('DATABASE', 'nom_base')
+        PORT = int(os.getenv('MYSQLPORT') or os.getenv('PORT', '3306'))
+
         db = g._database = pymysql.connect(
-            host=HOST,  # à modifier
-            user=LOGIN,  # à modifier
-            password=PASSWORD,  # à modifier
-            database=DATABASE,  # à modifier
+            host=HOST,
+            user=LOGIN,
+            password=PASSWORD,
+            database=DATABASE,
+            port=PORT,
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
         )
