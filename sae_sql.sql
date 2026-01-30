@@ -94,16 +94,16 @@ CREATE TABLE ligne_panier(
 
 
 
-INSERT INTO utilisateur (login,email,nom,password,role)
-VALUES ('client1',NULL,NULL,
-        'pbkdf2:sha256:1000000$fAvViQy457fTur0F$c3db8906c14da1af31fd17fae585c2f59b1dcc1a73ca754d58952dff10e0c4cc'
-        ,'ROLE_client'
-        ),
-        ('client2',NULL,NULL,
-           
-           
-           'pbkdf2:sha256:1000000$3WHRHX5U6wMYkJZj$7bc4cbcc391a299d9e14cf2efa4fb2df249464de3b7afe889baa4b78d3f5df3f'
-        ,'ROLE_client');
+INSERT INTO utilisateur(id_utilisateur,login,email,password,role,nom) VALUES
+(1,'admin','admin@admin.fr',
+    'scrypt:32768:8:1$irSP6dJEjy1yXof2$56295be51bb989f467598b63ba6022405139656d6609df8a71768d42738995a21605c9acbac42058790d30fd3adaaec56df272d24bed8385e66229c81e71a4f4',
+    'ROLE_admin','admin'),
+(2,'client','client@client.fr',
+    'scrypt:32768:8:1$iFP1d8bdBmhW6Sgc$7950bf6d2336d6c9387fb610ddaec958469d42003fdff6f8cf5a39cf37301195d2e5cad195e6f588b3644d2a9116fa1636eb400b0cb5537603035d9016c15910',
+    'ROLE_client','client'),
+(3,'client2','client2@client2.fr',
+    'scrypt:32768:8:1$l3UTNxiLZGuBKGkg$ae3af0d19f0d16d4a495aa633a1cd31ac5ae18f98a06ace037c0f4fb228ed86a2b6abc64262316d0dac936eb72a67ae82cd4d4e4847ee0fb0b19686ee31194b3',
+    'ROLE_client','client2');
 
 INSERT INTO pointure (libelle_pointure)
 VALUES
@@ -134,7 +134,7 @@ VALUES
 ('Basket rose', 'femme', 'neuf', 74.99, 8, 1, 'BFl', 'Laco', 'baskets_f_rose.jpg', 4),
 ( 'Botte marron', 'femme', 'neuf', 64.99, 8, 2, 'BOFL', 'bolt', 'botte_f_marron.jpg', 7),
 ( 'Botte brune unisexe', 'unisexe', 'neuf', 74.99, 6, 2, 'BOLF', 'bolt', 'botte_uni_brune.png', 3),
-( 'Chaussure classique noire', 'femme', 'neuf', 566.99, 8, 3, 'CHL', 'conver', 'chaussure_classique_f_noire.png', 9),
+( 'Chaussure classique noire', 'femme', 'neuf', 566.99, 8, 3, 'CHL', 'conver', 'chaussure_classique_f_noire.jpg', 9),
 ( 'Chaussure classique rouge', 'femme', 'neuf', 249.99, 8, 3, 'CHL', 'conver', 'chaussure_classique_f_rouge.png', 14),
 ( 'Chaussure classique brune', 'homme', 'neuf', 290.99, 6, 3, 'CHL', 'conver', 'chaussure_classique_h_brune.png', 25),
 ( 'Chaussure classique marron foncé', 'homme', 'neuf', 229.99, 6, 3, 'CHL', 'conver', 'chaussure_classique_h_maron_foncée.png', 18),
@@ -145,7 +145,13 @@ VALUES
 ( 'Chaussure de ville orange', 'unisexe', 'neuf', 69.99, 6, 4, 'VHL', 'villy', 'chaussure_ville_uni_orange.png', 9);
 
 
-
+INSERT INTO etat (etat.libelle)
+VALUES
+('en attente'),
+('expédié'),
+('validé'),
+('confirmé')
+;
 
 
 
