@@ -52,7 +52,7 @@ CREATE TABLE type_chaussure(
 CREATE TABLE chaussure(
     id_chaussure INT PRIMARY KEY AUTO_INCREMENT,
     nom_chaussure VARCHAR(64),
-    sexe VARCHAR(5),
+    sexe VARCHAR(8),
     entretien VARCHAR(20),
     prix_chaussure NUMERIC(10,2),
     pointure_id INT,
@@ -95,19 +95,67 @@ CREATE TABLE ligne_panier(
 
 
 INSERT INTO utilisateur (login,email,nom,password,role)
-VALUES ('client1',NULL,
-        NULL,
+VALUES ('client1',NULL,NULL,
         'pbkdf2:sha256:1000000$fAvViQy457fTur0F$c3db8906c14da1af31fd17fae585c2f59b1dcc1a73ca754d58952dff10e0c4cc'
         ,'ROLE_client'
         ),
-        ('client2',
-           NULL,
-           NULL,
+        ('client2',NULL,NULL,
+           
+           
            'pbkdf2:sha256:1000000$3WHRHX5U6wMYkJZj$7bc4cbcc391a299d9e14cf2efa4fb2df249464de3b7afe889baa4b78d3f5df3f'
         ,'ROLE_client');
 
+INSERT INTO pointure (libelle_pointure)
+VALUES
+    (45),
+    (44),
+    (43),
+    (42),
+    (41),
+    (40),
+    (39),
+    (38),
+    (37),
+    (36),
+    (35);
+
+INSERT INTO type_chaussure (libelle_type_chaussure)
+VALUES ('basket'),
+       ('botte'),
+       ('classique'),
+       ('ville'),
+       ('rando');
+
+INSERT INTO chaussure (nom_chaussure, sexe, entretien, prix_chaussure, pointure_id, type_chaussure_id, fournisseur, marque, photo, stock)
+VALUES
+( 'Basket violette', 'femme', 'neuf', 79.99, 8, 1, 'BFl', 'NILE', 'basket_f_violette_rose.jpg', 50),
+( 'Basket Adidas', 'homme', 'neuf', 49.99, 6, 1, 'BFL', 'Laco', 'basket_h_addidas.png', 5),
+( 'Basket unisexe', 'unisexe', 'neuf', 99.99, 6, 1, 'BFL', 'uni', 'basket_uni_blanche_noire.png', 6),
+('Basket rose', 'femme', 'neuf', 74.99, 8, 1, 'BFl', 'Laco', 'baskets_f_rose.jpg', 4),
+( 'Botte marron', 'femme', 'neuf', 64.99, 8, 2, 'BOFL', 'bolt', 'botte_f_marron.jpg', 7),
+( 'Botte brune unisexe', 'unisexe', 'neuf', 74.99, 6, 2, 'BOLF', 'bolt', 'botte_uni_brune.png', 3),
+( 'Chaussure classique noire', 'femme', 'neuf', 566.99, 8, 3, 'CHL', 'conver', 'chaussure_classique_f_noire.png', 9),
+( 'Chaussure classique rouge', 'femme', 'neuf', 249.99, 8, 3, 'CHL', 'conver', 'chaussure_classique_f_rouge.png', 14),
+( 'Chaussure classique brune', 'homme', 'neuf', 290.99, 6, 3, 'CHL', 'conver', 'chaussure_classique_h_brune.png', 25),
+( 'Chaussure classique marron foncé', 'homme', 'neuf', 229.99, 6, 3, 'CHL', 'conver', 'chaussure_classique_h_maron_foncée.png', 18),
+( 'Chaussure de ville noire', 'femme', 'neuf', 98.99, 8, 4, 'VHL', 'villy', 'chaussure_de_ville_f_noire.png', 12),
+( 'Chaussure de randonnée rose', 'femme', 'neuf', 99.99, 8, 5, 'RHL', 'randim', 'chaussure_rando_f_rose.png', 26),
+( 'Chaussure de randonnée noire', 'homme', 'neuf', 89.99, 6, 5, 'RHL', 'randim', 'chaussure_rando_h_noire.png', 2),
+('Chaussure de ville bleue', 'unisexe', 'neuf', 79.69, 6, 4, 'VHL', 'villy', 'chaussure_ville_uni_bleue.png', 41),
+( 'Chaussure de ville orange', 'unisexe', 'neuf', 69.99, 6, 4, 'VHL', 'villy', 'chaussure_ville_uni_orange.png', 9);
 
 
+
+
+
+
+-- INSERT INTO ligne_commande (chaussure_id, prix, quantite)
+-- VALUES (64.99,1),
+--        (10,229.99,1);
+
+-- INSERT INTO ligne_panier (utilisateur_id, chaussure_id, quantite, date_ajout)
+-- VALUES (5,12/01/2026),
+--        (15,25/10/2025);
 
 
 
