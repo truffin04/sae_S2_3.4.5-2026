@@ -154,18 +154,29 @@ VALUES
 ;
 
 
-
--- INSERT INTO ligne_commande (chaussure_id, prix, quantite)
--- VALUES (64.99,1),
---        (10,229.99,1);
-
--- INSERT INTO ligne_panier (utilisateur_id, chaussure_id, quantite, date_ajout)
--- VALUES (5,12/01/2026),
---        (15,25/10/2025);
+INSERT INTO commande (date_achat, utilisateur_id, etat_id) VALUES
+('2024-01-10', 2, 1),  -- client
+('2024-01-12', 2, 3),  -- client
+('2024-01-15', 3, 2),  -- client2
+('2024-01-20', 3, 4);  -- client2
 
 
+INSERT INTO ligne_commande (commande_id, chaussure_id, prix, quantite) VALUES
+(1, 1, 79.99, 1),
+(1, 4, 74.99, 2),
+(2, 2, 49.99, 1),
+(3, 11, 98.99, 1),
+(3, 12, 99.99, 1),
+(4, 14, 79.69, 1),
+(4, 15, 69.99, 1);
 
 
+INSERT INTO ligne_panier (utilisateur_id, chaussure_id, quantite, date_ajout) VALUES
+(2, 3, 1, '2024-02-01'),
+(2, 5, 2, '2024-02-02'),
+(3, 7, 1, '2024-02-03');
 
-
-
+SELECT SUM(ligne_panier.quantite*chaussure.prix_chaussure)
+FROM ligne_panier
+JOIN chaussure
+ON ligne_panier.chaussure_id=chaussure.id_chaussure;

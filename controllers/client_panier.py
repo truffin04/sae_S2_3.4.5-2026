@@ -99,17 +99,51 @@ def client_panier_delete_line():
 
 @client_panier.route('/client/panier/filtre', methods=['POST'])
 def client_panier_filtre():
+
+
     filter_word = request.form.get('filter_word', None)
-    filter_prix_min = request.form.get('filter_prix_min', None)
     filter_prix_max = request.form.get('filter_prix_max', None)
+    filter_prix_min = request.form.get('filter_prix_min', None)
     filter_types = request.form.getlist('filter_types', None)
     # test des variables puis
     # mise en session des variables
+    if filter_word != None or filter_word == "":
+        if len(filter_word) > 1:
+            if filter_word.isalpha():
+                session['filter_word'] = filter_word
+            else:
+                flash("Le mot recherché ne doit etre composé que de lettres !")
+        else:
+            if len(filter_word) == 1:
+                flash("le mot recherché doit contenir au moins 2 lettres !")
+            else:
+                session.pop('filter_word', None)
+    if filter_prix_max or filter_prix_min:
+        filter_prix_min = str(filter_prix_min).replace(' ', '').replace(',', '.')
+        filter_prix_max= str(filter_prix_max).replace(' ', '').replace(',', '.')
+        if filter_prix_min.replace('.', '', 1).isdigit() and filter_prix_max.replace('.', '', 1).isdigit():
+            if float(filter_prix_max) > float(filter_prix_min):
+                session['filter_prix_max'] = filter_prix_max
+                session['filter_prix_min'] = filter_prix_min
+            else:
+                flash("le maximum doit être supérieur au minimum")
+        else:
+            flash("min et max doivent être des numériques")
+    else:
+        session.pop('filter_prix_max', None)
+        session.pop('filter_prix_min', None)
+    if filter_types and filter_types != []:
+        session['filter_types'] = filter_types
+    else:
+        session.pop('filter_types', None)
     return redirect('/client/chaussure/show')
 
 
 @client_panier.route('/client/panier/filtre/suppr', methods=['POST'])
 def client_panier_filtre_suppr():
     # suppression  des variables en session
-    print("suppr filtre")
+    session.pop('filter_word', None)
+    session.pop('filter_prix_min', None)
+    session.pop('filter_prix_max', None)
+    session.pop('filter_types', None)
     return redirect('/client/chaussure/show')

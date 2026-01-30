@@ -159,10 +159,14 @@ VALUES
     );
      '''
     mycursor.execute(sql)
-    # sql = '''
-    # INSERT INTO commande
-    #              '''
-    # mycursor.execute(sql)
+    sql = '''
+        INSERT INTO commande (date_achat, utilisateur_id, etat_id) VALUES
+        ('2024-01-10', 2, 1), 
+        ('2024-01-12', 2, 3), 
+        ('2024-01-15', 3, 2),  
+        ('2024-01-20', 3, 4);  
+                 '''
+    mycursor.execute(sql)
 
     sql = ''' 
         CREATE TABLE ligne_commande \
@@ -179,10 +183,17 @@ VALUES
         );
          '''
     mycursor.execute(sql)
-    # sql = '''
-    # INSERT INTO ligne_commande
-    #      '''
-    # mycursor.execute(sql)
+    sql = '''
+        INSERT INTO ligne_commande (commande_id, chaussure_id, prix, quantite) VALUES
+        (1, 1, 79.99, 1),
+        (1, 4, 74.99, 2),
+        (2, 2, 49.99, 1),
+        (3, 11, 98.99, 1),
+        (3, 12, 99.99, 1),
+        (4, 14, 79.69, 1),
+        (4, 15, 69.99, 1);
+         '''
+    mycursor.execute(sql)
 
 
     sql = ''' 
