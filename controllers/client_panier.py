@@ -2,6 +2,8 @@
 # -*- coding:utf-8 -*-
 from flask import Blueprint
 from flask import request, render_template, redirect, abort, flash, session
+import datetime #j'ai ajouté cet import pour obtenir la date quand on ajoute au panier
+
 
 from connexion_db import get_db
 
@@ -37,7 +39,26 @@ def client_panier_add():
     #                                , chaussure=chaussure)
 
 # ajout dans le panier d'un chaussure
-
+    sql='''SELECT * FROM ligne_panier
+            WHERE ligne_panier.utilisateur_id=%s
+            AND ligne_panier.chaussure_id=%s'''
+    mycursor.execute(sql, (id_client, id_chaussure))
+    article_panier=mycursor.fetchone()
+    if (article_panier is not None and article_panier['quantite'] >=1):
+        sql='''UPDATE ligne_panier 
+                SET ligne_panier.quantite=ligne_panier.quantite+%s
+                WHERE ligne_panier.utilisateur_id=%s
+                AND ligne_panier.chaussure_id=%s'''
+        mycursor.execute(sql, (quantite, id_client, id_chaussure))
+        get_db().commit()
+    else:
+        date=datetime.datetime.now()
+        dateSQL=date.strftime('%Y-%m-%d')
+        tuple_param=(id_client, id_chaussure, quantite,dateSQL)
+        sql='''INSERT INTO ligne_panier VALUES
+                (%s,%s,%s,%s);'''
+        mycursor.execute(sql, tuple_param)
+        get_db().commit()
 
     return redirect('/client/chaussure/show')
 
@@ -52,7 +73,7 @@ def client_panier_delete():
     # partie 2 : on supprime une déclinaison de l'chaussure
     # id_declinaison_chaussure = request.form.get('id_declinaison_chaussure', None)
 
-    sql = ''' selection de la ligne du panier pour l'chaussure et l'utilisateur connecté'''
+    sql = ''' selection de la ligne du panier pour la chaussure et l'utilisateur connecté'''
     chaussure_panier=[]
 
     if not(chaussure_panier is None) and chaussure_panier['quantite'] > 1:
