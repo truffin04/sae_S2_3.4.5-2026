@@ -2,6 +2,8 @@
 # -*- coding:utf-8 -*-
 from flask import Blueprint
 from flask import request, render_template, redirect, abort, flash, session
+import datetime #j'ai ajouté cet import pour obtenir la date quand on ajoute au panier
+
 
 from connexion_db import get_db
 
@@ -37,7 +39,26 @@ def client_panier_add():
     #                                , chaussure=chaussure)
 
 # ajout dans le panier d'un chaussure
-
+    sql='''SELECT * FROM ligne_panier
+            WHERE ligne_panier.utilisateur_id=%s
+            AND ligne_panier.chaussure_id=%s'''
+    mycursor.execute(sql, (id_client, id_chaussure))
+    article_panier=mycursor.fetchone()
+    if (article_panier is not None and article_panier['quantite'] >=1):
+        sql='''UPDATE ligne_panier 
+                SET ligne_panier.quantite=ligne_panier.quantite+%s
+                WHERE ligne_panier.utilisateur_id=%s
+                AND ligne_panier.chaussure_id=%s'''
+        mycursor.execute(sql, (quantite, id_client, id_chaussure))
+        get_db().commit()
+    else:
+        date=datetime.datetime.now()
+        dateSQL=date.strftime('%Y-%m-%d')
+        tuple_param=(id_client, id_chaussure, quantite,dateSQL)
+        sql='''INSERT INTO ligne_panier VALUES
+                (%s,%s,%s,%s);'''
+        mycursor.execute(sql, tuple_param)
+        get_db().commit()
 
     return redirect('/client/chaussure/show')
 
@@ -52,7 +73,7 @@ def client_panier_delete():
     # partie 2 : on supprime une déclinaison de l'chaussure
     # id_declinaison_chaussure = request.form.get('id_declinaison_chaussure', None)
 
-    sql = ''' selection de la ligne du panier pour l'chaussure et l'utilisateur connecté'''
+    sql = ''' selection de la ligne du panier pour la chaussure et l'utilisateur connecté'''
     chaussure_panier=[]
 
     if not(chaussure_panier is None) and chaussure_panier['quantite'] > 1:
@@ -99,17 +120,51 @@ def client_panier_delete_line():
 
 @client_panier.route('/client/panier/filtre', methods=['POST'])
 def client_panier_filtre():
+
+
     filter_word = request.form.get('filter_word', None)
-    filter_prix_min = request.form.get('filter_prix_min', None)
     filter_prix_max = request.form.get('filter_prix_max', None)
+    filter_prix_min = request.form.get('filter_prix_min', None)
     filter_types = request.form.getlist('filter_types', None)
     # test des variables puis
     # mise en session des variables
+    if filter_word != None or filter_word == "":
+        if len(filter_word) > 1:
+            if filter_word.isalpha():
+                session['filter_word'] = filter_word
+            else:
+                flash("Le mot recherché ne doit etre composé que de lettres !")
+        else:
+            if len(filter_word) == 1:
+                flash("le mot recherché doit contenir au moins 2 lettres !")
+            else:
+                session.pop('filter_word', None)
+    if filter_prix_max or filter_prix_min:
+        filter_prix_min = str(filter_prix_min).replace(' ', '').replace(',', '.')
+        filter_prix_max= str(filter_prix_max).replace(' ', '').replace(',', '.')
+        if filter_prix_min.replace('.', '', 1).isdigit() and filter_prix_max.replace('.', '', 1).isdigit():
+            if float(filter_prix_max) > float(filter_prix_min):
+                session['filter_prix_max'] = filter_prix_max
+                session['filter_prix_min'] = filter_prix_min
+            else:
+                flash("le maximum doit être supérieur au minimum")
+        else:
+            flash("min et max doivent être des numériques")
+    else:
+        session.pop('filter_prix_max', None)
+        session.pop('filter_prix_min', None)
+    if filter_types and filter_types != []:
+        session['filter_types'] = filter_types
+    else:
+        session.pop('filter_types', None)
     return redirect('/client/chaussure/show')
 
 
 @client_panier.route('/client/panier/filtre/suppr', methods=['POST'])
 def client_panier_filtre_suppr():
     # suppression  des variables en session
-    print("suppr filtre")
+    session.pop('filter_word', None)
+    session.pop('filter_prix_min', None)
+    session.pop('filter_prix_max', None)
+    session.pop('filter_types', None)
     return redirect('/client/chaussure/show')
