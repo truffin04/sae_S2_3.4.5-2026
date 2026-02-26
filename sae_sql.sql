@@ -95,16 +95,26 @@
 
     create table adresse (
         id_adresse int primary key auto_increment,
-        num varchar(255),
+        nom varchar(255),
         rue varchar(255),
         code_postal varchar(255),
         ville varchar(255),
         date_utilisation varchar(255),
-        id_utilisateur INT,
+        utilisateur_id INT,
+        valide BOOLEAN DEFAULT TRUE,
+        favori BOOLEAN DEFAULT FALSE,
         constraint fr_utilisateur_adresse
-                         foreign key (id_utiliisateur) references utilisateur(id_utilisateur),
+                         foreign key (utilisateur_id) references utilisateur(id_utilisateur)
 
-    )
+    );
+
+ALTER TABLE commande
+ADD COLUMN adresse_livraison_id INT NULL,
+ADD COLUMN adresse_facturation_id INT NULL,
+ADD CONSTRAINT fk_adresse_livraison
+    FOREIGN KEY (adresse_livraison_id) REFERENCES adresse(id_adresse),
+ADD CONSTRAINT fk_adresse_facturation
+    FOREIGN KEY (adresse_facturation_id) REFERENCES adresse(id_adresse);
 
 
     INSERT INTO utilisateur(id_utilisateur,login,email,password,role,nom) VALUES
