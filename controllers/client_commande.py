@@ -39,21 +39,37 @@ def client_commande_add():
     # choix de(s) (l')adresse(s)
 
     id_client = session['id_user']
-    sql = ''' selection du contenu du panier de l'utilisateur '''
-    items_ligne_panier = []
+    sql = ''' SELECT ligne_panier.chaussure_id, ligne_panier.quantite, chaussure.prix_chaussure
+              FROM ligne_panier
+              JOIN chaussure ON ligne_panier.chaussure_id = chaussure.id_chaussure
+              WHERE ligne_panier.utilisateur_id = %s;'''
+    mycursor.execute(sql, (id_client,))
+    items_ligne_panier = mycursor.fetchall()
+
     # if items_ligne_panier is None or len(items_ligne_panier) < 1:
     #     flash(u'Pas d\'chaussures dans le ligne_panier', 'alert-warning')
     #     return redirect('/client/chaussure/show')
                                            # https://pynative.com/python-mysql-transaction-management-using-commit-rollback/
     #a = datetime.strptime('my date', "%b %d %Y %H:%M")
 
-    sql = ''' creation de la commande '''
+    sql = ''' INSERT INTO commande(date_achat, utilisateur_id, etat_id) VALUES (%s, %s, %s)'''
+    date_today = datetime.now().strftime('%Y-%m-%d')
+    mycursor.execute(sql, (date_today, id_client, 1))
 
-    sql = '''SELECT last_insert_id() as last_insert_id'''
+    sql = ''' SELECT last_insert_id() as last_insert_id '''
+    mycursor.execute(sql)
+    last_id = mycursor.fetchone()
+    id_nouvelle_commande = last_id['last_insert_id']
+
+
     # numéro de la dernière commande
     for item in items_ligne_panier:
-        sql = ''' suppression d'une ligne de panier '''
-        sql = "  ajout d'une ligne de commande'"
+        sql = ''' DELETE FROM ligne_panier 
+                    WHERE utilisateur_id = %s AND chaussure_id = %s'''
+        mycursor.execute(sql, (id_client, item['chaussure_id']))
+
+        sql = "  INSERT INTO ligne_commande VALUES (%s, %s, %s, %s)"
+        mycursor.execute(sql, (id_nouvelle_commande, item['chaussure_id'], item['prix_chaussure'], item['quantite']))
 
     get_db().commit()
     flash(u'Commande ajoutée','alert-success')
@@ -66,8 +82,18 @@ def client_commande_add():
 def client_commande_show():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    sql = '''  selection des commandes ordonnées par état puis par date d'achat descendant '''
-    commandes = []
+    sql = '''  SELECT commande.id_commande, commande.date_achat, commande.etat_id,
+                      etat.libelle, SUM(ligne_commande.quantite) as nbr_chaussures, 
+                      SUM(ligne_commande.prix) as prix_total
+                FROM commande
+                JOIN etat ON commande.etat_id = etat.id_etat
+                JOIN ligne_commande ON commande.id_commande = ligne_commande.commande_id
+                WHERE commande.utilisateur_id = %s
+                GROUP BY  commande.id_commande, commande.date_achat, commande.etat_id, etat.libelle
+                ORDER BY commande.etat_id, commande.date_achat DESC;'''
+
+    mycursor.execute(sql, (id_client,))
+    commandes = mycursor.fetchall()
 
     chaussures_commande = None
     commande_adresses = None
