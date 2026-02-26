@@ -13,11 +13,25 @@ client_coordonnee = Blueprint('client_coordonnee', __name__,
 def client_coordonnee_show():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    utilisateur=[]
+    sql_utilisateur = ''' select login,nom,email from utilisateur
+                      where id_utilisateur = %s'''
+    mycursor.execute(sql_utilisateur, (id_client,))
+    utilisateur = mycursor.fetchone()
+    sql_adresse = '''select a.id_adresse, a.nom, a.rue ,  a.code_postal, a.ville, a.favori, a.valide ,
+    (select COUNT(*)
+    from commande 
+    where adresse_livraison_id = a.id_adresse OR adresse_facturation_id = a.id_adresse) AS nbr_commande
+     FROM adresse a
+     Where utilisateur_id = %s 
+     ORDER BY favori DESC, nbr_commande DESC'''
+    mycursor.execute(sql_adresse, (id_client))
+    adresses = mycursor.fetchall()
+    nb_adresses = len([a for a in adresses if a['valide']])
+
     return render_template('client/coordonnee/show_coordonnee.html'
                            , utilisateur=utilisateur
-                         #  , adresses=adresses
-                         #  , nb_adresses=nb_adresses
+                          , adresses=adresses
+                           , nb_adresses=nb_adresses
                            )
 
 @client_coordonnee.route('/client/coordonnee/edit', methods=['GET'])
@@ -26,7 +40,7 @@ def client_coordonnee_edit():
     id_client = session['id_user']
 
     return render_template('client/coordonnee/edit_coordonnee.html'
-                           #,utilisateur=utilisateur
+                           ,utilisateur=utilisateur
                            )
 
 @client_coordonnee.route('/client/coordonnee/edit', methods=['POST'])
@@ -41,7 +55,7 @@ def client_coordonnee_edit_valide():
     if utilisateur:
         flash(u'votre cet Email ou ce Login existe déjà pour un autre utilisateur', 'alert-warning')
         return render_template('client/coordonnee/edit_coordonnee.html'
-                               #, user=user
+                               , user=user
                                )
 
 
@@ -83,8 +97,8 @@ def client_coordonnee_edit_adresse():
     id_adresse = request.args.get('id_adresse')
 
     return render_template('/client/coordonnee/edit_adresse.html'
-                           # ,utilisateur=utilisateur
-                           # ,adresse=adresse
+                            ,utilisateur=utilisateur
+                            ,adresse=adresse
                            )
 
 @client_coordonnee.route('/client/coordonnee/edit_adresse',methods=['POST'])
