@@ -50,6 +50,11 @@ def client_panier_add():
                 WHERE ligne_panier.utilisateur_id=%s
                 AND ligne_panier.chaussure_id=%s'''
         mycursor.execute(sql, (quantite, id_client, id_chaussure))
+        sql='''UPDATE chaussure 
+               SET chaussure.stock=chaussure.stock - %s 
+                WHERE chaussure.id_chaussure=%s'''
+        tuple_param=(quantite, id_chaussure)
+        mycursor.execute(sql,tuple_param)
         get_db().commit()
     else:
         date=datetime.datetime.now()
@@ -58,7 +63,15 @@ def client_panier_add():
         sql='''INSERT INTO ligne_panier VALUES
                 (%s,%s,%s,%s);'''
         mycursor.execute(sql, tuple_param)
+
+        sql='''UPDATE chaussure 
+               SET chaussure.stock=chaussure.stock - %s 
+                WHERE chaussure.id_chaussure=%s'''
+        tuple_param=(quantite, id_chaussure)
+        mycursor.execute(sql,tuple_param)
         get_db().commit()
+
+
 
     return redirect('/client/chaussure/show')
 
