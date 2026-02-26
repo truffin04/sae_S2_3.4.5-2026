@@ -18,21 +18,42 @@ def admin_index():
 def admin_commande_show():
     mycursor = get_db().cursor()
     admin_id = session['id_user']
-    sql = '''  SELECT utilisateur.id_utilisateur , commande.date_achat , ligne_commande.quantite , ligne_commande.prix , etat.libelle 
-      FROM ligne_commande
-    JOIN utilisateur on utilisateur.id_utilisateur = ligne_commande.commande_id
-    JOIN commande on commande.id_commande = ligne_commande.commande_id
-    JOIN etat on etat.id_etat = ligne_commande.etat_id;   '''
+    sql = '''  SELECT
+    utilisateur.login,
+    commande.id_commande,
+    commande.date_achat,
+    COUNT(ligne_commande.chaussure_id) AS nbr_chaussures,
+    SUM(ligne_commande.prix * ligne_commande.quantite) AS prix_total,
+    etat.libelle AS libelle,
+    commande.etat_id
+FROM commande
+JOIN utilisateur ON commande.utilisateur_id = utilisateur.id_utilisateur
+JOIN ligne_commande ON ligne_commande.commande_id = commande.id_commande
+JOIN etat ON commande.etat_id = etat.id_etat
+GROUP BY commande.id_commande, utilisateur.login, commande.date_achat, etat.libelle, commande.etat_id
+ORDER BY commande.date_achat DESC;
+ '''
 
-    commandes=[]
 
     chaussures_commande = None
     commande_adresses = None
     id_commande = request.args.get('id_commande', None)
     print(id_commande)
     if id_commande != None:
-        sql = '''    '''
-        commande_adresses = []
+        sql = '''  SELECT
+                c.nom_chaussure AS nom,
+                lc.quantite,
+                lc.prix,
+                (lc.quantite * lc.prix) AS prix_ligne,
+                lc.commande_id AS id,
+                commande.etat_id,
+                c.id_chaussure
+            FROM ligne_commande lc
+            JOIN commande ON lc.commande_id = commande.id_commande
+            JOIN chaussure c ON lc.chaussure_id = c.id_chaussure
+            WHERE commande.id_commande = %s
+            GROUP BY lc.chaussure_id, lc.quantite, lc.prix, commande.id_commande, commande.etat_id, c.nom_chaussure, c.id_chaussure;  '''
+
     return render_template('admin/commandes/show.html'
                            , commandes=commandes
                            , chaussures_commande=chaussures_commande
@@ -46,7 +67,9 @@ def admin_commande_valider():
     commande_id = request.form.get('id_commande', None)
     if commande_id != None:
         print(commande_id)
-        sql = '''           '''
+        sql = '''      UPDATE commande
+            SET etat_id = 2
+            WHERE id_commande = %s;     '''
         mycursor.execute(sql, commande_id)
         get_db().commit()
     return redirect('/admin/commande/show')
