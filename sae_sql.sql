@@ -100,6 +100,7 @@
         code_postal varchar(255),
         ville varchar(255),
         date_utilisation varchar(255),
+        id_utilisateur INT,
         constraint fr_utilisateur_adresse
                          foreign key (id_utiliisateur) references utilisateur(id_utilisateur),
 
