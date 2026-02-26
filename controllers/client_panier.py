@@ -17,6 +17,7 @@ def client_panier_add():
     id_client = session['id_user']
     id_chaussure = request.form.get('id_chaussure')
     quantite = request.form.get('quantite')
+
     # ---------
     #id_declinaison_chaussure=request.form.get('id_declinaison_chaussure',None)
     id_declinaison_chaussure = 1
@@ -39,62 +40,86 @@ def client_panier_add():
     #                                , chaussure=chaussure)
 
 # ajout dans le panier d'un chaussure
-    sql='''SELECT * FROM ligne_panier
-            WHERE ligne_panier.utilisateur_id=%s
-            AND ligne_panier.chaussure_id=%s'''
-    mycursor.execute(sql, (id_client, id_chaussure))
-    article_panier=mycursor.fetchone()
-    if (article_panier is not None and article_panier['quantite'] >=1):
-        sql='''UPDATE ligne_panier 
-                SET ligne_panier.quantite=ligne_panier.quantite+%s
+    quantite=int(quantite)
+    if (quantite>=1):
+        sql='''SELECT * FROM ligne_panier
                 WHERE ligne_panier.utilisateur_id=%s
                 AND ligne_panier.chaussure_id=%s'''
-        mycursor.execute(sql, (quantite, id_client, id_chaussure))
-        sql='''UPDATE chaussure 
-               SET chaussure.stock=chaussure.stock - %s 
+        mycursor.execute(sql, (id_client, id_chaussure))
+        article_panier=mycursor.fetchone()
+        sql2 = '''UPDATE chaussure \
+                  SET chaussure.stock=chaussure.stock - %s
                 WHERE chaussure.id_chaussure=%s'''
-        tuple_param=(quantite, id_chaussure)
-        mycursor.execute(sql,tuple_param)
+
+        if (article_panier is not None):
+            print(500*"zizi")
+            sql='''UPDATE ligne_panier 
+                    SET ligne_panier.quantite=ligne_panier.quantite+%s
+                    WHERE ligne_panier.utilisateur_id=%s
+                    AND ligne_panier.chaussure_id=%s'''
+            mycursor.execute(sql, (quantite, id_client, id_chaussure))
+
+            tuple_param=(quantite, id_chaussure)
+            mycursor.execute(sql2,tuple_param)
+        else:
+            date=datetime.datetime.now()
+            dateSQL=date.strftime('%Y-%m-%d')
+            tuple_param=(id_client, id_chaussure, quantite,dateSQL)
+            sql='''INSERT INTO ligne_panier VALUES
+                    (%s,%s,%s,%s);'''
+            mycursor.execute(sql, tuple_param)
+
+
+            tuple_param=(quantite, id_chaussure)
+            mycursor.execute(sql2,tuple_param)
         get_db().commit()
     else:
-        date=datetime.datetime.now()
-        dateSQL=date.strftime('%Y-%m-%d')
-        tuple_param=(id_client, id_chaussure, quantite,dateSQL)
-        sql='''INSERT INTO ligne_panier VALUES
-                (%s,%s,%s,%s);'''
-        mycursor.execute(sql, tuple_param)
-
-        sql='''UPDATE chaussure 
-               SET chaussure.stock=chaussure.stock - %s 
-                WHERE chaussure.id_chaussure=%s'''
-        tuple_param=(quantite, id_chaussure)
-        mycursor.execute(sql,tuple_param)
-        get_db().commit()
-
-
-
+        flash("la quantité doit être supérieure ou égale à 1")
     return redirect('/client/chaussure/show')
 
 @client_panier.route('/client/panier/delete', methods=['POST'])
 def client_panier_delete():
     mycursor = get_db().cursor()
     id_client = session['id_user']
+
     id_chaussure = request.form.get('id_chaussure','')
+    print("id client : ",id_client," - id_chaussure ",id_chaussure)
     quantite = 1
 
+
+
     # ---------
-    # partie 2 : on supprime une déclinaison de l'chaussure
+    # partie 2 : on supprime une déclinaison de la chaussure
     # id_declinaison_chaussure = request.form.get('id_declinaison_chaussure', None)
 
-    sql = ''' selection de la ligne du panier pour la chaussure et l'utilisateur connecté'''
-    chaussure_panier=[]
+    sql = '''   SELECT ligne_panier.chaussure_id, ligne_panier.utilisateur_id, ligne_panier.quantite
+                FROM ligne_panier
+                WHERE ligne_panier.utilisateur_id=%s
+                AND ligne_panier.chaussure_id=%s'''
+    tuple_param=(id_client,id_chaussure)
+    mycursor.execute(sql,tuple_param)
+    chaussure_panier=mycursor.fetchone()
+    print("chaussures panier ",chaussure_panier,id_client," ",id_chaussure)
 
-    if not(chaussure_panier is None) and chaussure_panier['quantite'] > 1:
-        sql = ''' mise à jour de la quantité dans le panier => -1 chaussure '''
+
+    if not (chaussure_panier is None) and chaussure_panier['quantite'] > 1:
+        sql = ''' UPDATE ligne_panier 
+                  SET ligne_panier.quantite=ligne_panier.quantite - 1
+                    WHERE ligne_panier.utilisateur_id=%s
+                    AND ligne_panier.chaussure_id=%s'''
+        mycursor.execute(sql, tuple_param)
+
     else:
-        sql = ''' suppression de la ligne de panier'''
+        sql='''DELETE FROM ligne_panier
+            WHERE ligne_panier.utilisateur_id=%s
+            AND ligne_panier.chaussure_id=%s'''
+        mycursor.execute(sql,tuple_param)
 
     # mise à jour du stock de l'chaussure disponible
+    sql='''UPDATE chaussure 
+            SET chaussure.stock=chaussure.stock+1
+            WHERE chaussure.id_chaussure=%s'''
+    mycursor.execute(sql, (id_chaussure,))
     get_db().commit()
     return redirect('/client/chaussure/show')
 
@@ -120,12 +145,33 @@ def client_panier_vider():
 def client_panier_delete_line():
     mycursor = get_db().cursor()
     id_client = session['id_user']
+    id_chaussure=request.form.get('id_chaussure', ' ')
     #id_declinaison_chaussure = request.form.get('id_declinaison_chaussure')
 
-    sql = ''' selection de ligne du panier '''
+    tuple_param=(id_client,id_chaussure)
+    sql = ''' SELECT ligne_panier.utilisateur_id,
+            ligne_panier.chaussure_id, 
+            ligne_panier.quantite
+            FROM ligne_panier
+            WHERE ligne_panier.utilisateur_id=%s
+            AND ligne_panier.chaussure_id=%s'''
 
-    sql = ''' suppression de la ligne du panier '''
-    sql2=''' mise à jour du stock de l'chaussure : stock = stock + qté de la ligne pour l'chaussure'''
+
+    mycursor.execute(sql, tuple_param)
+    quantite = mycursor.fetchone()['quantite']
+
+
+    sql = ''' DELETE FROM ligne_panier
+              WHERE ligne_panier.utilisateur_id=%s
+              AND ligne_panier.chaussure_id=%s'''
+    mycursor.execute(sql, tuple_param)
+
+
+    sql2='''UPDATE chaussure
+            SET chaussure.stock=chaussure.stock+%s
+            WHERE chaussure.id_chaussure=%s'''
+
+    mycursor.execute(sql2, (quantite,id_chaussure))
 
     get_db().commit()
     return redirect('/client/chaussure/show')

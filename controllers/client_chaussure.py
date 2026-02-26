@@ -57,9 +57,9 @@ def client_chaussure_show():                                 # remplace client_i
                     sql+=" OR "
             sql+=")"
 
-    print(sql)
+
     print(tuple(list_param))
-    print(session)
+
 
     mycursor.execute(sql, tuple(list_param))
     chaussures = mycursor.fetchall()
@@ -76,7 +76,7 @@ def client_chaussure_show():                                 # remplace client_i
     types_chaussure = mycursor.fetchall()
 
     sql='''SELECT ligne_panier.utilisateur_id,
-                ligne_panier.chaussure_id,
+                ligne_panier.chaussure_id as id_chaussure,
                 ligne_panier.quantite,
                 ligne_panier.date_ajout,
                 chaussure.prix_chaussure as prix,
@@ -88,6 +88,7 @@ def client_chaussure_show():                                 # remplace client_i
 
     mycursor.execute(sql,(id_client,))
     chaussures_panier = mycursor.fetchall()
+
 
     if len(chaussures_panier) >= 1:
         sql = ''' SELECT SUM(ligne_panier.quantite*chaussure.prix_chaussure) as prix_total
