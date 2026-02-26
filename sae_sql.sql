@@ -93,6 +93,18 @@
     );
 
 
+    create table adresse (
+        id_adresse int primary key auto_increment,
+        num varchar(255),
+        rue varchar(255),
+        code_postal varchar(255),
+        ville varchar(255),
+        date_utilisation varchar(255),
+        constraint fr_utilisateur_adresse
+                         foreign key (id_utiliisateur) references utilisateur(id_utilisateur),
+
+    )
+
 
     INSERT INTO utilisateur(id_utilisateur,login,email,password,role,nom) VALUES
     (1,'admin','admin@admin.fr',
