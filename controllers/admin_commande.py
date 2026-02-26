@@ -18,7 +18,7 @@ def admin_index():
 def admin_commande_show():
     mycursor = get_db().cursor()
     admin_id = session['id_user']
-    sql = '''  SELECT
+    sql_commandes = '''  SELECT
     utilisateur.login,
     commande.id_commande,
     commande.date_achat,
@@ -34,13 +34,15 @@ GROUP BY commande.id_commande, utilisateur.login, commande.date_achat, etat.libe
 ORDER BY commande.date_achat DESC;
  '''
 
+    mycursor.execute(sql_commandes)
+    commandes = mycursor.fetchall()
 
     chaussures_commande = None
     commande_adresses = None
     id_commande = request.args.get('id_commande', None)
     print(id_commande)
     if id_commande != None:
-        sql = '''  SELECT
+        sql_details = '''  SELECT
                 c.nom_chaussure AS nom,
                 lc.quantite,
                 lc.prix,
@@ -53,6 +55,11 @@ ORDER BY commande.date_achat DESC;
             JOIN chaussure c ON lc.chaussure_id = c.id_chaussure
             WHERE commande.id_commande = %s
             GROUP BY lc.chaussure_id, lc.quantite, lc.prix, commande.id_commande, commande.etat_id, c.nom_chaussure, c.id_chaussure;  '''
+
+    id_commande = request.args.get('id_commande')
+    if id_commande is not None:
+        mycursor.execute(sql_details, (id_commande,))
+        chaussures_commande = mycursor.fetchall()
 
     return render_template('admin/commandes/show.html'
                            , commandes=commandes
@@ -72,4 +79,5 @@ def admin_commande_valider():
             WHERE id_commande = %s;     '''
         mycursor.execute(sql, commande_id)
         get_db().commit()
+        flash('Commande validée','success')
     return redirect('/admin/commande/show')
