@@ -84,7 +84,7 @@ def client_commande_show():
     id_client = session['id_user']
     sql = '''  SELECT commande.id_commande, commande.date_achat, commande.etat_id,
                       etat.libelle, SUM(ligne_commande.quantite) as nbr_chaussures, 
-                      SUM(ligne_commande.prix) as prix_total
+                      SUM(ligne_commande.quantite * ligne_commande.prix) as prix_total
                 FROM commande
                 JOIN etat ON commande.etat_id = etat.id_etat
                 JOIN ligne_commande ON commande.id_commande = ligne_commande.commande_id
@@ -100,7 +100,13 @@ def client_commande_show():
     id_commande = request.args.get('id_commande', None)
     if id_commande != None:
         print(id_commande)
-        sql = ''' selection du détails d'une commande '''
+        sql = ''' SELECT chaussure.nom_chaussure as nom, ligne_commande.quantite, ligne_commande.prix, ligne_commande.quantite * ligne_commande.prix as prix_ligne
+                FROM ligne_commande
+                JOIN chaussure ON ligne_commande.chaussure_id = chaussure.id_chaussure
+                WHERE ligne_commande.commande_id = %s
+        '''
+        mycursor.execute(sql, (id_commande,))
+        chaussures_commande = mycursor.fetchall()
 
         # partie 2 : selection de l'adresse de livraison et de facturation de la commande selectionnée
         sql = ''' selection des adressses '''
