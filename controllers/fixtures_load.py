@@ -212,6 +212,65 @@ VALUES
          '''
     mycursor.execute(sql)
 
+    sql = ''' 
+    create table adresse (
+        id_adresse int primary key auto_increment,
+        nom varchar(255),
+        rue varchar(255),
+        code_postal varchar(255),
+        ville varchar(255),
+        date_utilisation varchar(255),
+        utilisateur_id INT,
+        valide BOOLEAN DEFAULT TRUE,
+        favori BOOLEAN DEFAULT FALSE,
+        constraint fr_utilisateur_adresse
+                         foreign key (utilisateur_id) references utilisateur(id_utilisateur)
+
+    );'''
+
+    mycursor.execute(sql)
+
+    sql = '''
+ALTER TABLE commande
+ADD COLUMN adresse_livraison_id INT NULL,
+ADD COLUMN adresse_facturation_id INT NULL,
+ADD CONSTRAINT fk_adresse_livraison
+    FOREIGN KEY (adresse_livraison_id) REFERENCES adresse(id_adresse),
+ADD CONSTRAINT fk_adresse_facturation
+    FOREIGN KEY (adresse_facturation_id) REFERENCES adresse(id_adresse);'''
+
+    mycursor.execute(sql)
+
+    sql = ''' CREATE TABLE commentaire (
+    id_commentaire INT PRIMARY KEY AUTO_INCREMENT,
+    commentaire TEXT,
+    utilisateur_id INT,
+    chaussure_id INT,
+    date_publication DATETIME DEFAULT CURRENT_TIMESTAMP,
+    valider BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id_utilisateur),
+    FOREIGN KEY (chaussure_id) REFERENCES chaussure(id_chaussure)
+);
+'''
+
+    mycursor.execute(sql)
+
+    sql = '''     CREATE TABLE note (
+        id_note INT PRIMARY KEY AUTO_INCREMENT,
+        note DECIMAL(3,1),
+        utilisateur_id INT,
+        chaussure_id INT,
+        FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id_utilisateur),
+        FOREIGN KEY (chaussure_id) REFERENCES chaussure(id_chaussure)
+    );
+'''
+    mycursor.execute(sql)
+
+    sql = ''' ALTER TABLE chaussure ADD COLUMN description TEXT;'''
+
+    mycursor.execute(sql)
+
+
 
     get_db().commit()
     return redirect('/')
