@@ -60,6 +60,7 @@
         fournisseur VARCHAR(100),
         marque VARCHAR(30),
         photo VARCHAR(256),
+        descrption varchar(255),
         stock INT,
         constraint fk_type_chaussure
             foreign key (type_chaussure_id) REFERENCES type_chaussure(id_type_chaussure),
@@ -115,6 +116,29 @@ ADD CONSTRAINT fk_adresse_livraison
     FOREIGN KEY (adresse_livraison_id) REFERENCES adresse(id_adresse),
 ADD CONSTRAINT fk_adresse_facturation
     FOREIGN KEY (adresse_facturation_id) REFERENCES adresse(id_adresse);
+
+CREATE TABLE commentaire (
+    id_commentaire INT PRIMARY KEY AUTO_INCREMENT,
+    commentaire TEXT,
+    utilisateur_id INT,
+    chaussure_id INT,
+    date_publication DATETIME DEFAULT CURRENT_TIMESTAMP,
+    valider BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id_utilisateur),
+    FOREIGN KEY (chaussure_id) REFERENCES chaussure(id_chaussure)
+);
+
+    CREATE TABLE note (
+        id_note INT PRIMARY KEY AUTO_INCREMENT,
+        note DECIMAL(3,1),
+        utilisateur_id INT,
+        chaussure_id INT,
+        FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id_utilisateur),
+        FOREIGN KEY (chaussure_id) REFERENCES chaussure(id_chaussure)
+    );
+
+    ALTER TABLE chaussure ADD COLUMN description TEXT;
+
 
 
     INSERT INTO utilisateur(id_utilisateur,login,email,password,role,nom) VALUES
