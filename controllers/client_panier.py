@@ -39,42 +39,43 @@ def client_panier_add():
     #                                , quantite=quantite
     #                                , chaussure=chaussure)
 
+
+
 # ajout dans le panier d'un chaussure
+
     quantite=int(quantite)
-    if (quantite>=1):
-        sql='''SELECT * FROM ligne_panier
+    print(quantite,' ',50*'zozozoz')
+    sql='''SELECT * FROM ligne_panier
+            WHERE ligne_panier.utilisateur_id=%s
+            AND ligne_panier.chaussure_id=%s'''
+    mycursor.execute(sql, (id_client, id_chaussure))
+    article_panier=mycursor.fetchone()
+    sql2 = '''UPDATE chaussure \
+              SET chaussure.stock=chaussure.stock - %s
+            WHERE chaussure.id_chaussure=%s'''
+
+    if (article_panier is not None and quantite>=1):
+        sql='''UPDATE ligne_panier 
+                SET ligne_panier.quantite=ligne_panier.quantite+%s
                 WHERE ligne_panier.utilisateur_id=%s
                 AND ligne_panier.chaussure_id=%s'''
-        mycursor.execute(sql, (id_client, id_chaussure))
-        article_panier=mycursor.fetchone()
-        sql2 = '''UPDATE chaussure \
-                  SET chaussure.stock=chaussure.stock - %s
-                WHERE chaussure.id_chaussure=%s'''
+        mycursor.execute(sql, (quantite, id_client, id_chaussure))
 
-        if (article_panier is not None):
-            print(500*"zizi")
-            sql='''UPDATE ligne_panier 
-                    SET ligne_panier.quantite=ligne_panier.quantite+%s
-                    WHERE ligne_panier.utilisateur_id=%s
-                    AND ligne_panier.chaussure_id=%s'''
-            mycursor.execute(sql, (quantite, id_client, id_chaussure))
-
-            tuple_param=(quantite, id_chaussure)
-            mycursor.execute(sql2,tuple_param)
-        else:
-            date=datetime.datetime.now()
-            dateSQL=date.strftime('%Y-%m-%d')
-            tuple_param=(id_client, id_chaussure, quantite,dateSQL)
-            sql='''INSERT INTO ligne_panier VALUES
-                    (%s,%s,%s,%s);'''
-            mycursor.execute(sql, tuple_param)
-
-
-            tuple_param=(quantite, id_chaussure)
-            mycursor.execute(sql2,tuple_param)
-        get_db().commit()
+    elif (article_panier is None and quantite>=1):
+        date=datetime.datetime.now()
+        dateSQL=date.strftime('%Y-%m-%d')
+        tuple_param=(id_client, id_chaussure, quantite,dateSQL)
+        sql='''INSERT INTO ligne_panier VALUES
+                (%s,%s,%s,%s);'''
+        mycursor.execute(sql, tuple_param)
     else:
-        flash("la quantité doit être supérieure ou égale à 1")
+        flash("la quantité doit être supérieure à 0")
+        return redirect('/client/chaussure/show')
+    tuple_param=(quantite, id_chaussure)
+    mycursor.execute(sql2,tuple_param)
+    get_db().commit()
+
+
     return redirect('/client/chaussure/show')
 
 @client_panier.route('/client/panier/delete', methods=['POST'])
@@ -131,12 +132,24 @@ def client_panier_delete():
 def client_panier_vider():
     mycursor = get_db().cursor()
     client_id = session['id_user']
-    sql = ''' sélection des lignes de panier'''
-    items_panier = []
-    for item in items_panier:
-        sql = ''' suppression de la ligne de panier de l'chaussure pour l'utilisateur connecté'''
+    sql = ''' SELECT * from ligne_panier WHERE ligne_panier.utilisateur_id=%s'''
+    mycursor.execute(sql,(client_id,))
+    items_panier = mycursor.fetchall()
 
-        sql2=''' mise à jour du stock de l'chaussure : stock = stock + qté de la ligne pour l'chaussure'''
+
+    for item in items_panier:
+        sql = '''   DELETE FROM ligne_panier
+                    WHERE ligne_panier.utilisateur_id=%s
+                    AND ligne_panier.chaussure_id=%s'''
+
+
+
+        sql2='''    UPDATE chaussure
+                    SET chaussure.stock=chaussure.stock+%s
+                    WHERE chaussure.id_chaussure=%s'''
+        mycursor.execute(sql, (client_id, item['chaussure_id']) )
+
+        mycursor.execute(sql2, (item['quantite'],item['chaussure_id']) )
         get_db().commit()
     return redirect('/client/chaussure/show')
 

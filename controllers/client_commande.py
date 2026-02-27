@@ -14,17 +14,31 @@ client_commande = Blueprint('client_commande', __name__,
 def client_commande_valide():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    sql = ''' selection des chaussures d'un panier 
-    '''
-    chaussures_panier = []
+    sql = '''   SELECT ligne_panier.chaussure_id, ligne_panier.quantite, chaussure.prix_chaussure as prix, chaussure.nom_chaussure  as nom 
+                FROM ligne_panier 
+                JOIN chaussure on ligne_panier.chaussure_id = chaussure.id_chaussure
+                WHERE ligne_panier.utilisateur_id = %s'''
+
+    mycursor.execute(sql, (id_client,))
+    chaussures_panier = mycursor.fetchall()
+    print(chaussures_panier)
     if len(chaussures_panier) >= 1:
-        sql = ''' calcul du prix total du panier '''
-        prix_total = None
+        sql = ''' SELECT chaussure.prix_chaussure * ligne_panier.quantite as prix_total FROM ligne_panier
+                  JOIN chaussure on ligne_panier.chaussure_id = chaussure.id_chaussure
+                  WHERE ligne_panier.utilisateur_id = %s
+                    '''
+        mycursor.execute(sql, (id_client,))
+        prix_dict = mycursor.fetchone()
+        print(prix_dict)
+        prix_total = prix_dict["prix_total"]
     else:
-        prix_total = None
+        prix_total = 0
     # etape 2 : selection des adresses
+    sql='''SELECT * from adresse where adresse.utilisateur_id = %s'''
+    mycursor.execute(sql, (id_client,))
+    adresses=mycursor.fetchall()
     return render_template('client/boutique/panier_validation_adresses.html'
-                           #, adresses=adresses
+                           , adresses=adresses
                            , chaussures_panier=chaussures_panier
                            , prix_total= prix_total
                            , validation=1
@@ -116,4 +130,3 @@ def client_commande_show():
                            , chaussures_commande=chaussures_commande
                            , commande_adresses=commande_adresses
                            )
-

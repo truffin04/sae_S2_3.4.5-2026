@@ -11,14 +11,17 @@ fixtures_load = Blueprint('fixtures_load', __name__,
 @fixtures_load.route('/base/init')
 def fct_fixtures_load():
     mycursor = get_db().cursor()
+    mycursor.execute("DROP TABLE IF EXISTS note")
+    mycursor.execute("DROP TABLE IF EXISTS commentaire")
     mycursor.execute("DROP TABLE IF EXISTS ligne_panier")
     mycursor.execute("DROP TABLE IF EXISTS ligne_commande")
     mycursor.execute("DROP TABLE IF EXISTS commande")
-    mycursor.execute("DROP TABLE IF EXISTS utilisateur")
+    mycursor.execute("DROP TABLE IF EXISTS adresse")
     mycursor.execute("DROP TABLE IF EXISTS chaussure")
     mycursor.execute("DROP TABLE IF EXISTS pointure")
     mycursor.execute("DROP TABLE IF EXISTS type_chaussure")
     mycursor.execute("DROP TABLE IF EXISTS etat")
+    mycursor.execute("DROP TABLE IF EXISTS utilisateur")
 
     sql='''
 CREATE TABLE utilisateur(
@@ -147,15 +150,39 @@ VALUES
     mycursor.execute(sql)
 
     sql = ''' 
+    create table adresse (
+        id_adresse int primary key auto_increment,
+        nom varchar(255),
+        rue varchar(255),
+        code_postal varchar(255),
+        ville varchar(255),
+        date_utilisation varchar(255),
+        utilisateur_id INT,
+        valide BOOLEAN DEFAULT TRUE,
+        favori BOOLEAN DEFAULT FALSE,
+        constraint fr_utilisateur_adresse
+                         foreign key (utilisateur_id) references utilisateur(id_utilisateur)
+
+    );'''
+
+    mycursor.execute(sql)
+
+    sql = ''' 
     CREATE TABLE commande(
         id_commande INT PRIMARY KEY AUTO_INCREMENT,
         date_achat DATE,
         utilisateur_id INT,
         etat_id INT,
+        adresse_livraison_id INT,
+        adresse_facturation_id INT,
         constraint fk_utilisateur
             FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id_utilisateur),
         constraint fk_etat
-            FOREIGN KEY (etat_id) REFERENCES etat(id_etat)
+            FOREIGN KEY (etat_id) REFERENCES etat(id_etat),
+        CONSTRAINT fk_adresse_livraison
+            FOREIGN KEY (adresse_livraison_id) REFERENCES adresse(id_adresse),
+        CONSTRAINT fk_adresse_facturation
+            FOREIGN KEY (adresse_facturation_id) REFERENCES adresse(id_adresse)
     );
      '''
     mycursor.execute(sql)
@@ -212,34 +239,7 @@ VALUES
          '''
     mycursor.execute(sql)
 
-    sql = ''' 
-    create table adresse (
-        id_adresse int primary key auto_increment,
-        nom varchar(255),
-        rue varchar(255),
-        code_postal varchar(255),
-        ville varchar(255),
-        date_utilisation varchar(255),
-        utilisateur_id INT,
-        valide BOOLEAN DEFAULT TRUE,
-        favori BOOLEAN DEFAULT FALSE,
-        constraint fr_utilisateur_adresse
-                         foreign key (utilisateur_id) references utilisateur(id_utilisateur)
 
-    );'''
-
-    mycursor.execute(sql)
-
-    sql = '''
-ALTER TABLE commande
-ADD COLUMN adresse_livraison_id INT NULL,
-ADD COLUMN adresse_facturation_id INT NULL,
-ADD CONSTRAINT fk_adresse_livraison
-    FOREIGN KEY (adresse_livraison_id) REFERENCES adresse(id_adresse),
-ADD CONSTRAINT fk_adresse_facturation
-    FOREIGN KEY (adresse_facturation_id) REFERENCES adresse(id_adresse);'''
-
-    mycursor.execute(sql)
 
     sql = ''' CREATE TABLE commentaire (
     id_commentaire INT PRIMARY KEY AUTO_INCREMENT,

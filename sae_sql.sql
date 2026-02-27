@@ -1,11 +1,14 @@
+    DROP TABLE IF EXISTS note;
+    DROP TABLE IF EXISTS commentaire;
     DROP TABLE IF EXISTS ligne_panier;
     DROP TABLE IF EXISTS ligne_commande;
     DROP TABLE IF EXISTS commande;
-    DROP TABLE IF EXISTS utilisateur;
+    DROP TABLE IF EXISTS adresse;
     DROP TABLE IF EXISTS chaussure;
     DROP TABLE IF EXISTS pointure;
     DROP TABLE IF EXISTS type_chaussure;
     DROP TABLE IF EXISTS etat;
+    DROP TABLE IF EXISTS utilisateur;
 
     CREATE TABLE utilisateur(
         id_utilisateur INT PRIMARY KEY AUTO_INCREMENT ,
@@ -16,20 +19,43 @@
         role VARCHAR(20)
     );
 
+    create table adresse (
+    id_adresse int primary key auto_increment,
+    nom varchar(255),
+    rue varchar(255),
+    code_postal varchar(255),
+    ville varchar(255),
+    date_utilisation varchar(255),
+    utilisateur_id INT,
+    valide BOOLEAN DEFAULT TRUE,
+    favori BOOLEAN DEFAULT FALSE,
+    constraint fr_utilisateur_adresse
+                     foreign key (utilisateur_id) references utilisateur(id_utilisateur)
+    );
+
     CREATE TABLE etat(
         id_etat INT PRIMARY KEY AUTO_INCREMENT,
         libelle VARCHAR(20)
     );
+
+
+
 
     CREATE TABLE commande(
         id_commande INT PRIMARY KEY AUTO_INCREMENT,
         date_achat DATE,
         utilisateur_id INT,
         etat_id INT,
+        adresse_livraison_id INT,
+        adresse_facturation_id INT,
         constraint fk_utilisateur
             FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id_utilisateur),
         constraint fk_etat
-            FOREIGN KEY (etat_id) REFERENCES etat(id_etat)
+            FOREIGN KEY (etat_id) REFERENCES etat(id_etat),
+        CONSTRAINT fk_adresse_livraison
+            FOREIGN KEY (adresse_livraison_id) REFERENCES adresse(id_adresse),
+        CONSTRAINT fk_adresse_facturation
+            FOREIGN KEY (adresse_facturation_id) REFERENCES adresse(id_adresse)
     );
 
 
@@ -94,28 +120,9 @@
     );
 
 
-    create table adresse (
-        id_adresse int primary key auto_increment,
-        nom varchar(255),
-        rue varchar(255),
-        code_postal varchar(255),
-        ville varchar(255),
-        date_utilisation varchar(255),
-        utilisateur_id INT,
-        valide BOOLEAN DEFAULT TRUE,
-        favori BOOLEAN DEFAULT FALSE,
-        constraint fr_utilisateur_adresse
-                         foreign key (utilisateur_id) references utilisateur(id_utilisateur)
 
-    );
 
-ALTER TABLE commande
-ADD COLUMN adresse_livraison_id INT NULL,
-ADD COLUMN adresse_facturation_id INT NULL,
-ADD CONSTRAINT fk_adresse_livraison
-    FOREIGN KEY (adresse_livraison_id) REFERENCES adresse(id_adresse),
-ADD CONSTRAINT fk_adresse_facturation
-    FOREIGN KEY (adresse_facturation_id) REFERENCES adresse(id_adresse);
+
 
 CREATE TABLE commentaire (
     id_commentaire INT PRIMARY KEY AUTO_INCREMENT,

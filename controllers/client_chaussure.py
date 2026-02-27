@@ -80,7 +80,8 @@ def client_chaussure_show():                                 # remplace client_i
                 ligne_panier.quantite,
                 ligne_panier.date_ajout,
                 chaussure.prix_chaussure as prix,
-                chaussure.nom_chaussure as nom
+                chaussure.nom_chaussure as nom,
+                chaussure.stock
                 FROM ligne_panier
                 JOIN chaussure
                 ON ligne_panier.chaussure_id = chaussure.id_chaussure

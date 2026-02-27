@@ -88,6 +88,9 @@ def client_coordonnee_add_adresse_valide():
     rue = request.form.get('rue')
     code_postal = request.form.get('code_postal')
     ville = request.form.get('ville')
+    sql = '''INSERT INTO adressse(nom,rue,code_postal, ville, utilisateur_id) VALUES (%s,%s,%s,%s,%s)'''
+    mycursor.execute(sql, (nom, rue, code_postal, ville, id_client))
+    get_db().commit()
     return redirect('/client/coordonnee/show')
 
 @client_coordonnee.route('/client/coordonnee/edit_adresse')
