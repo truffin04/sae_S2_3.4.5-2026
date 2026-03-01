@@ -44,7 +44,6 @@ def client_panier_add():
 # ajout dans le panier d'un chaussure
 
     quantite=int(quantite)
-    print(quantite,' ',50*'zozozoz')
     sql='''SELECT * FROM ligne_panier
             WHERE ligne_panier.utilisateur_id=%s
             AND ligne_panier.chaussure_id=%s'''
@@ -69,7 +68,7 @@ def client_panier_add():
                 (%s,%s,%s,%s);'''
         mycursor.execute(sql, tuple_param)
     else:
-        flash("la quantité doit être supérieure à 0")
+        flash("la quantité doit être supérieure à 0", 'alert-warning')
         return redirect('/client/chaussure/show')
     tuple_param=(quantite, id_chaussure)
     mycursor.execute(sql2,tuple_param)
