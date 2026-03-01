@@ -17,7 +17,17 @@ admin_chaussure = Blueprint('admin_chaussure', __name__,
 @admin_chaussure.route('/admin/chaussure/show')
 def show_chaussure():
     mycursor = get_db().cursor()
-    sql = '''  requête admin_chaussure_1
+    sql = '''   SELECT chaussure.id_chaussure,
+                chaussure.nom_chaussure as nom,
+                type_chaussure.libelle_type_chaussure as libelle,
+                chaussure.type_chaussure_id,
+                chaussure.prix_chaussure as prix,
+                chaussure.stock,
+                chaussure.photo as image
+                FROM chaussure
+                JOIN type_chaussure
+                on chaussure.type_chaussure_id=type_chaussure.id_type_chaussure
+                
     '''
     mycursor.execute(sql)
     chaussures = mycursor.fetchall()
