@@ -36,15 +36,22 @@ types_chaussure : tableau de dictionnaires
                     </label>                                         {# à modifier #}
 {#                https://blog.miguelgrinberg.com/post/handling-file-uploads-with-flask#}
 
-                <label for="type_chaussure_id">Type de l'chaussure :
+                <label for="type_chaussure_id">Type de chaussure :
                     <select name="type_chaussure_id" class="form-select">
                             {% for type in types_chaussure %}
                                  <option value="{{ type.id_type_chaussure }}" {% if type.id_type_chaussure == chaussure.type_chaussure_id %} selected {% endif %}> {{ type.libelle }}</option>
                             {% endfor %}
                         </select>
                     </label>
+
+                    <label for="stock"> Stock de la chaussure
+
+                        <input  type="number" name="stock" value="{{ chaussure.stock }}" class="form-control">
+
+                    </label>
+
                     <label for="description">Description :
-                        <input name="description" type="text" value="{{ chaussure.description }}" class="form-control">
+                        <input name="description" type="text" value="{% if chaussure.description %}{{ chaussure.description}}{% else %}{% endif %}" class="form-control">
                     </label>
                     <button class="btn btn-primary mt-2">
                                 Modifier

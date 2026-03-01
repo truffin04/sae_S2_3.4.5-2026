@@ -20,9 +20,9 @@
                     <input name="image" type="file" onchange="loadFile(event)"   class="form-control">
                 </label>
 
-                <label for="type_chaussure_id">Type de l'chaussure :
+                <label for="type_chaussure_id">Type de chaussure :
                     <select name="type_chaussure_id" required class="form-select">
-                        <option value="">Sélectionner un type d'chaussure</option>
+                        <option value="">Sélectionner un type de chaussure</option>
                         {% for type in types_chaussure %}
                              <option value="{{ type.id_type_chaussure }}"> {{ type.libelle }}</option>
                         {% endfor %}
@@ -30,6 +30,9 @@
                 </label>
                 <label for="description">description :
                     <input name="description" type="text" class="form-control" >
+                </label>
+                <label for="stock">stock :
+                    <input name="stock" type="number" class="form-control" min="0">
                 </label>
                 <label for="submit">
                     <input name="submit" type="submit" value="Ajouter" class="btn btn-primary mt-2">
