@@ -192,7 +192,7 @@ def valid_edit_chaussure():
                 chaussure.prix_chaussure = %s ,
                 chaussure.type_chaussure_id = %s ,
                 chaussure.description = %s,
-                chaussure.stock = %s 
+                chaussure.stock = %s
                 WHERE chaussure.id_chaussure = %s'''
     mycursor.execute(sql, (nom, image_nom, prix, type_chaussure_id, description,stock, id_chaussure))
 
