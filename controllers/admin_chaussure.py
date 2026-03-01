@@ -89,9 +89,9 @@ def valid_add_chaussure():
     mycursor.execute(sql, tuple_add)
     get_db().commit()
 
-    print(u'chaussure ajouté , nom: ', nom, ' - type_chaussure:', type_chaussure_id, ' - prix : ', prix,
+    print(u'chaussure ajouté , nom: ', nom, ' - type_chaussure:', type_chaussure_id, ' - prix:', prix,
           ' - description:', description, ' - image:', image)
-    message = u'chaussure ajouté , nom:' + nom + '- type_chaussure:' + type_chaussure_id + ' - pointure id : ' + pointure_id + ' - prix:' + prix + ' - description:' + description  + ' - stock : '+stock+ ' - image:' + str(
+    message = u'chaussure ajouté , nom:' + nom + '- type_chaussure:' + type_chaussure_id + ' - pointure id:' + pointure_id + ' - prix:' + prix + ' - description:' + description  + ' - stock:'+stock+ ' - image:' + str(
         image)
     flash(message, 'alert-success')
     return redirect('/admin/chaussure/show')
@@ -231,7 +231,7 @@ def valid_edit_chaussure():
     if image_nom is None:
         image_nom = ''
 
-    message = u'chaussure modifié , nom:' + nom + '- type_chaussure :' + type_chaussure_id + ' - pointure id : '+ pointure_id+  ' - prix : ' + prix  + ' - image:' + image_nom + ' - description: ' + description + ' - stock : '+stock
+    message = u'chaussure modifié , nom:' + nom + '- type_chaussure:' + type_chaussure_id + ' - pointure id:'+ pointure_id+  ' - prix:' + prix  + ' - image:' + image_nom + ' - description:' + description + ' - stock:'+stock
     flash(message, 'alert-success')
     return redirect('/admin/chaussure/show')
 
