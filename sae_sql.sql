@@ -46,8 +46,8 @@
         date_achat DATE,
         utilisateur_id INT,
         etat_id INT,
-        adresse_livraison_id INT NOT NULL,
-        adresse_facturation_id INT NOT NULL,
+        adresse_livraison_id INT,
+        adresse_facturation_id INT,
         constraint fk_utilisateur
             FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id_utilisateur),
         constraint fk_etat
