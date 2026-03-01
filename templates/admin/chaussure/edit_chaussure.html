@@ -36,10 +36,22 @@ types_chaussure : tableau de dictionnaires
                     </label>                                         {# à modifier #}
 {#                https://blog.miguelgrinberg.com/post/handling-file-uploads-with-flask#}
 
+                <!-- element temporaire pour modifier la pointure de la chaussure -->
+
                 <label for="type_chaussure_id">Type de chaussure :
                     <select name="type_chaussure_id" class="form-select">
                             {% for type in types_chaussure %}
                                  <option value="{{ type.id_type_chaussure }}" {% if type.id_type_chaussure == chaussure.type_chaussure_id %} selected {% endif %}> {{ type.libelle }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+
+                <!-- element temporaire pour modifier la pointure de la chaussure -->
+
+                <label for="pointure_id">Pointure de la chaussure:
+                    <select name="pointure_id" class="form-select">
+                            {% for pointure in pointures %}
+                                 <option value="{{ pointure.id_pointure }}" {% if pointure.id_pointure == chaussure.pointure_id %} selected {% endif %}> {{ pointure.libelle_pointure }}</option>
                             {% endfor %}
                         </select>
                     </label>

@@ -44,8 +44,19 @@ def add_chaussure():
     mycursor.execute(sql)
     type_chaussure = mycursor.fetchall()
 
+    # pointures ================================
+
+    sql=''' SELECT pointure.id_pointure,
+            pointure.libelle_pointure FROM pointure'''
+    mycursor.execute(sql)
+    pointures = mycursor.fetchall()
+
+    #===========================================
+
+
     return render_template('admin/chaussure/add_chaussure.html'
                            ,types_chaussure=type_chaussure,
+                           pointures=pointures,
                            #,couleurs=colors
                            #,tailles=tailles
                             )
@@ -57,6 +68,7 @@ def valid_add_chaussure():
 
     nom = request.form.get('nom', '')
     type_chaussure_id = request.form.get('type_chaussure_id', '')
+    pointure_id = request.form.get('pointure_id', '')
     prix = request.form.get('prix', '')
     description = request.form.get('description', '')
     image = request.files.get('image', '')
@@ -69,17 +81,17 @@ def valid_add_chaussure():
         print("erreur")
         filename=None
 
-    sql = '''   INSERT INTO chaussure(nom_chaussure, photo, prix_chaussure,  type_chaussure_id, stock, description)
-                VALUES (%s,%s,%s,%s,%s,%s)'''
+    sql = '''   INSERT INTO chaussure(nom_chaussure, photo, prix_chaussure,  type_chaussure_id, pointure_id, stock, description)
+                VALUES (%s,%s,%s,%s,%s,%s,%s)'''
 
-    tuple_add = (nom, filename, prix, type_chaussure_id, stock, description)
+    tuple_add = (nom, filename, prix, type_chaussure_id,pointure_id, stock, description)
     print(tuple_add)
     mycursor.execute(sql, tuple_add)
     get_db().commit()
 
-    print(u'chaussure ajouté , nom: ', nom, ' - type_chaussure:', type_chaussure_id, ' - prix:', prix,
+    print(u'chaussure ajouté , nom: ', nom, ' - type_chaussure:', type_chaussure_id, ' - prix : ', prix,
           ' - description:', description, ' - image:', image)
-    message = u'chaussure ajouté , nom:' + nom + '- type_chaussure:' + type_chaussure_id + ' - prix:' + prix + ' - description:' + description  + ' - stock : '+stock+ ' - image:' + str(
+    message = u'chaussure ajouté , nom:' + nom + '- type_chaussure:' + type_chaussure_id + ' - pointure id : ' + pointure_id + ' - prix:' + prix + ' - description:' + description  + ' - stock : '+stock+ ' - image:' + str(
         image)
     flash(message, 'alert-success')
     return redirect('/admin/chaussure/show')
@@ -125,6 +137,7 @@ def edit_chaussure():
                 type_chaussure.libelle_type_chaussure as libelle,
                 chaussure.type_chaussure_id,
                 chaussure.prix_chaussure as prix,
+                chaussure.pointure_id,
                 chaussure.stock,
                 chaussure.photo as image,
                 chaussure.description
@@ -145,6 +158,19 @@ def edit_chaussure():
     mycursor.execute(sql)
     types_chaussure = mycursor.fetchall()
 
+
+    # pointures ================================
+
+    sql=''' SELECT pointure.id_pointure,
+            pointure.libelle_pointure FROM pointure'''
+    mycursor.execute(sql)
+    pointures = mycursor.fetchall()
+
+    #============================================
+
+
+
+
     # sql = '''
     # requête admin_chaussure_6
     # '''
@@ -153,7 +179,8 @@ def edit_chaussure():
 
     return render_template('admin/chaussure/edit_chaussure.html'
                            ,chaussure=chaussure
-                           ,types_chaussure=types_chaussure
+                           ,types_chaussure=types_chaussure,
+                           pointures=pointures
                          #  ,declinaisons_chaussure=declinaisons_chaussure
                            )
 
@@ -165,6 +192,9 @@ def valid_edit_chaussure():
     id_chaussure = request.form.get('id_chaussure')
     image = request.files.get('image', '')
     type_chaussure_id = request.form.get('type_chaussure_id', '')
+
+    pointure_id = request.form.get('pointure_id', '')
+
     prix = request.form.get('prix', '')
     stock = request.form.get('stock', '')
     description = request.form.get('description')
@@ -191,16 +221,17 @@ def valid_edit_chaussure():
                 chaussure.photo = %s ,
                 chaussure.prix_chaussure = %s ,
                 chaussure.type_chaussure_id = %s ,
+                chaussure.pointure_id = %s ,
                 chaussure.description = %s,
                 chaussure.stock = %s
                 WHERE chaussure.id_chaussure = %s'''
-    mycursor.execute(sql, (nom, image_nom, prix, type_chaussure_id, description,stock, id_chaussure))
+    mycursor.execute(sql, (nom, image_nom, prix, type_chaussure_id, pointure_id, description,stock, id_chaussure))
 
     get_db().commit()
     if image_nom is None:
         image_nom = ''
 
-    message = u'chaussure modifié , nom:' + nom + '- type_chaussure :' + type_chaussure_id + ' - prix:' + prix  + ' - image:' + image_nom + ' - description: ' + description + ' - stock : '+stock
+    message = u'chaussure modifié , nom:' + nom + '- type_chaussure :' + type_chaussure_id + ' - pointure id : '+ pointure_id+  ' - prix : ' + prix  + ' - image:' + image_nom + ' - description: ' + description + ' - stock : '+stock
     flash(message, 'alert-success')
     return redirect('/admin/chaussure/show')
 

@@ -46,8 +46,8 @@
         date_achat DATE,
         utilisateur_id INT,
         etat_id INT,
-        adresse_livraison_id INT,
-        adresse_facturation_id INT,
+        adresse_livraison_id INT NOT NULL,
+        adresse_facturation_id INT NOT NULL,
         constraint fk_utilisateur
             FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id_utilisateur),
         constraint fk_etat
@@ -81,8 +81,8 @@
         sexe VARCHAR(8),
         entretien VARCHAR(20),
         prix_chaussure NUMERIC(10,2),
-        pointure_id INT,
-        type_chaussure_id INT,
+        pointure_id INT NOT NULL,
+        type_chaussure_id INT NOT NULL,
         fournisseur VARCHAR(100),
         marque VARCHAR(30),
         photo VARCHAR(256),
@@ -95,8 +95,8 @@
     );
 
     CREATE TABLE ligne_commande(
-        commande_id INT,
-        chaussure_id INT,
+        commande_id INT NOT NULL,
+        chaussure_id INT NOT NULL,
         prix NUMERIC(10,2),
         quantite INT,
         constraint fk_commande
@@ -108,8 +108,8 @@
     );
 
     CREATE TABLE ligne_panier(
-        utilisateur_id INT,
-        chaussure_id INT,
+        utilisateur_id INT NOT NULL,
+        chaussure_id INT NOT NULL,
         quantite INT,
         date_ajout date,
         constraint fk_utilisateur_panier

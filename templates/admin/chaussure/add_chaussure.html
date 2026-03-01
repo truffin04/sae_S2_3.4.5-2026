@@ -28,6 +28,18 @@
                         {% endfor %}
                     </select>
                 </label>
+
+                <!--===============pointures ================================-->
+                <label for="pointure_id">Type de chaussure :
+                    <select name="pointure_id" required class="form-select">
+                        <option value="">Sélectionner une pointure</option>
+                        {% for pointure in pointures %}
+                             <option value="{{ pointure.id_pointure}}"> {{ pointure.libelle_pointure }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+            <!--================================================================-->
                 <label for="description">description :
                     <input name="description" type="text" class="form-control" >
                 </label>
