@@ -117,9 +117,12 @@ def client_commande_show():
         sql = ''' SELECT chaussure.nom_chaussure as nom, ligne_commande.quantite, ligne_commande.prix, ligne_commande.quantite * ligne_commande.prix as prix_ligne
                 FROM ligne_commande
                 JOIN chaussure ON ligne_commande.chaussure_id = chaussure.id_chaussure
+                JOIN commande ON ligne_commande.commande_id = commande.id_commande
                 WHERE ligne_commande.commande_id = %s
+                AND commande.utilisateur_id = %s
+            
         '''
-        mycursor.execute(sql, (id_commande,))
+        mycursor.execute(sql, (id_commande,id_client))
         chaussures_commande = mycursor.fetchall()
 
         # partie 2 : selection de l'adresse de livraison et de facturation de la commande selectionnée
