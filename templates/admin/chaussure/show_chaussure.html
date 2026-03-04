@@ -31,7 +31,7 @@ chaussures (tableau de dictionnaires)
            <tr>
                   <td>{{ ligne.nom }}</td>
                   <td>{{ ligne.id_chaussure }}</td>
-                  <td><span style="color: red">{{ ligne.libelle }}</span> ({{ ligne.type_chaussure_id }})</td>
+                  <td><span style="color: red">{{ ligne.libelle }}</span> ({{ ligne.type_chaussure_id }}) - <span style="color: red">{{ ligne.libelle_pointure }}</span> ({{ ligne.pointure_id }})</td>
                   <td>{#{ ligne.prix }#}  {{  "{:,.2f} €".format(ligne.prix) }}</td>
                   <td>
                   {% if ligne.stock is defined %}

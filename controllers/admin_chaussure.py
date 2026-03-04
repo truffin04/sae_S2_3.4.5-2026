@@ -20,6 +20,8 @@ def show_chaussure():
     sql = '''   SELECT chaussure.id_chaussure,
                 chaussure.nom_chaussure as nom,
                 type_chaussure.libelle_type_chaussure as libelle,
+                chaussure.pointure_id,
+                pointure.libelle_pointure as  libelle_pointure,
                 chaussure.type_chaussure_id,
                 chaussure.prix_chaussure as prix,
                 chaussure.stock,
@@ -27,6 +29,8 @@ def show_chaussure():
                 FROM chaussure
                 JOIN type_chaussure
                 on chaussure.type_chaussure_id=type_chaussure.id_type_chaussure
+                JOIN pointure 
+                ON chaussure.pointure_id=pointure.id_pointure
                 
     '''
     mycursor.execute(sql)
