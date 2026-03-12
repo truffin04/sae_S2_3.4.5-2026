@@ -173,7 +173,7 @@
     ('40', 40), ('41', 41), ('42', 42), ('43', 43), ('44', 44), ('45', 45);
 
     INSERT INTO couleur (libelle, code_couleur) VALUES
-    ('couleur unique', 0)('violet', 2), ('blanc', 3), ('rose', 4), ('marron', 5),
+    ('couleur unique', 0),('violet', 2), ('blanc', 3), ('rose', 4), ('marron', 5),
     ('brun', 6), ('noir', 7), ('rouge', 8), ('bleu', 9), ('orange', 10);
 
     INSERT INTO type_chaussure (libelle_type_chaussure) VALUES
@@ -290,7 +290,6 @@
         nom_chaussure VARCHAR(64),
         sexe VARCHAR(8),
         entretien VARCHAR(20),
-        disponible BOOLEAN,
         prix_chaussure NUMERIC(10,2),
         DISPONIBLE BOOLEAN DEFAULT TRUE,
         type_chaussure_id INT NOT NULL,
@@ -461,8 +460,8 @@
     INSERT INTO commande (date_achat, utilisateur_id, etat_id) VALUES
     ('2024-01-10', 2, 1),
     ('2024-01-12', 2, 3),
-    ('2024-01-15', 3, 2),
-    ('2024-01-20', 3, 4);
+    ('2024-01-15', 1, 2),
+    ('2024-01-20', 1, 4);
 
     -- chaussure_id remplacé par declinaison_chaussure_id
     INSERT INTO ligne_commande (commande_id, declinaison_chaussure_id, prix, quantite) VALUES
@@ -476,23 +475,15 @@
 
     -- idem pour ligne_panier
     INSERT INTO ligne_panier (utilisateur_id, declinaison_chaussure_id, quantite, date_ajout) VALUES
-    (2, 3, 1, '2024-02-01'),
-    (2, 5, 2, '2024-02-02'),
-    (3, 7, 1, '2024-02-03');
+    (1, 3, 1, '2024-02-01'),
+    (1, 5, 2, '2024-02-02'),
+    (2, 7, 1, '2024-02-03');
 
 
-SELECT
-              chaussure.id_chaussure,
-              chaussure.nom_chaussure as nom,
-              chaussure.sexe,
-              chaussure.entretien,
-              chaussure.prix_chaussure as prix,
-              chaussure.type_chaussure_id,
-              chaussure.fournisseur,
-              chaussure.marque,
-              chaussure.photo as image,
-              SUM(declinaison_chaussure.stock) as stock
-     FROM chaussure
-    JOIN declinaison_chaussure
-    ON chaussure.id_chaussure = declinaison_chaussure.chausssure_id
-    GROUP BY id_chaussure,nom_chaussure,sexe,entretien,prix_chaussure,type_chaussure_id,fournisseur,marque,photo
+SELECT SUM(ligne_panier.quantite*chaussure.prix_chaussure) as prix_total
+FROM ligne_panier
+JOIN declinaison_chaussure
+ON ligne_panier.declinaison_chaussure_id = declinaison_chaussure.id_declinaison_chaussure
+JOIN chaussure
+ON declinaison_chaussure.chausssure_id = chaussure.id_chaussure
+WHERE ligne_panier.utilisateur_id=

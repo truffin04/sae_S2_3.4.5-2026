@@ -15,17 +15,20 @@ def client_chaussure_show():                                 # remplace client_i
     id_client = session['id_user']
     sql = '''
           SELECT
-              chaussure.id_chaussure,
-              chaussure.nom_chaussure as nom, 
-              chaussure.sexe,
-              chaussure.entretien,
-              chaussure.prix_chaussure as prix,
-              chaussure.type_chaussure_id,
-              chaussure.fournisseur,
-              chaussure.marque,
-              chaussure.photo as image,
-              chaussure.stock
-     FROM chaussure'''
+            chaussure.id_chaussure,
+            chaussure.nom_chaussure as nom,
+            chaussure.sexe,
+            chaussure.entretien,
+            chaussure.prix_chaussure as prix,
+            chaussure.type_chaussure_id,
+            chaussure.fournisseur,
+            chaussure.marque,
+            chaussure.photo as image,
+            SUM(declinaison_chaussure.stock) as stock
+            FROM chaussure
+            JOIN declinaison_chaussure
+            ON chaussure.id_chaussure = declinaison_chaussure.chausssure_id
+            GROUP BY id_chaussure,nom_chaussure,sexe,entretien,prix_chaussure,type_chaussure_id,fournisseur,marque,photo'''
 
 
     # utilisation du filtre
@@ -75,28 +78,35 @@ def client_chaussure_show():                                 # remplace client_i
     mycursor.execute(sql)
     types_chaussure = mycursor.fetchall()
 
-    sql='''SELECT ligne_panier.utilisateur_id,
-                ligne_panier.chaussure_id as id_chaussure,
-                ligne_panier.quantite,
-                ligne_panier.date_ajout,
-                chaussure.prix_chaussure as prix,
-                chaussure.nom_chaussure as nom,
-                chaussure.stock
-                FROM ligne_panier
-                JOIN chaussure
-                ON ligne_panier.chaussure_id = chaussure.id_chaussure
-                WHERE ligne_panier.utilisateur_id=%s;'''
+    sql=''' SELECT ligne_panier.utilisateur_id,
+            ligne_panier.declinaison_chaussure_id,
+            ligne_panier.quantite,
+            ligne_panier.date_ajout,
+            chaussure.prix_chaussure as prix,
+            chaussure.nom_chaussure as nom,
+            SUM(declinaison_chaussure.stock) as stock
+            FROM ligne_panier
+            JOIN declinaison_chaussure
+            ON ligne_panier.declinaison_chaussure_id = declinaison_chaussure.id_declinaison_chaussure
+            JOIN chaussure
+            ON declinaison_chaussure.chausssure_id = chaussure.id_chaussure
+            WHERE ligne_panier.utilisateur_id=%s
+            GROUP BY ligne_panier.utilisateur_id,declinaison_chaussure_id,quantite,date_ajout
+            '''
 
     mycursor.execute(sql,(id_client,))
     chaussures_panier = mycursor.fetchall()
 
 
     if len(chaussures_panier) >= 1:
-        sql = ''' SELECT SUM(ligne_panier.quantite*chaussure.prix_chaussure) as prix_total
-           FROM ligne_panier
-            JOIN chaussure
-            ON ligne_panier.chaussure_id=chaussure.id_chaussure
-            WHERE ligne_panier.utilisateur_id=%s;'''
+        sql='''SELECT SUM(ligne_panier.quantite*chaussure.prix_chaussure) as prix_total
+                FROM ligne_panier
+                JOIN declinaison_chaussure
+                ON ligne_panier.declinaison_chaussure_id = declinaison_chaussure.id_declinaison_chaussure
+                JOIN chaussure
+                ON declinaison_chaussure.chausssure_id = chaussure.id_chaussure
+                WHERE ligne_panier.utilisateur_id=%s'''
+        print(str.format(sql,id_client))
         mycursor.execute(sql,(id_client,))
 
         prix_total = mycursor.fetchone()["prix_total"]
