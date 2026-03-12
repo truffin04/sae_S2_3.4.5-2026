@@ -28,7 +28,7 @@ def client_chaussure_show():                                 # remplace client_i
             FROM chaussure
             JOIN declinaison_chaussure
             ON chaussure.id_chaussure = declinaison_chaussure.chausssure_id
-            GROUP BY id_chaussure,nom_chaussure,sexe,entretien,prix_chaussure,type_chaussure_id,fournisseur,marque,photo'''
+            '''
 
 
     # utilisation du filtre
@@ -62,13 +62,14 @@ def client_chaussure_show():                                 # remplace client_i
 
 
     print(tuple(list_param))
-
+    sql=sql+''' GROUP BY id_chaussure,nom_chaussure,sexe,entretien,prix_chaussure,type_chaussure_id,fournisseur,marque,photo'''
+    print(sql)
 
     mycursor.execute(sql, tuple(list_param))
     chaussures = mycursor.fetchall()
 
 
-    sql3=''' SELECT chaussure'''
+
     # chaussures =[]
 
 
