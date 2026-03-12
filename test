@@ -1,0 +1,66 @@
+9f73db3 ajout pointure à la chaussure
+7c37b42 correction bug
+8ae00c3 dernieres corrections
+7da00be ajouts finaux
+c137458 petite correction
+2bc8eea ajout gestion pointure chaussure admin
+87ff116 correction bug adresse
+ece9299 petites corrections
+0545ada ajout visualisation du stock
+d06986f ajout visualisation des chaussurs
+729a5a4 avancement coordonnées
+1d10aa0 change gritignore
+d7bcae3 merge
+d16b6e2 Merge branch 'main' of https://github.com/truffin04/sae_S2_3.4.5-2026
+7a21fcb ajoute table dans le init
+44c823a Delete controllers/__pycache__ directory
+f29f442 Delete __pycache__ directory
+20a9104 Update .gitignore
+95986e4 ajoute details chaussure
+d599e93 Merge branch 'main' of https://github.com/truffin04/sae_S2_3.4.5-2026
+4d9b44c ajout des truc pycaches dans le gritignore
+376cf1c ajout du detail des commandes client et correction d'un mauvais calcul du prix total
+ac65d5f Merge branch 'main' of https://github.com/truffin04/sae_S2_3.4.5-2026
+c8daa73 modif pour que admin voir et accept les commandes
+2c2d455 correction stock panier
+416c2f0 ajout du sql dans client_commande.py
+1e82351 ajoute table adresse + alter table
+2309d12 modification client peux mtn voir ses info
+4b86cc8 modif table adresse
+ceb290f ajout table adreese dans le sql
+5479dfa modif admin commande.py
+bf91420 modif requete sql admin commande
+b1e52a9 Merge branch 'main' of https://github.com/truffin04/sae_S2_3.4.5-2026
+ec86fa0 correction sql
+5166bc8 ajout mise a jour stock chausssure quand on met dans le panier
+a21015b ajoute nom layout
+f7ab9d1 Merge branch 'main' of https://github.com/truffin04/sae_S2_3.4.5-2026
+52d5b88 changement du nom dans le init
+4bd8058 ajout nom au init
+13714ca Merge branch 'main' of https://github.com/truffin04/sae_S2_3.4.5-2026
+bc32f4c changement gritignore
+54c7cb0 ajout de add panier
+d7295b1 ajout de pouvoir ajouter au panier mais sans verification de la quantite
+9bf55dd ajout filtre
+6b2bd45 changement de la connexion
+6780d80 affichage des types chaussure
+26213db modification de la dernière ligne du app.py pour faire fonctionner l'hébergement railway
+05a7c17 Ajout du requirements.txt et des librairies pour Railway
+543c387 Merge branch 'main' of https://github.com/truffin04/sae_S2_3.4.5-2026
+58c3333 affichage articles bien et init aussi
+568725e affichage articles bien et init aussi
+63a69f5 affichage articles
+d399a43 affichage articles
+d06a360 changement nom sql
+970f05d ajout insert dans sql
+8c5ad85 ajout sql à la racine
+cb8565e changement main
+8c9b554 changement branche 2
+3156b1c changement article par chaussure
+3a12dbe route init ajoutée
+69d58b4 changement technique de recuperations des var d'envir.
+0a21a77 ajout du code pour récuperer les variables d'environment
+074578a ajout du .env et du gritignore
+3c7d825 ajout fichiers
+a565c3b mise à jour du README.md
+bf00ce4 Initial commit
