@@ -173,6 +173,7 @@ def fct_fixtures_load():
             type_chaussure_id INT NOT NULL,
             fournisseur VARCHAR(100),
             marque VARCHAR(30),
+            disponible BOOLEAN DEFAULT TRUE,
             photo VARCHAR(256),
             descrption TEXT,
             CONSTRAINT fk_type_chaussure

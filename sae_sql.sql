@@ -290,7 +290,9 @@
         nom_chaussure VARCHAR(64),
         sexe VARCHAR(8),
         entretien VARCHAR(20),
+        disponible BOOLEAN,
         prix_chaussure NUMERIC(10,2),
+        DISPONIBLE BOOLEAN DEFAULT TRUE,
         type_chaussure_id INT NOT NULL,
         fournisseur VARCHAR(100),
         marque VARCHAR(30),
@@ -479,3 +481,18 @@
     (3, 7, 1, '2024-02-03');
 
 
+SELECT
+              chaussure.id_chaussure,
+              chaussure.nom_chaussure as nom,
+              chaussure.sexe,
+              chaussure.entretien,
+              chaussure.prix_chaussure as prix,
+              chaussure.type_chaussure_id,
+              chaussure.fournisseur,
+              chaussure.marque,
+              chaussure.photo as image,
+              SUM(declinaison_chaussure.stock) as stock
+     FROM chaussure
+    JOIN declinaison_chaussure
+    ON chaussure.id_chaussure = declinaison_chaussure.chausssure_id
+    GROUP BY id_chaussure,nom_chaussure,sexe,entretien,prix_chaussure,type_chaussure_id,fournisseur,marque,photo
