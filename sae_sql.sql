@@ -427,15 +427,15 @@
     (14, 249.99, 8, 1, 1), -- rouge
 
     -- Classique brune (id 9) - taille ET couleur unique
-    (25, 290.99, 9, 1, 5), -- brun
+    (25, 290.99, 9, 1, 1), -- brun
 
     -- Classique marron (id 10) - taille ET couleur unique
-    (18, 229.99, 10, 1, 4), -- marron
+    (18, 229.99, 10, 1, 1), -- marron
 
     -- Ville noire (id 11) - plusieurs COULEURS, taille unique
-    (12, 98.99, 11, 1, 6),  -- noir
-    (8,  98.99, 11, 1, 8),  -- bleu
-    (5,  98.99, 11, 1, 4),  -- marron
+    (12, 98.99, 11, 1, 1),  -- noir
+    (8,  98.99, 11, 1, 1),  -- bleu
+    (5,  98.99, 11, 1, 1),  -- marron
 
     -- Rando rose (id 12) - plusieurs TAILLES, couleur unique
     (26, 99.99, 12, 3, 3),  -- taille 37, rose
@@ -480,10 +480,30 @@
     (2, 7, 1, '2024-02-03');
 
 
-SELECT SUM(ligne_panier.quantite*chaussure.prix_chaussure) as prix_total
-FROM ligne_panier
-JOIN declinaison_chaussure
-ON ligne_panier.declinaison_chaussure_id = declinaison_chaussure.id_declinaison_chaussure
-JOIN chaussure
-ON declinaison_chaussure.chausssure_id = chaussure.id_chaussure
-WHERE ligne_panier.utilisateur_id=
+SELECT declinaison_chaussure.id_declinaison_chaussure,
+       declinaison_chaussure.taille_id as id_taille,
+       taille.libelle,
+       declinaison_chaussure.couleur_id as id_couleur,
+       couleur.libelle
+FROM declinaison_chaussure
+JOIN taille
+ON declinaison_chaussure.taille_id = taille.id_taille
+JOIN couleur
+ON declinaison_chaussure.couleur_id = couleur.id_couleur
+
+          SELECT
+            chaussure.id_chaussure,
+            chaussure.nom_chaussure as nom,
+            chaussure.sexe,
+            chaussure.entretien,
+            chaussure.prix_chaussure as prix,
+            chaussure.type_chaussure_id,
+            chaussure.fournisseur,
+            chaussure.marque,
+            chaussure.photo as image,
+            SUM(declinaison_chaussure.stock) as stock,
+            COUNT(declinaison_chaussure.id_declinaison_chaussure) as nb_declinaisons
+            FROM chaussure
+            JOIN declinaison_chaussure
+            ON chaussure.id_chaussure = declinaison_chaussure.chausssure_id
+            GROUP BY id_chaussure,nom_chaussure,sexe,entretien,prix_chaussure,type_chaussure_id,fournisseur,marque,photo

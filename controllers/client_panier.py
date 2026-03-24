@@ -23,7 +23,16 @@ def client_panier_add():
     id_declinaison_chaussure = 1
 
 # ajout dans le panier d'une déclinaison d'un chaussure (si 1 declinaison : immédiat sinon => vu pour faire un choix
-    # sql = '''    '''
+    # sql = ''' SELECT declinaison_chaussure.id_declinaison_chaussure,
+    #        declinaison_chaussure.taille_id as id_taille,
+    #        taille.libelle,
+    #        declinaison_chaussure.couleur_id as id_couleur,
+    #        couleur.libelle
+    # FROM declinaison_chaussure
+    # JOIN taille
+    # ON declinaison_chaussure.taille_id = taille.id_taille
+    # JOIN couleur
+    # ON declinaison_chaussure.couleur_id = couleur.id_couleur''
     # mycursor.execute(sql, (id_chaussure))
     # declinaisons = mycursor.fetchall()
     # if len(declinaisons) == 1:

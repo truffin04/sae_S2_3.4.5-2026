@@ -24,7 +24,8 @@ def client_chaussure_show():                                 # remplace client_i
             chaussure.fournisseur,
             chaussure.marque,
             chaussure.photo as image,
-            SUM(declinaison_chaussure.stock) as stock
+            SUM(declinaison_chaussure.stock) as stock,
+            COUNT(declinaison_chaussure.id_declinaison_chaussure) as nb_declinaison
             FROM chaussure
             JOIN declinaison_chaussure
             ON chaussure.id_chaussure = declinaison_chaussure.chausssure_id

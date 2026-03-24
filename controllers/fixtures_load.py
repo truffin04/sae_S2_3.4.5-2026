@@ -221,19 +221,19 @@ def fct_fixtures_load():
     # taille_id  : 1=taille unique, 2=35, 3=36, 4=37, 5=38, 6=39, 7=40, 8=41, ...
     sql = '''
         INSERT INTO declinaison_chaussure (stock, prix_declinaison, chausssure_id, taille_id, couleur_id) VALUES
-        (50, 79.99,  1, 1, 2),   -- Basket violette        : taille unique, violet
-        (5,  49.99,  2, 1, 7),   -- Basket Adidas          : taille unique, noir
-        (6,  99.99,  3, 1, 3),   -- Basket unisexe         : taille unique, blanc
-        (4,  74.99,  4, 1, 4),   -- Basket rose            : taille unique, rose
-        (7,  64.99,  5, 1, 5),   -- Botte marron           : taille unique, marron
-        (3,  74.99,  6, 1, 6),   -- Botte brune            : taille unique, brun
-        (9,  566.99, 7, 1, 7),   -- Classique noire        : taille unique, noir
-        (14, 249.99, 8, 1, 8),   -- Classique rouge        : taille unique, rouge
-        (25, 290.99, 9, 1, 6),   -- Classique brune        : taille unique, brun
-        (18, 229.99, 10, 1, 5),  -- Classique marron       : taille unique, marron
-        (12, 98.99,  11, 1, 7),  -- Ville noire            : taille unique, noir
-        (8,  98.99,  11, 1, 9),  -- Ville noire            : taille unique, bleu
-        (5,  98.99,  11, 1, 5),  -- Ville noire            : taille unique, marron
+        (50, 79.99,  1, 1, 1),   -- Basket violette        : taille unique, violet
+        (5,  49.99,  2, 1, 1),   -- Basket Adidas          : taille unique, noir
+        (6,  99.99,  3, 1, 1),   -- Basket unisexe         : taille unique, blanc
+        (4,  74.99,  4, 1, 1),   -- Basket rose            : taille unique, rose
+        (7,  64.99,  5, 1, 1),   -- Botte marron           : taille unique, marron
+        (3,  74.99,  6, 1, 1),   -- Botte brune            : taille unique, brun
+        (9,  566.99, 7, 1, 1),   -- Classique noire        : taille unique, noir
+        (14, 249.99, 8, 1, 1),   -- Classique rouge        : taille unique, rouge
+        (25, 290.99, 9, 1, 1),   -- Classique brune        : taille unique, brun
+        (18, 229.99, 10, 1, 1),  -- Classique marron       : taille unique, marron
+        (12, 98.99,  11, 1, 1),  -- Ville noire            : taille unique, noir
+        (8,  98.99,  11, 1, 1),  -- Ville noire            : taille unique, bleu
+        (5,  98.99,  11, 1, 1),  -- Ville noire            : taille unique, marron
         (26, 99.99,  12, 4, 1),  -- Rando rose taille 37   : couleur unique
         (14, 99.99,  12, 5, 1),  -- Rando rose taille 38   : couleur unique
         (8,  99.99,  12, 6, 1),  -- Rando rose taille 39   : couleur unique
