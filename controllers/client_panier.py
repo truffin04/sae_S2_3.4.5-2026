@@ -4,6 +4,7 @@ from flask import Blueprint
 from flask import request, render_template, redirect, abort, flash, session
 import datetime #j'ai ajouté cet import pour obtenir la date quand on ajoute au panier
 
+from mpmath import qgamma
 from networkx.algorithms.operators.binary import difference
 
 from connexion_db import get_db
@@ -20,6 +21,10 @@ def client_panier_add():
     id_chaussure = request.form.get('id_chaussure')
     quantite = request.form.get('quantite')
     date_ajout = datetime.datetime.now()
+
+    if (int(quantite)<=0):
+        flash('la quantité doit être supérieure à 0')
+        return redirect('/client/chaussure/show')
 
     id_declinaison_chaussure=request.form.get('id_declinaison_chaussure',None)
 
@@ -191,16 +196,15 @@ def client_panier_delete_line():
     mycursor = get_db().cursor()
     id_client = session['id_user']
     id_chaussure=request.form.get('id_chaussure', ' ')
-    #id_declinaison_chaussure = request.form.get('id_declinaison_chaussure')
+    id_declinaison_chaussure = request.form.get('id_declinaison_chaussure')
 
-    tuple_param=(id_client,id_chaussure)
+    tuple_param=(id_client,id_declinaison_chaussure)
     sql = ''' SELECT ligne_panier.utilisateur_id,
-            ligne_panier.chaussure_id, 
+            ligne_panier.declinaison_chaussure_id, 
             ligne_panier.quantite
             FROM ligne_panier
             WHERE ligne_panier.utilisateur_id=%s
-            AND ligne_panier.chaussure_id=%s'''
-
+            AND ligne_panier.declinaison_chaussure_id=%s'''
 
     mycursor.execute(sql, tuple_param)
     quantite = mycursor.fetchone()['quantite']
@@ -212,11 +216,11 @@ def client_panier_delete_line():
     mycursor.execute(sql, tuple_param)
 
 
-    sql2='''UPDATE chaussure
-            SET chaussure.stock=chaussure.stock+%s
-            WHERE chaussure.id_chaussure=%s'''
+    sql2='''UPDATE declinaison_chaussure
+            SET declinaison_chaussure.stock=declinaison_chaussure.stock+%s
+            WHERE declinaison_chaussure.id_declinaison_chaussure=%s'''
 
-    mycursor.execute(sql2, (quantite,id_chaussure))
+    mycursor.execute(sql2, (quantite,id_declinaison_chaussure))
 
     get_db().commit()
     return redirect('/client/chaussure/show')
