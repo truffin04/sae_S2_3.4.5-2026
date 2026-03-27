@@ -4,6 +4,7 @@ from flask import Blueprint
 from flask import request, render_template, redirect, abort, flash, session
 import datetime #j'ai ajouté cet import pour obtenir la date quand on ajoute au panier
 
+from networkx.algorithms.operators.binary import difference
 
 from connexion_db import get_db
 
@@ -13,45 +14,53 @@ client_panier = Blueprint('client_panier', __name__,
 
 @client_panier.route('/client/panier/add', methods=['POST'])
 def client_panier_add():
-    mycursor = get_db().cursor()
+    db= get_db()
+    mycursor = db.cursor()
     id_client = session['id_user']
     id_chaussure = request.form.get('id_chaussure')
     quantite = request.form.get('quantite')
+    date_ajout = datetime.datetime.now()
 
-
-    # ---------
     id_declinaison_chaussure=request.form.get('id_declinaison_chaussure',None)
 
     if not id_declinaison_chaussure:
 
-        sql = ''' 
-                SELECT declinaison_chaussure.id_declinaison_chaussure,
-                declinaison_chaussure.taille_id as id_taille,
-                taille.libelle,
-                declinaison_chaussure.couleur_id as id_couleur,
-                couleur.libelle
-                FROM declinaison_chaussure
-                JOIN taille
-                ON declinaison_chaussure.taille_id = taille.id_taille
-                JOIN couleur
-                ON declinaison_chaussure.couleur_id = couleur.id_couleur
-                WHERE declinaison_chaussure.chaussure_id=%s'''
+        sql = '''  SELECT declinaison_chaussure.id_declinaison_chaussure, \
+                           declinaison_chaussure.couleur_id as id_couleur, \
+                           couleur.libelle                  as libelle_couleur, \
+                           declinaison_chaussure.taille_id  as id_taille, \
+                           taille.libelle                   as libelle_taille, \
+                           declinaison_chaussure.stock
+                    FROM declinaison_chaussure
+                             JOIN couleur
+                                  ON declinaison_chaussure.couleur_id = couleur.id_couleur
+                             JOIN taille
+                                  ON declinaison_chaussure.taille_id = taille.id_taille
+                    WHERE declinaison_chaussure.chaussure_id = %s'''
 
-        mycursor.execute(sql, (id_chaussure))
+        mycursor.execute(sql, (id_chaussure,))
+
         declinaisons=mycursor.fetchall()
         if len(declinaisons) == 1:
-            date_ajout = datetime.datetime.now()
             id_declinaison_chaussure = declinaisons[0]['id_declinaison_chaussure']
-            sql='''INSERT INTO ligne_panier(utilisateur_id,declinaison_chaussure_id,quantite,date_ajout) 
-                   VALUES (%s,%s,%s,%s)
-                    '''
-            mycursor.execute(sql, (id_client,id_chaussure,quantite,date_ajout))
+
         elif len(declinaisons) == 0:
             abort("pb nb de declinaison")
         else:
-            sql = '''   '''
-            mycursor.execute(sql, (id_chaussure))
+            sql = '''
+                    SELECT
+                    chaussure.id_chaussure,
+                    chaussure.nom_chaussure as nom,
+                    chaussure.prix_chaussure as prix,
+                    chaussure.photo as image
+                    FROM chaussure
+                    WHERE chaussure.id_chaussure=%s
+                  '''
+
+
+            mycursor.execute(sql, (id_chaussure,))
             chaussure = mycursor.fetchone()
+
             return render_template('client/boutique/declinaison_chaussure.html'
                                        , declinaisons=declinaisons
                                        , quantite=quantite
@@ -59,37 +68,47 @@ def client_panier_add():
 
 
 
+    sql='''SELECT declinaison_chaussure.stock-%s as difference
+            FROM declinaison_chaussure
+            WHERE declinaison_chaussure.id_declinaison_chaussure=%s'''
+    mycursor.execute(sql, (quantite, id_declinaison_chaussure))
+    difference=mycursor.fetchone()["difference"]
+    if (difference>=0):
 
-# ajout dans le panier d'une déclinaison d'un chaussure (si 1 declinaison : immédiat sinon => vu pour faire un choix
-    # sql = ''' SELECT declinaison_chaussure.id_declinaison_chaussure,
-    #        declinaison_chaussure.taille_id as id_taille,
-    #        taille.libelle,
-    #        declinaison_chaussure.couleur_id as id_couleur,
-    #        couleur.libelle
-    # FROM declinaison_chaussure
-    # JOIN taille
-    # ON declinaison_chaussure.taille_id = taille.id_taille
-    # JOIN couleur
-    # ON declinaison_chaussure.couleur_id = couleur.id_couleur''
-    # mycursor.execute(sql, (id_chaussure))
-    # declinaisons = mycursor.fetchall()
-    # if len(declinaisons) == 1:
-    #     id_declinaison_chaussure = declinaisons[0]['id_declinaison_chaussure']
-    # elif len(declinaisons) == 0:
-    #     abort("pb nb de declinaison")
-    # else:
-    #     sql = '''   '''
-    #     mycursor.execute(sql, (id_chaussure))
-    #     chaussure = mycursor.fetchone()
-    #     return render_template('client/boutique/declinaison_chaussure.html'
-    #                                , declinaisons=declinaisons
-    #                                , quantite=quantite
-    #                                , chaussure=chaussure)
+        requete = '''   SELECT * 
+                        FROM ligne_panier
+                        WHERE ligne_panier.declinaison_chaussure_id=%s
+                        AND ligne_panier.utilisateur_id=%s'''
+
+        mycursor.execute(requete,(id_declinaison_chaussure,id_client))
+        panier=mycursor.fetchall()
+        if (len(panier)>=1):
+            sql='''UPDATE ligne_panier
+                    SET ligne_panier.quantite=ligne_panier.quantite+%s
+                    WHERE ligne_panier.declinaison_chaussure_id=%s
+                    AND ligne_panier.utilisateur_id=%s'''
+            mycursor.execute(sql,(quantite,id_declinaison_chaussure, id_client))
+        else:
+            sql='''INSERT INTO ligne_panier(utilisateur_id,declinaison_chaussure_id,quantite,date_ajout) 
+                   VALUES (%s,%s,%s,%s)
+                    '''
+            mycursor.execute(sql, (id_client,id_declinaison_chaussure,quantite,date_ajout))
+
+        sql2='''UPDATE declinaison_chaussure
+                SET declinaison_chaussure.stock = declinaison_chaussure.stock - %s 
+                WHERE declinaison_chaussure.id_declinaison_chaussure=%s'''
+        mycursor.execute(sql2, (quantite,id_declinaison_chaussure))
+        db.commit()
+        return redirect('/client/chaussure/show')
+    else:
+        flash('article indisponible en cette quantité')
+        return redirect('/client/chaussure/show')
 
 
 
 
-    return redirect('/client/chaussure/show')
+
+
 
 @client_panier.route('/client/panier/delete', methods=['POST'])
 def client_panier_delete():
@@ -104,7 +123,7 @@ def client_panier_delete():
 
     # ---------
     # partie 2 : on supprime une déclinaison de la chaussure
-    # id_declinaison_chaussure = request.form.get('id_declinaison_chaussure', None)
+    id_declinaison_chaussure = request.form.get('id_declinaison_chaussure', None)
 
     sql = '''   SELECT ligne_panier.chaussure_id, ligne_panier.utilisateur_id, ligne_panier.quantite
                 FROM ligne_panier
@@ -189,7 +208,7 @@ def client_panier_delete_line():
 
     sql = ''' DELETE FROM ligne_panier
               WHERE ligne_panier.utilisateur_id=%s
-              AND ligne_panier.chaussure_id=%s'''
+              AND ligne_panier.declinaison_chaussure_id=%s'''
     mycursor.execute(sql, tuple_param)
 
 

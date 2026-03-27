@@ -28,7 +28,7 @@ def client_chaussure_show():                                 # remplace client_i
             COUNT(declinaison_chaussure.id_declinaison_chaussure) as nb_declinaison
             FROM chaussure
             JOIN declinaison_chaussure
-            ON chaussure.id_chaussure = declinaison_chaussure.chausssure_id
+            ON chaussure.id_chaussure = declinaison_chaussure.chaussure_id
             '''
 
 
@@ -81,7 +81,11 @@ def client_chaussure_show():                                 # remplace client_i
     types_chaussure = mycursor.fetchall()
 
     sql=''' SELECT ligne_panier.utilisateur_id,
-            ligne_panier.declinaison_chaussure_id,
+            ligne_panier.declinaison_chaussure_id as id_declinaison_chaussure,
+            couleur.id_couleur,
+            couleur.libelle as libelle_couleur,
+            taille.id_taille,
+            taille.libelle as libelle_taille,
             ligne_panier.quantite,
             ligne_panier.date_ajout,
             chaussure.prix_chaussure as prix,
@@ -90,8 +94,13 @@ def client_chaussure_show():                                 # remplace client_i
             FROM ligne_panier
             JOIN declinaison_chaussure
             ON ligne_panier.declinaison_chaussure_id = declinaison_chaussure.id_declinaison_chaussure
+            JOIN couleur
+            ON declinaison_chaussure.couleur_id = couleur.id_couleur
+            JOIN taille
+            ON declinaison_chaussure.taille_id = taille.id_taille
             JOIN chaussure
-            ON declinaison_chaussure.chausssure_id = chaussure.id_chaussure
+            ON declinaison_chaussure.chaussure_id = chaussure.id_chaussure
+            
             WHERE ligne_panier.utilisateur_id=%s
             GROUP BY ligne_panier.utilisateur_id,declinaison_chaussure_id,quantite,date_ajout
             '''
@@ -106,7 +115,7 @@ def client_chaussure_show():                                 # remplace client_i
                 JOIN declinaison_chaussure
                 ON ligne_panier.declinaison_chaussure_id = declinaison_chaussure.id_declinaison_chaussure
                 JOIN chaussure
-                ON declinaison_chaussure.chausssure_id = chaussure.id_chaussure
+                ON declinaison_chaussure.chaussure_id = chaussure.id_chaussure
                 WHERE ligne_panier.utilisateur_id=%s'''
         print(str.format(sql,id_client))
         mycursor.execute(sql,(id_client,))

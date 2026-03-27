@@ -401,7 +401,7 @@
 
     -- Stock + taille + couleur sont maintenant ici
     -- taille_id : les ids correspondent aux INSERT taille (1=35 ... 7=41 ... 11=45)
-    INSERT INTO declinaison_chaussure (stock, prix_declinaison, chausssure_id, taille_id, couleur_id) VALUES
+    INSERT INTO declinaison_chaussure (stock, prix_declinaison, chaussure_id, taille_id, couleur_id) VALUES
     -- Basket violette (id 1) - taille ET couleur unique
     (50, 79.99, 1, 1, 1),  -- violet
 
@@ -507,3 +507,26 @@ ON declinaison_chaussure.couleur_id = couleur.id_couleur
             JOIN declinaison_chaussure
             ON chaussure.id_chaussure = declinaison_chaussure.chausssure_id
             GROUP BY id_chaussure,nom_chaussure,sexe,entretien,prix_chaussure,type_chaussure_id,fournisseur,marque,photo
+
+ SELECT ligne_panier.utilisateur_id,
+            ligne_panier.declinaison_chaussure_id,
+            couleur.id_couleur,
+            couleur.libelle as libelle_couleur,
+            taille.id_taille,
+            taille.libelle as libelle_taille,
+            ligne_panier.quantite,
+            ligne_panier.date_ajout,
+            chaussure.prix_chaussure as prix,
+            chaussure.nom_chaussure as nom,
+            SUM(declinaison_chaussure.stock) as stock
+            FROM ligne_panier
+            JOIN declinaison_chaussure
+            ON ligne_panier.declinaison_chaussure_id = declinaison_chaussure.id_declinaison_chaussure
+            JOIN couleur
+            ON declinaison_chaussure.couleur_id = couleur.id_couleur
+            JOIN taille
+            ON declinaison_chaussure.taille_id = taille.id_taille
+            JOIN chaussure
+            ON declinaison_chaussure.chaussure_id = chaussure.id_chaussure
+
+            GROUP BY ligne_panier.utilisateur_id,declinaison_chaussure_id,quantite,date_ajout

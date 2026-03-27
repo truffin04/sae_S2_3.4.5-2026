@@ -220,7 +220,7 @@ def fct_fixtures_load():
     # couleur_id : 1=couleur unique, 2=violet, 3=blanc, 4=rose, 5=marron, 6=brun, 7=noir, 8=rouge, 9=bleu, 10=orange
     # taille_id  : 1=taille unique, 2=35, 3=36, 4=37, 5=38, 6=39, 7=40, 8=41, ...
     sql = '''
-        INSERT INTO declinaison_chaussure (stock, prix_declinaison, chausssure_id, taille_id, couleur_id) VALUES
+        INSERT INTO declinaison_chaussure (stock, prix_declinaison, chaussure_id, taille_id, couleur_id) VALUES
         (50, 79.99,  1, 1, 1),   -- Basket violette        : taille unique, violet
         (5,  49.99,  2, 1, 1),   -- Basket Adidas          : taille unique, noir
         (6,  99.99,  3, 1, 1),   -- Basket unisexe         : taille unique, blanc
