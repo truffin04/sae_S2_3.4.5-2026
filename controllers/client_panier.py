@@ -125,11 +125,11 @@ def client_panier_delete():
     # partie 2 : on supprime une déclinaison de la chaussure
     id_declinaison_chaussure = request.form.get('id_declinaison_chaussure', None)
 
-    sql = '''   SELECT ligne_panier.chaussure_id, ligne_panier.utilisateur_id, ligne_panier.quantite
+    sql = '''   SELECT ligne_panier.declinaison_chaussure_id, ligne_panier.utilisateur_id, ligne_panier.quantite
                 FROM ligne_panier
                 WHERE ligne_panier.utilisateur_id=%s
-                AND ligne_panier.chaussure_id=%s'''
-    tuple_param=(id_client,id_chaussure)
+                AND ligne_panier.declinaison_chaussure_id=%s'''
+    tuple_param=(id_client,id_declinaison_chaussure)
     mycursor.execute(sql,tuple_param)
     chaussure_panier=mycursor.fetchone()
     print("chaussures panier ",chaussure_panier,id_client," ",id_chaussure)
@@ -139,20 +139,20 @@ def client_panier_delete():
         sql = ''' UPDATE ligne_panier 
                   SET ligne_panier.quantite=ligne_panier.quantite - 1
                     WHERE ligne_panier.utilisateur_id=%s
-                    AND ligne_panier.chaussure_id=%s'''
+                    AND ligne_panier.declinaison_chaussure_id=%s'''
         mycursor.execute(sql, tuple_param)
 
     else:
         sql='''DELETE FROM ligne_panier
             WHERE ligne_panier.utilisateur_id=%s
-            AND ligne_panier.chaussure_id=%s'''
+            AND ligne_panier.declinaison_chaussure_id=%s'''
         mycursor.execute(sql,tuple_param)
 
     # mise à jour du stock de l'chaussure disponible
-    sql='''UPDATE chaussure 
-            SET chaussure.stock=chaussure.stock+1
-            WHERE chaussure.id_chaussure=%s'''
-    mycursor.execute(sql, (id_chaussure,))
+    sql='''UPDATE declinaison_chaussure 
+            SET declinaison_chaussure.stock=declinaison_chaussure.stock+1
+            WHERE declinaison_chaussure.id_declinaison_chaussure=%s'''
+    mycursor.execute(sql, (id_declinaison_chaussure,))
     get_db().commit()
     return redirect('/client/chaussure/show')
 
@@ -172,16 +172,16 @@ def client_panier_vider():
     for item in items_panier:
         sql = '''   DELETE FROM ligne_panier
                     WHERE ligne_panier.utilisateur_id=%s
-                    AND ligne_panier.chaussure_id=%s'''
+                    AND ligne_panier.declinaison_chaussure_id=%s'''
 
 
 
-        sql2='''    UPDATE chaussure
-                    SET chaussure.stock=chaussure.stock+%s
-                    WHERE chaussure.id_chaussure=%s'''
-        mycursor.execute(sql, (client_id, item['chaussure_id']) )
+        sql2='''    UPDATE declinaison_chaussure
+                    SET declinaison_chaussure.stock=declinaison_chaussure.stock+%s
+                    WHERE declinaison_chaussure.id_declinaison_chaussure=%s'''
+        mycursor.execute(sql, (client_id, item['declinaison_chaussure_id']) )
 
-        mycursor.execute(sql2, (item['quantite'],item['chaussure_id']) )
+        mycursor.execute(sql2, (item['quantite'],item['declinaison_chaussure_id']) )
         get_db().commit()
     return redirect('/client/chaussure/show')
 
