@@ -104,10 +104,10 @@
         id_declinaison_chaussure INT PRIMARY KEY AUTO_INCREMENT,
         stock INT,
         prix_declinaison NUMERIC(10,2),
-        chausssure_id INT,
+        chaussure_id INT,
         taille_id INT,
         couleur_id INT,
-        FOREIGN KEY (chausssure_id) REFERENCES chaussure(id_chaussure),
+        FOREIGN KEY (chaussure_id) REFERENCES chaussure(id_chaussure),
         FOREIGN KEY (taille_id) REFERENCES taille(id_taille),
         FOREIGN KEY (couleur_id) REFERENCES couleur(id_couleur)
     );
@@ -306,10 +306,10 @@
         id_declinaison_chaussure INT PRIMARY KEY AUTO_INCREMENT,
         stock INT,
         prix_declinaison NUMERIC(10,2),
-        chausssure_id INT,
+        chaussure_id INT,
         taille_id INT,
         couleur_id INT,
-        FOREIGN KEY (chausssure_id) REFERENCES chaussure(id_chaussure),
+        FOREIGN KEY (chaussure_id) REFERENCES chaussure(id_chaussure),
         FOREIGN KEY (taille_id) REFERENCES taille(id_taille),
         FOREIGN KEY (couleur_id) REFERENCES couleur(id_couleur)
     );
