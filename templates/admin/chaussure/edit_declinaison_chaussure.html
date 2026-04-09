@@ -23,7 +23,7 @@
                     {% if  d_taille_uniq is defined and  d_taille_uniq==1 %}
                         <div>!</div><div><strong>Une taille unique est définie </strong></div>
                         <div>il faut faut la supprimer pour modifier la taille</div>
-                        <input type="hidden" name="taille" value="1">
+                        <input type="hidden" name="id_taille" value="1">
                     {% else %}
                     <label for="id_taille">taille :
                         <select name="id_taille" class="form-select">
@@ -38,7 +38,7 @@
                     {% if  d_couleur_uniq is defined and  d_couleur_uniq==1 %}
                         <div>!</div><div><strong>Une couleur unique est définie </strong></div>
                           <div>il faut faut la supprimer pour modifier la couleur</div>
-                        <input type="hidden" name="couleur" value="1">
+                        <input type="hidden" name="id_couleur" value="1">
                     {% else %}
                     <label for="id_couleur"> couleur :
                         <select name="id_couleur" class="form-select">

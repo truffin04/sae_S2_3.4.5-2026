@@ -149,18 +149,37 @@ def valid_edit_declinaison_chaussure():
     couleur_id = request.form.get('id_couleur','')
     mycursor = get_db().cursor()
 
-    if taille_id and couleur_id:
+    sql = '''SELECT COUNT(*) as nb 
+             FROM ligne_commande
+             WHERE declinaison_chaussure_id = %s'''
+    mycursor.execute(sql, (id_declinaison_chaussure,))
+    commande = mycursor.fetchone()['nb'] > 0
+
+    if commande:
+
         sql=''' UPDATE declinaison_chaussure
-                SET declinaison_chaussure.stock=%s
-                ,declinaison_chaussure.taille_id=%s,
-                declinaison_chaussure.couleur_id=%s
+                SET declinaison_chaussure.disponible=FALSE
                 WHERE declinaison_chaussure.id_declinaison_chaussure=%s'''
-        mycursor.execute(sql,(stock,taille_id,couleur_id,id_declinaison_chaussure))
+
+        mycursor.execute(sql, (id_declinaison_chaussure,))
+
+        sql = '''INSERT INTO declinaison_chaussure (stock, taille_id, couleur_id, chaussure_id, disponible)
+                 VALUES (%s, %s, %s, %s, TRUE)'''
+        mycursor.execute(sql, (stock, taille_id, couleur_id, id_chaussure))
+
+        # sql=''' UPDATE declinaison_chaussure
+        #         SET declinaison_chaussure.stock=%s
+        #         ,declinaison_chaussure.taille_id=%s,
+        #         declinaison_chaussure.couleur_id=%s
+        #         WHERE declinaison_chaussure.id_declinaison_chaussure=%s'''
+        # mycursor.execute(sql,(stock,taille_id,couleur_id,id_declinaison_chaussure))
     else:
-        sql=''' UPDATE declinaison_chaussure
-                SET declinaison_chaussure.stock=%s
-                WHERE declinaison_chaussure.id_declinaison_chaussure=%s'''
-        mycursor.execute(sql,(stock,id_declinaison_chaussure))
+        sql = '''   UPDATE declinaison_chaussure
+                    SET stock = %s, 
+                    taille_id = %s, 
+                    couleur_id = %s
+                    WHERE id_declinaison_chaussure = %s'''
+        mycursor.execute(sql, (stock, taille_id, couleur_id, id_declinaison_chaussure))
     get_db().commit()
 
     message = u'declinaison_chaussure modifié , id:' + str(id_declinaison_chaussure) + '- stock :' + str(stock) + ' - taille_id:' + str(taille_id) + ' - couleur_id:' + str(couleur_id)
@@ -172,6 +191,23 @@ def valid_edit_declinaison_chaussure():
 def admin_delete_declinaison_chaussure():
     id_declinaison_chaussure = request.args.get('id_declinaison_chaussure','')
     id_chaussure = request.args.get('id_chaussure','')
+    mycursor = get_db().cursor()
+
+    sql=''' SELECT COUNT(*) as nb FROM ligne_commande
+            WHERE ligne_commande.declinaison_chaussure_id=%s'''
+    mycursor.execute(sql, (id_declinaison_chaussure,))
+    compte = int(mycursor.fetchone()['nb'] )
+    if compte==0:
+        sql=''' DELETE FROM declinaison_chaussure
+                WHERE declinaison_chaussure.id_declinaison_chaussure=%s '''
+        mycursor.execute(sql,(id_declinaison_chaussure,))
+    else:
+        sql='''UPDATE declinaison_chaussure
+               SET declinaison_chaussure.disponible=FALSE
+                WHERE declinaison_chaussure.id_declinaison_chaussure=%s '''
+        mycursor.execute(sql,(id_declinaison_chaussure,))
+
+    get_db().commit()
 
     flash(u'declinaison supprimée, id_declinaison_chaussure : ' + str(id_declinaison_chaussure),  'alert-success')
     return redirect('/admin/chaussure/edit?id_chaussure=' + str(id_chaussure))

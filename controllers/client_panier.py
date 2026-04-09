@@ -41,7 +41,8 @@ def client_panier_add():
                                   ON declinaison_chaussure.couleur_id = couleur.id_couleur
                              JOIN taille
                                   ON declinaison_chaussure.taille_id = taille.id_taille
-                    WHERE declinaison_chaussure.chaussure_id = %s'''
+                    WHERE declinaison_chaussure.chaussure_id = %s
+                    AND declinaison_chaussure.disponible=TRUE'''
 
         mycursor.execute(sql, (id_chaussure,))
 

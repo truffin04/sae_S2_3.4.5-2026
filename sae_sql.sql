@@ -107,6 +107,7 @@
         chaussure_id INT,
         taille_id INT,
         couleur_id INT,
+        disponible BOOLEAN DEFAULT TRUE,
         FOREIGN KEY (chaussure_id) REFERENCES chaussure(id_chaussure),
         FOREIGN KEY (taille_id) REFERENCES taille(id_taille),
         FOREIGN KEY (couleur_id) REFERENCES couleur(id_couleur)
