@@ -30,6 +30,7 @@ def show_chaussure():
                 on chaussure.type_chaussure_id=type_chaussure.id_type_chaussure
                 LEFT JOIN declinaison_chaussure
                 ON declinaison_chaussure.chaussure_id=chaussure.id_chaussure
+                WHERE declinaison_chaussure.disponible=TRUE
                 GROUP BY chaussure.id_chaussure, chaussure.nom_chaussure, chaussure.type_chaussure_id, 
                          chaussure.prix_chaussure, chaussure.prix_chaussure, chaussure.photo, type_chaussure.libelle_type_chaussure
     '''
@@ -166,11 +167,12 @@ def edit_chaussure():
 
 
     sql =   '''
-            SELECT declinaison_chaussure.id_declinaison_chaussure, \
-            declinaison_chaussure.couleur_id as id_couleur, \
-            couleur.libelle                  as libelle_couleur, \
-            declinaison_chaussure.taille_id  as id_taille, \
-            taille.libelle                   as libelle_taille, \
+            SELECT declinaison_chaussure.id_declinaison_chaussure, 
+            declinaison_chaussure.chaussure_id,
+            declinaison_chaussure.couleur_id as id_couleur, 
+            couleur.libelle                  as libelle_couleur, 
+            declinaison_chaussure.taille_id  as id_taille, 
+            taille.libelle                   as libelle_taille, 
             declinaison_chaussure.stock
             FROM declinaison_chaussure
             JOIN couleur
@@ -178,6 +180,7 @@ def edit_chaussure():
             JOIN taille
             ON declinaison_chaussure.taille_id = taille.id_taille
             WHERE declinaison_chaussure.chaussure_id=%s
+            AND declinaison_chaussure.disponible=TRUE
           '''
     mycursor.execute(sql, id_chaussure)
     declinaisons_chaussure = mycursor.fetchall()

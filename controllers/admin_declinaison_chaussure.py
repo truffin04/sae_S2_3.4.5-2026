@@ -114,6 +114,7 @@ def edit_declinaison_chaussure():
     mycursor.execute(sql,(id_declinaison_chaussure,))
     declinaison_chaussure=mycursor.fetchone()
 
+
     sql=''' SELECT id_couleur,
             libelle 
             FROM couleur
@@ -191,6 +192,7 @@ def valid_edit_declinaison_chaussure():
 def admin_delete_declinaison_chaussure():
     id_declinaison_chaussure = request.args.get('id_declinaison_chaussure','')
     id_chaussure = request.args.get('id_chaussure','')
+    print("*"*50, id_chaussure)
     mycursor = get_db().cursor()
 
     sql=''' SELECT COUNT(*) as nb FROM ligne_commande

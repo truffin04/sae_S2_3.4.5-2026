@@ -30,17 +30,17 @@ def client_panier_add():
 
     if not id_declinaison_chaussure:
 
-        sql = '''  SELECT declinaison_chaussure.id_declinaison_chaussure, \
-                           declinaison_chaussure.couleur_id as id_couleur, \
-                           couleur.libelle                  as libelle_couleur, \
-                           declinaison_chaussure.taille_id  as id_taille, \
-                           taille.libelle                   as libelle_taille, \
-                           declinaison_chaussure.stock
+        sql = '''   SELECT declinaison_chaussure.id_declinaison_chaussure, 
+                    declinaison_chaussure.couleur_id as id_couleur, 
+                    couleur.libelle as libelle_couleur, 
+                    declinaison_chaussure.taille_id  as id_taille, 
+                    taille.libelle as libelle_taille, 
+                    declinaison_chaussure.stock
                     FROM declinaison_chaussure
-                             JOIN couleur
-                                  ON declinaison_chaussure.couleur_id = couleur.id_couleur
-                             JOIN taille
-                                  ON declinaison_chaussure.taille_id = taille.id_taille
+                    JOIN couleur
+                    ON declinaison_chaussure.couleur_id = couleur.id_couleur
+                    JOIN taille
+                    ON declinaison_chaussure.taille_id = taille.id_taille
                     WHERE declinaison_chaussure.chaussure_id = %s
                     AND declinaison_chaussure.disponible=TRUE'''
 
@@ -76,7 +76,8 @@ def client_panier_add():
 
     sql='''SELECT declinaison_chaussure.stock-%s as difference
             FROM declinaison_chaussure
-            WHERE declinaison_chaussure.id_declinaison_chaussure=%s'''
+            WHERE declinaison_chaussure.id_declinaison_chaussure=%s
+            AND declinaison_chaussure.disponible=TRUE'''
     mycursor.execute(sql, (quantite, id_declinaison_chaussure))
     difference=mycursor.fetchone()["difference"]
     if difference>=0:
@@ -102,7 +103,8 @@ def client_panier_add():
 
         sql2='''UPDATE declinaison_chaussure
                 SET declinaison_chaussure.stock = declinaison_chaussure.stock - %s 
-                WHERE declinaison_chaussure.id_declinaison_chaussure=%s'''
+                WHERE declinaison_chaussure.id_declinaison_chaussure=%s
+                AND declinaison_chaussure.disponible=TRUE'''
         mycursor.execute(sql2, (quantite,id_declinaison_chaussure))
         db.commit()
         return redirect('/client/chaussure/show')
