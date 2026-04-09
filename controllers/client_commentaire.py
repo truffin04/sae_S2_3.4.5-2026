@@ -26,7 +26,7 @@ def client_chaussure_details():
 
     # Récupérer les commentaires de la chaussure
     sql_commentaires = '''
-        SELECT u.nom, u.id_utilisateur, c.commentaire, c.date_publication, c.valider
+        SELECT u.nom, u.id_utilisateur,c.id_commentaire, c.commentaire, c.date_publication, c.valider
         FROM commentaire c
         JOIN utilisateur u ON c.utilisateur_id = u.id_utilisateur
         WHERE c.chaussure_id = %s
@@ -81,6 +81,33 @@ def client_comment_add():
     id_client = session['id_user']
     id_chaussure = request.form.get('id_chaussure', None)
 
+    sql_achat = '''
+                SELECT COUNT(lc.chaussure_id) AS nb
+                FROM ligne_commande lc
+                         JOIN commande co ON lc.commande_id = co.id_commande
+                WHERE co.utilisateur_id = %s \
+                  AND lc.chaussure_id = %s \
+                '''
+    mycursor.execute(sql_achat, (id_client, id_chaussure))
+    nb_achat = mycursor.fetchone()['nb']
+    if nb_achat == 0:
+        flash("Vous devez avoir acheté cet article pour pouvoir commenter.", "alert-danger")
+        return redirect('/client/chaussure/details?id_chaussure=' + id_chaussure)
+
+
+    sql_quota = '''
+                SELECT COUNT(*) AS nb_com
+                FROM commentaire
+                WHERE utilisateur_id = %s \
+                  AND chaussure_id = %s \
+                '''
+    mycursor.execute(sql_quota, (id_client, id_chaussure))
+    nb_com = mycursor.fetchone()['nb_com']
+    if nb_com >= 3:
+        flash("Quota atteint, vous ne pouvez pas poster plus de 3 commentaires sur cet article !",
+              "alert-danger")
+        return redirect('/client/chaussure/details?id_chaussure=' + id_chaussure)
+
     if commentaire == '':
         flash(u'Commentaire non pris en compte')
         return redirect('/client/chaussure/details?id_chaussure=' + id_chaussure)
@@ -120,6 +147,23 @@ def client_note_add():
     id_client = session['id_user']
     note = request.form.get('note', None)
     id_chaussure = request.form.get('id_chaussure', None)
+
+
+
+
+
+    sql_achat = '''
+                SELECT COUNT(lc.chaussure_id) AS nb
+                FROM ligne_commande lc
+                         JOIN commande co ON lc.commande_id = co.id_commande
+                WHERE co.utilisateur_id = %s \
+                  AND lc.chaussure_id = %s \
+                '''
+    mycursor.execute(sql_achat, (id_client, id_chaussure))
+    nb_achat = mycursor.fetchone()['nb']
+    if nb_achat == 0:
+        flash("Vous devez avoir acheté cet article pour pouvoir commenter.", "alert-danger")
+        return redirect('/client/chaussure/details?id_chaussure=' + id_chaussure)
 
     tuple_insert = (note, id_client, id_chaussure)
     sql = '''

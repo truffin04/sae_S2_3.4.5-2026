@@ -131,8 +131,8 @@
 
                 {% for commentaire in commentaires %}
                     <tr>
-                        <td>{{ commentaire.nom }}({{ commentaire.id_utilisateur }})</td>
-                        <td>{% if commentaire.utilisateur_id == 1 %}
+                        <td>{{ commentaire.nom }}({{ commentaire.id_commentaire }})</td>
+                        <td>{% if commentaire.id_utilisateur == 1 %}
                             <span style="color: red">(réponse de l'administrateur du site (webmaster) ) :</span>
                             {% endif %}
                             {{ commentaire.commentaire }}

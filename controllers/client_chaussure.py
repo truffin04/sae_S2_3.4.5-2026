@@ -24,8 +24,14 @@ def client_chaussure_show():                                 # remplace client_i
               chaussure.fournisseur,
               chaussure.marque,
               chaussure.photo as image,
-              chaussure.stock
-     FROM chaussure'''
+              chaussure.stock,
+              round(avg(n.note), 1) as moyenne_notes,
+              count(distinct n.id_note) as nombre_notes,
+              count(distinct c.id_commentaire) as nombre_commentaire
+        FROM chaussure
+          left join note n on chaussure.id_chaussure = n.chaussure_id
+          left join commentaire c on chaussure.id_chaussure = c.chaussure_id
+          group by chaussure.id_chaussure'''
 
 
     # utilisation du filtre

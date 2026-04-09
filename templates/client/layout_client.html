@@ -18,6 +18,17 @@
     <h3 style="color: blue">Bonjour {{ session['login'] }} , votre Rôle : {{ session['role'] }}</h3>
 {% endblock %}
 </div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert {{ category }} alert-dismissible fade show fs-5 fw-bold text-center" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
 {% block javascripts %}
     <script src="{{ url_for('static', filename='assets/js/bootstrap.bundle.js') }}" ></script>
 {% endblock %}

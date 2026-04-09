@@ -85,6 +85,7 @@ def client_commande_add():
         sql = "  INSERT INTO ligne_commande VALUES (%s, %s, %s, %s)"
         mycursor.execute(sql, (id_nouvelle_commande, item['chaussure_id'], item['prix_chaussure'], item['quantite']))
 
+
     get_db().commit()
     flash(u'Commande ajoutée','alert-success')
     return redirect('/client/chaussure/show')
