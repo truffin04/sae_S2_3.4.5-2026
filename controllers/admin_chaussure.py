@@ -30,7 +30,7 @@ def show_chaussure():
                 on chaussure.type_chaussure_id=type_chaussure.id_type_chaussure
                 LEFT JOIN declinaison_chaussure
                 ON declinaison_chaussure.chaussure_id=chaussure.id_chaussure
-                WHERE declinaison_chaussure.disponible=TRUE
+                AND declinaison_chaussure=TRUE
                 GROUP BY chaussure.id_chaussure, chaussure.nom_chaussure, chaussure.type_chaussure_id, 
                          chaussure.prix_chaussure, chaussure.prix_chaussure, chaussure.photo, type_chaussure.libelle_type_chaussure
     '''

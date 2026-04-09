@@ -29,6 +29,7 @@ def client_chaussure_show():                                 # remplace client_i
             FROM chaussure
             JOIN declinaison_chaussure
             ON chaussure.id_chaussure = declinaison_chaussure.chaussure_id
+            AND declinaison_chaussure.disponible=TRUE
             '''
 
 
@@ -102,6 +103,7 @@ def client_chaussure_show():                                 # remplace client_i
             ON declinaison_chaussure.chaussure_id = chaussure.id_chaussure
             
             WHERE ligne_panier.utilisateur_id=%s
+            AND declinaison_chaussure.disponible=TRUE
             GROUP BY ligne_panier.utilisateur_id,declinaison_chaussure_id,quantite,date_ajout
             '''
 
@@ -116,7 +118,8 @@ def client_chaussure_show():                                 # remplace client_i
                 ON ligne_panier.declinaison_chaussure_id = declinaison_chaussure.id_declinaison_chaussure
                 JOIN chaussure
                 ON declinaison_chaussure.chaussure_id = chaussure.id_chaussure
-                WHERE ligne_panier.utilisateur_id=%s'''
+                WHERE ligne_panier.utilisateur_id=%s
+                AND declinaison_chaussure.disponible=TRUE'''
         print(str.format(sql,id_client))
         mycursor.execute(sql,(id_client,))
 

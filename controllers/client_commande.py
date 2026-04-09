@@ -97,10 +97,10 @@ def client_commande_add():
         sql = "  INSERT INTO ligne_commande VALUES (%s, %s, %s, %s)"
         mycursor.execute(sql, (id_nouvelle_commande, item['declinaison_chaussure_id'], item['prix_chaussure'], item['quantite']))
 
-        sql=''' DELETE FROM ligne_panier
-                where utilisateur_id=%s
-                '''
-        mycursor.execute(sql, (id_client,))
+    sql=''' DELETE FROM ligne_panier
+            where utilisateur_id=%s
+            '''
+    mycursor.execute(sql, (id_client,))
 
     get_db().commit()
     flash(u'Commande ajoutée','alert-success')

@@ -39,7 +39,8 @@ def add_declinaison_chaussure():
                 FROM declinaison_chaussure
                 JOIN taille ON declinaison_chaussure.taille_id = taille.id_taille
                 WHERE declinaison_chaussure.chaussure_id = %s
-                AND taille.id_taille = 1'''
+                AND taille.id_taille = 1
+                AND declinaison_chaussure.disponible=TRUE'''
     mycursor.execute(sql, (id_chaussure,))
     d_taille_uniq = 1 if mycursor.fetchone()['nb'] > 0 else None
 
@@ -48,7 +49,8 @@ def add_declinaison_chaussure():
                 FROM declinaison_chaussure
                 JOIN couleur ON declinaison_chaussure.couleur_id = couleur.id_couleur
                 WHERE declinaison_chaussure.chaussure_id = %s
-                AND couleur.id_couleur = 1'''
+                AND couleur.id_couleur = 1
+                AND declinaison_chaussure.disponible=TRUE'''
     mycursor.execute(sql, (id_chaussure,))
     d_couleur_uniq = 1 if mycursor.fetchone()['nb'] > 0 else None
 
@@ -75,7 +77,8 @@ def valid_add_declinaison_chaussure():
             FROM declinaison_chaussure
             WHERE declinaison_chaussure.taille_id=%s 
             AND declinaison_chaussure.couleur_id=%s
-            AND declinaison_chaussure.chaussure_id=%s'''
+            AND declinaison_chaussure.chaussure_id=%s
+            AND declinaison_chaussure.disponible=TRUE'''
     mycursor.execute(sql,(taille,couleur,id_chaussure))
     doublon=mycursor.fetchall()
     if len(doublon)>=1:
@@ -83,7 +86,8 @@ def valid_add_declinaison_chaussure():
                 SET declinaison_chaussure.stock=%s
                 WHERE declinaison_chaussure.couleur_id=%s 
                 AND declinaison_chaussure.taille_id=%s
-                AND declinaison_chaussure.chaussure_id=%s'''
+                AND declinaison_chaussure.chaussure_id=%s
+                AND declinaison_chaussure.disponible=TRUE'''
         mycursor.execute(sql, (stock,couleur,taille,id_chaussure))
         flash('déclinaison déja existante, seul le stock de la déclinaison a été modifié', 'alert-warning')
     else:
@@ -110,7 +114,8 @@ def edit_declinaison_chaussure():
             FROM declinaison_chaussure
             JOIN chaussure 
             ON declinaison_chaussure.chaussure_id=chaussure.id_chaussure
-            WHERE declinaison_chaussure.id_declinaison_chaussure=%s'''
+            WHERE declinaison_chaussure.id_declinaison_chaussure=%s
+            AND declinaison_chaussure.disponible=TRUE'''
     mycursor.execute(sql,(id_declinaison_chaussure,))
     declinaison_chaussure=mycursor.fetchone()
 
@@ -152,7 +157,8 @@ def valid_edit_declinaison_chaussure():
 
     sql = '''SELECT COUNT(*) as nb 
              FROM ligne_commande
-             WHERE declinaison_chaussure_id = %s'''
+             WHERE declinaison_chaussure_id = %s
+             '''
     mycursor.execute(sql, (id_declinaison_chaussure,))
     commande = mycursor.fetchone()['nb'] > 0
 
