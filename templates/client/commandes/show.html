@@ -1,96 +1,120 @@
 {% extends "client/layout_client.html" %}
 {% block body %}
-    <div class="container-fluid">
-            {% if chaussures_commande %}
-            <h3>Recapitulatifs de la commande selectionnée</h3>
-            <table class="table">
-                <thead class="thead-dark">
-                    <tr><th>Nom</th><th>Quantite</th><th>Prix</th><th>Prix total</th></tr>
+<div class="container-fluid">
+
+    {% if chaussures_commande %}
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <strong>Récapitulatif de la commande sélectionnée</strong>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nom</th>
+                        <th>Quantité</th>
+                        <th>Prix unitaire</th>
+                        <th>Prix total ligne</th>
+                    </tr>
                 </thead>
                 <tbody>
-                        {% for ligne in chaussures_commande %}
-                            <tr>
-                                <td>{{ ligne.nom }}
-                                {% if ligne.nb_declinaisons is defined and ligne.nb_declinaisons > 1 %}
-                                    <span style="color:rgba(255,197,197,0.6);"> ( {{ ligne.nb_declinaisons }} declinaisons )</span>
-                                    <span style="color:#6dcea2">
-                                    {% if ligne.couleur_id != 1 %}
-                                        {{ ligne.libelle_couleur }} 
-                                    {% endif %}
-                                    </span>
-                                    <span  style="color:#d941c2">
-                                    {% if ligne.taille_id != 1 %}
-                                        {{ ligne.libelle_taille }} 
-                                    {% endif %}
-                                    </span>
-                                {% endif %}
-                                </td>
-                                <td>{{ ligne.quantite }}</td>
-                                <td>{{ ligne.prix }} €</td>
-                                <td>{{ ligne.prix_ligne }} €  </td>
-                            </tr>
-                        {% endfor %}
-
+                    {% for ligne in chaussures_commande %}
+                        <tr>
+                            <td>{{ ligne.nom }}</td>
+                            <td>{{ ligne.quantite }}</td>
+                            <td>{{ ligne.prix }} €</td>
+                            <td>{{ ligne.prix_ligne }} €</td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
-                <br>
-                <div style="color: brown">
-                <strong>adresse livraison : </strong>{{ commande_adresses.nom_livraison }} {{ commande_adresses.rue_livraison }} {{ commande_adresses.code_postal_livraison }} {{ commande_adresses.ville_livraison }}
-                <br>
-                <strong>adresse facturation : </strong>
-                {% if commande_adresses.adresse_identique == 'adresse_identique' %}
-                    adresse identique
-                {% else %}
-                    {{ commande_adresses.nom_facturation }} {{ commande_adresses.rue_facturation }} {{ commande_adresses.code_postal_facturation }} {{ commande_adresses.ville_facturation }}
-                {% endif %}
+
+            {% if commande_adresses %}
+            <div class="row mt-3">
+                <div class="col-md-5 me-3">
+                    <div class="card border-primary">
+                        <div class="card-header bg-primary text-white">
+                            <strong>Adresse de livraison</strong>
+                        </div>
+                        <div class="card-body">
+                            {% if commande_adresses.adresse_livraison_id %}
+                                <p class="mb-1">{{ commande_adresses.liv_nom }}</p>
+                                <p class="mb-1">{{ commande_adresses.liv_rue }}</p>
+                                <p class="mb-1">{{ commande_adresses.liv_cp }} {{ commande_adresses.liv_ville }}</p>
+                            {% else %}
+                                <span class="text-muted">Adresse non renseignée</span>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-            <hr>
-        {% endif %}
-        <div class="card shadow">
-            <div class="card-header py-3">
-                <p class="text-primary m-0 font-weight-bold">Toutes mes commandes</p>
+                <div class="col-md-5">
+                    <div class="card border-secondary">
+                        <div class="card-header bg-secondary text-white">
+                            <strong>Adresse de facturation</strong>
+                        </div>
+                        <div class="card-body">
+                            {% if commande_adresses.adresse_facturation_id == commande_adresses.adresse_livraison_id %}
+                                <span class="text-success fw-bold">&#10003; Identique à l'adresse de livraison</span>
+                            {% elif commande_adresses.adresse_facturation_id %}
+                                <p class="mb-1">{{ commande_adresses.fac_nom }}</p>
+                                <p class="mb-1">{{ commande_adresses.fac_rue }}</p>
+                                <p class="mb-1">{{ commande_adresses.fac_cp }} {{ commande_adresses.fac_ville }}</p>
+                            {% else %}
+                                <span class="text-muted">Adresse non renseignée</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
-                    <table class="table my-0" id="dataTable">
-                        <thead>
-                        <tr>
-                            <th>Date de commande</th>
-                            <th>Nombre d'chaussures</th>
-                            <th>Coût total</th>
-                            <th>Etat de la commande</th>
-                            <th style="text-align: center;">Options</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for commande in commandes %}
-                            <tr id="" {% if commande.etat_id == 1 %} style="background: #FFD600; font-weight: bold;" {% endif %}>
-                                <td>{{ commande.date_achat.strftime('%d-%m-%Y') }}</td>
-                                <td> {{ commande.nbr_chaussures }} </td>
-                                <td>
-                                    {{ "{:,.2f} €".format(commande.prix_total) }}
-                                </td>
-                                <td style="text-align: center;">
-                                    {% if commande.etat_id == 1 %} <div style="background-color: #ba8b00; padding: 5px;">
-                                     {{ commande.libelle }}
-                                    </div>
-                                    {% else %} <div style="background-color: #34ce57; padding: 5px;">
-                                        {{ commande.libelle }} </div>
-                                    {% endif %}
-                                </td>
-                                <td style="text-align: center;">
-                                    <a href="/client/commande/show?id_commande={{ commande.id_commande }}">
-                                        <button class="btn btn-primary" > Details </button>
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div> <!-- end card-body-->
+            {% endif %}
 
         </div>
     </div>
+    <hr>
+    {% endif %}
 
+    <div class="card shadow">
+        <div class="card-header py-3">
+            <p class="text-primary m-0 fw-bold">Toutes mes commandes</p>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date de commande</th>
+                        <th>Nombre de chaussures</th>
+                        <th>Coût total</th>
+                        <th>État de la commande</th>
+                        <th style="text-align:center;">Options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for commande in commandes %}
+                    <tr {% if commande.etat_id == 1 %}style="background:#FFD600; font-weight:bold;"{% endif %}>
+                        <td>{{ commande.date_achat.strftime('%d-%m-%Y') }}</td>
+                        <td>{{ commande.nbr_chaussures }}</td>
+                        <td>{{ "{:,.2f} €".format(commande.prix_total) }}</td>
+                        <td style="text-align:center;">
+                            {% if commande.etat_id == 1 %}
+                                <div style="background-color:#ba8b00; padding:5px;">{{ commande.libelle }}</div>
+                            {% else %}
+                                <div style="background-color:#34ce57; padding:5px;">{{ commande.libelle }}</div>
+                            {% endif %}
+                        </td>
+                        <td style="text-align:center;">
+                            <a href="/client/commande/show?id_commande={{ commande.id_commande }}"
+                               class="btn btn-primary btn-sm">Détails</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">Aucune commande.</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
 {% endblock %}

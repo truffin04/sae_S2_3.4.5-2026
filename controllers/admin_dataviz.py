@@ -1,65 +1,34 @@
 #! /usr/bin/python
 # -*- coding:utf-8 -*-
-from flask import Blueprint
-from flask import Flask, request, render_template, redirect, abort, flash, session
-
+from flask import Blueprint, render_template, session
 from connexion_db import get_db
 
-admin_dataviz = Blueprint('admin_dataviz', __name__,
-                        template_folder='templates')
+admin_datavis = Blueprint('admin_datavis', __name__, template_folder='templates')
 
-@admin_dataviz.route('/admin/dataviz/etat1')
-def show_type_chaussure_stock():
+@admin_datavis.route('/admin/datavis/show')
+def show_datavis():
     mycursor = get_db().cursor()
+
     sql = '''
-    
-           '''
-    # mycursor.execute(sql)
-    # datas_show = mycursor.fetchall()
-    # labels = [str(row['libelle']) for row in datas_show]
-    # values = [int(row['nbr_chaussures']) for row in datas_show]
+        SELECT 
+            LEFT(a.code_postal, 2) AS departement,
+            COUNT(c.id_commande) AS nb_ventes,
+            SUM(lc.prix * lc.quantite) AS chiffre_affaire
+        FROM commande c
+        JOIN adresse a ON c.adresse_livraison_id = a.id_adresse
+        JOIN ligne_commande lc ON c.id_commande = lc.commande_id
+        GROUP BY departement
+        ORDER BY chiffre_affaire DESC
+    '''
+    mycursor.execute(sql)
+    stats_dep = mycursor.fetchall()
 
-    # sql = '''
-    #         
-    #        '''
-    datas_show=[]
-    labels=[]
-    values=[]
+    labels = [str(d['departement']) for d in stats_dep]
+    data_ventes = [d['nb_ventes'] for d in stats_dep]
+    data_ca = [float(d['chiffre_affaire']) for d in stats_dep]
 
-    return render_template('admin/dataviz/dataviz_etat_1.html'
-                           , datas_show=datas_show
-                           , labels=labels
-                           , values=values)
-
-
-# sujet 3 : adresses
-
-
-@admin_dataviz.route('/admin/dataviz/etat2')
-def show_dataviz_map():
-    # mycursor = get_db().cursor()
-    # sql = '''    '''
-    # mycursor.execute(sql)
-    # adresses = mycursor.fetchall()
-
-    #exemples de tableau "résultat" de la requête
-    adresses =  [{'dep': '25', 'nombre': 1}, {'dep': '83', 'nombre': 1}, {'dep': '90', 'nombre': 3}]
-
-    # recherche de la valeur maxi "nombre" dans les départements
-    # maxAddress = 0
-    # for element in adresses:
-    #     if element['nbr_dept'] > maxAddress:
-    #         maxAddress = element['nbr_dept']
-    # calcul d'un coefficient de 0 à 1 pour chaque département
-    # if maxAddress != 0:
-    #     for element in adresses:
-    #         indice = element['nbr_dept'] / maxAddress
-    #         element['indice'] = round(indice,2)
-
-    print(adresses)
-
-    return render_template('admin/dataviz/dataviz_etat_map.html'
-                           , adresses=adresses
-                          )
-
-
+    return render_template('admin/datavis/dataviz_adresse.html',
+                           stats_dep=stats_dep,
+                           labels=labels,
+                           data_ventes=data_ventes,
+                           data_ca=data_ca)

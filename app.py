@@ -28,6 +28,8 @@ from controllers.admin_dataviz import *
 from controllers.admin_commentaire import *
 from controllers.client_liste_envies import *
 
+
+
 app = Flask(__name__)
 app.secret_key = 'une cle(token) : grain de sel(any random string)'
 
@@ -85,7 +87,7 @@ app.register_blueprint(admin_chaussure)
 app.register_blueprint(admin_declinaison_chaussure)
 app.register_blueprint(admin_commande)
 app.register_blueprint(admin_type_chaussure)
-app.register_blueprint(admin_dataviz)
+
 app.register_blueprint(admin_commentaire)
 
 

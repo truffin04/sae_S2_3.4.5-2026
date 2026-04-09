@@ -1,34 +1,44 @@
 {% extends "client/layout_client.html" %}
 {% block body %}
+<div class="container" style="max-width:600px;">
 
-<div class="m-auto p-3 border" style="width: 500px">
-    <form action="/client/coordonnee/edit_adresse" method="post">
-        <input type="hidden" name="id_adresse" value="{{ adresse.id_adresse }}"></td>
+    <h2 class="mt-3 mb-3">Modifier une adresse</h2>
 
-        <table class="table" >
-            <tr>
-                <td>Utilisateur connecté :</td>
-                <td> nom : {{ utilisateur.nom }} , login : {{ utilisateur.login }}</td>
-            </tr>
-            <tr>
-                <td>Nom Prénom (pour la livraison/facturation) :</td>
-                <td><input type="text" name="nom" required  maxlength="50" value="{{ adresse.nom }}"></td>
-            </tr>
-            <tr>
-                <td>numéro de rue et nom :</td>
-                <td><input type="text" name="rue" required  value="{{ adresse.rue }}"></td>
-            </tr>
-            <tr>
-                <td>Code postal :</td>
-                <td><input type="number" name="code_postal" required  minlength="5" maxlength="5" value="{{ adresse.code_postal }}"></td>
-            </tr>
-            <tr>
-                <td>Ville :</td>
-                <td><input type="text" name="ville" required  maxlength="50" value="{{ adresse.ville }}"></td>
-            </tr>
-        </table>
-        <button class="btn btn-primary" type="submit">Valider</button>
-    </form>
+    <div class="card">
+        <div class="card-body">
+            <p class="text-muted">
+                Utilisateur connecté : <strong>{{ utilisateur.nom }}</strong>
+                (login : {{ utilisateur.login }})
+            </p>
+
+            <form action="/client/coordonnee/edit_adresse" method="post">
+                <input type="hidden" name="id_adresse" value="{{ adresse.id_adresse }}">
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold" for="nom">Nom / prénom (pour la livraison et facturation) :</label>
+                    <input type="text" id="nom" name="nom" required maxlength="50"
+                           class="form-control" value="{{ adresse.nom }}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold" for="rue">Numéro et nom de rue :</label>
+                    <input type="text" id="rue" name="rue" required
+                           class="form-control" value="{{ adresse.rue }}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold" for="code_postal">Code postal (5 chiffres) :</label>
+                    <input type="text" id="code_postal" name="code_postal" required
+                           maxlength="5" class="form-control" value="{{ adresse.code_postal }}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold" for="ville">Ville :</label>
+                    <input type="text" id="ville" name="ville" required maxlength="50"
+                           class="form-control" value="{{ adresse.ville }}">
+                </div>
+                <button class="btn btn-success" type="submit">Valider la modification</button>
+                <a href="/client/coordonnee/show" class="btn btn-secondary ms-2">Annuler</a>
+            </form>
+        </div>
+    </div>
 
 </div>
 {% endblock %}
