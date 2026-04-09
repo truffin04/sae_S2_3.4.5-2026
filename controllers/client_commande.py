@@ -14,18 +14,22 @@ client_commande = Blueprint('client_commande', __name__,
 def client_commande_valide():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    sql = '''   SELECT ligne_panier.chaussure_id, ligne_panier.quantite, chaussure.prix_chaussure as prix, chaussure.nom_chaussure  as nom 
+    sql = '''   SELECT ligne_panier.declinaison_chaussure_id, ligne_panier.quantite, chaussure.prix_chaussure as prix, chaussure.nom_chaussure  as nom 
                 FROM ligne_panier 
-                JOIN chaussure on ligne_panier.chaussure_id = chaussure.id_chaussure
+                JOIN declinaison_chaussure 
+                ON ligne_panier.declinaison_chaussure_id  = declinaison_chaussure.id_declinaison_chaussure
+                JOIN chaussure on declinaison_chaussure.chaussure_id = chaussure.id_chaussure
                 WHERE ligne_panier.utilisateur_id = %s'''
 
     mycursor.execute(sql, (id_client,))
     chaussures_panier = mycursor.fetchall()
     print(chaussures_panier)
     if len(chaussures_panier) >= 1:
-        sql = ''' SELECT chaussure.prix_chaussure * ligne_panier.quantite as prix_total FROM ligne_panier
-                  JOIN chaussure on ligne_panier.chaussure_id = chaussure.id_chaussure
-                  WHERE ligne_panier.utilisateur_id = %s
+        sql = '''   SELECT SUM(chaussure.prix_chaussure * ligne_panier.quantite) as prix_total FROM ligne_panier
+                    JOIN declinaison_chaussure 
+                    ON ligne_panier.declinaison_chaussure_id  = declinaison_chaussure.id_declinaison_chaussure
+                    JOIN chaussure on declinaison_chaussure.chaussure_id = chaussure.id_chaussure
+                    WHERE ligne_panier.utilisateur_id = %s
                     '''
         mycursor.execute(sql, (id_client,))
         prix_dict = mycursor.fetchone()
@@ -48,42 +52,55 @@ def client_commande_valide():
 
 @client_commande.route('/client/commande/add', methods=['POST'])
 def client_commande_add():
+
+
     mycursor = get_db().cursor()
 
     # choix de(s) (l')adresse(s)
 
     id_client = session['id_user']
-    sql = ''' SELECT ligne_panier.chaussure_id, ligne_panier.quantite, chaussure.prix_chaussure
-              FROM ligne_panier
-              JOIN chaussure ON ligne_panier.chaussure_id = chaussure.id_chaussure
-              WHERE ligne_panier.utilisateur_id = %s;'''
+    sql = '''   SELECT ligne_panier.declinaison_chaussure_id, ligne_panier.quantite, chaussure.prix_chaussure
+                FROM ligne_panier
+                JOIN declinaison_chaussure 
+                ON ligne_panier.declinaison_chaussure_id  = declinaison_chaussure.id_declinaison_chaussure
+                JOIN chaussure on declinaison_chaussure.chaussure_id = chaussure.id_chaussure
+                WHERE ligne_panier.utilisateur_id = %s;'''
     mycursor.execute(sql, (id_client,))
     items_ligne_panier = mycursor.fetchall()
 
-    # if items_ligne_panier is None or len(items_ligne_panier) < 1:
-    #     flash(u'Pas d\'chaussures dans le ligne_panier', 'alert-warning')
-    #     return redirect('/client/chaussure/show')
-                                           # https://pynative.com/python-mysql-transaction-management-using-commit-rollback/
-    #a = datetime.strptime('my date', "%b %d %Y %H:%M")
+    if items_ligne_panier is None or len(items_ligne_panier) < 1:
+        flash(u'P\'chaussures dans le ligne_panier', 'alert-warning')
+        return redirect('/client/chaussure/show')
+                                               # https://pynative.com/python-mysql-transaction-management-using-commit-rollback/
+    a = datetime.now()
 
     sql = ''' INSERT INTO commande(date_achat, utilisateur_id, etat_id) VALUES (%s, %s, %s)'''
-    date_today = datetime.now().strftime('%Y-%m-%d')
-    mycursor.execute(sql, (date_today, id_client, 1))
+    mycursor.execute(sql, (a, id_client, 1))
 
     sql = ''' SELECT last_insert_id() as last_insert_id '''
     mycursor.execute(sql)
     last_id = mycursor.fetchone()
     id_nouvelle_commande = last_id['last_insert_id']
 
-
-    # numéro de la dernière commande
     for item in items_ligne_panier:
-        sql = ''' DELETE FROM ligne_panier 
-                    WHERE utilisateur_id = %s AND chaussure_id = %s'''
-        mycursor.execute(sql, (id_client, item['chaussure_id']))
+
+
+        # sql = '''   SELECT chaussure.nom_chaussure as nom, ligne_commande.quantite, ligne_commande.prix, ligne_commande.quantite * ligne_commande.prix as prix_ligne
+        #             FROM ligne_commande
+        #             JOIN declinaison_chaussure on ligne_commande.declinaison_chaussure_id = declinaison_chaussure.id_declinaison_chaussure
+        #             JOIN chaussure ON declinaison_chaussure.chaussure_id = chaussure.id_chaussure
+        #             JOIN commande ON ligne_commande.commande_id = commande.id_commande
+        #             WHERE utilisateur_id = %s AND declinaison_chaussure_id = %s'''
+        # mycursor.execute(sql, (id_client, item['declinaison_chaussure_id']))
+
 
         sql = "  INSERT INTO ligne_commande VALUES (%s, %s, %s, %s)"
-        mycursor.execute(sql, (id_nouvelle_commande, item['chaussure_id'], item['prix_chaussure'], item['quantite']))
+        mycursor.execute(sql, (id_nouvelle_commande, item['declinaison_chaussure_id'], item['prix_chaussure'], item['quantite']))
+
+        sql=''' DELETE FROM ligne_panier
+                where utilisateur_id=%s
+                '''
+        mycursor.execute(sql, (id_client,))
 
     get_db().commit()
     flash(u'Commande ajoutée','alert-success')
@@ -114,12 +131,27 @@ def client_commande_show():
     id_commande = request.args.get('id_commande', None)
     if id_commande != None:
         print(id_commande)
-        sql = ''' SELECT chaussure.nom_chaussure as nom, ligne_commande.quantite, ligne_commande.prix, ligne_commande.quantite * ligne_commande.prix as prix_ligne
-                FROM ligne_commande
-                JOIN chaussure ON ligne_commande.chaussure_id = chaussure.id_chaussure
-                JOIN commande ON ligne_commande.commande_id = commande.id_commande
-                WHERE ligne_commande.commande_id = %s
-                AND commande.utilisateur_id = %s
+        sql = '''   SELECT chaussure.nom_chaussure as nom, 
+                    ligne_commande.quantite, 
+                    ligne_commande.prix, 
+                    ligne_commande.quantite * ligne_commande.prix as prix_ligne,
+                    declinaison_chaussure.couleur_id,
+                    couleur.libelle as libelle_couleur,
+                    declinaison_chaussure.taille_id,
+                    taille.libelle as libelle_taille,
+                    (
+                        SELECT COUNT(d.id_declinaison_chaussure) 
+                        FROM declinaison_chaussure d 
+                        WHERE d.chaussure_id = chaussure.id_chaussure
+                    ) as nb_declinaisons
+                    FROM ligne_commande
+                    JOIN declinaison_chaussure on ligne_commande.declinaison_chaussure_id = declinaison_chaussure.id_declinaison_chaussure
+                    JOIN chaussure ON declinaison_chaussure.chaussure_id = chaussure.id_chaussure
+                    JOIN commande ON ligne_commande.commande_id = commande.id_commande
+                    JOIN couleur ON declinaison_chaussure.couleur_id = couleur.id_couleur
+                    JOIN taille ON declinaison_chaussure.taille_id = taille.id_taille
+                    WHERE ligne_commande.commande_id = %s
+                    AND commande.utilisateur_id = %s
             
         '''
         mycursor.execute(sql, (id_commande,id_client))

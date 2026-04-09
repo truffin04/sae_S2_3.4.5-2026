@@ -78,7 +78,7 @@ def client_panier_add():
             WHERE declinaison_chaussure.id_declinaison_chaussure=%s'''
     mycursor.execute(sql, (quantite, id_declinaison_chaussure))
     difference=mycursor.fetchone()["difference"]
-    if (difference>=0):
+    if difference>=0:
 
         requete = '''   SELECT * 
                         FROM ligne_panier

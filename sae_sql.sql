@@ -530,3 +530,22 @@ ON declinaison_chaussure.couleur_id = couleur.id_couleur
             ON declinaison_chaussure.chaussure_id = chaussure.id_chaussure
 
             GROUP BY ligne_panier.utilisateur_id,declinaison_chaussure_id,quantite,date_ajout
+
+    SELECT c1.nom_chaussure as nom,
+           ligne_commande.quantite,
+           ligne_commande.prix,
+           ligne_commande.quantite * ligne_commande.prix as prix_ligne,
+           declinaison_chaussure.couleur_id,
+           couleur.libelle as libelle_couleur,
+           declinaison_chaussure.taille_id,
+           taille.libelle as libelle_taille,
+           (SELECT COUNT(declinaison_chaussure)
+            FROM chaussure c2)
+    FROM ligne_commande
+             JOIN declinaison_chaussure on ligne_commande.declinaison_chaussure_id = declinaison_chaussure.id_declinaison_chaussure
+             JOIN chaussure as c1 ON declinaison_chaussure.chaussure_id = chaussure.id_chaussure
+             JOIN commande ON ligne_commande.commande_id = commande.id_commande
+             JOIN couleur ON declinaison_chaussure.couleur_id = couleur.id_couleur
+             JOIN taille ON declinaison_chaussure.taille_id = taille.id_taille
+    WHERE ligne_commande.commande_id = %s
+      AND commande.utilisateur_id = %s
