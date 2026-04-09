@@ -29,23 +29,12 @@
                     </select>
                 </label>
 
-                <!--===============pointures ================================-->
-                <label for="pointure_id">Type de chaussure :
-                    <select name="pointure_id" required class="form-select">
-                        <option value="">Sélectionner une pointure</option>
-                        {% for pointure in pointures %}
-                             <option value="{{ pointure.id_pointure}}"> {{ pointure.libelle_pointure }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-
-            <!--================================================================-->
                 <label for="description">description :
                     <input name="description" type="text" class="form-control" >
                 </label>
-                <label for="stock">stock :
-                    <input name="stock" type="number" class="form-control" min="0" required>
-                </label>
+{#                <label for="stock">stock :#}
+{#                    <input name="stock" type="number" class="form-control" min="0" required>#}
+{#                </label>#}
                 <label for="submit">
                     <input name="submit" type="submit" value="Ajouter" class="btn btn-primary mt-2">
                 </label>

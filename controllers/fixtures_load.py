@@ -175,7 +175,7 @@ def fct_fixtures_load():
             marque VARCHAR(30),
             disponible BOOLEAN DEFAULT TRUE,
             photo VARCHAR(256),
-            descrption TEXT,
+            description TEXT,
             CONSTRAINT fk_type_chaussure
                 FOREIGN KEY (type_chaussure_id) REFERENCES type_chaussure(id_type_chaussure)
         );

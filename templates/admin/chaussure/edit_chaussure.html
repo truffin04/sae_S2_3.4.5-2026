@@ -46,21 +46,7 @@ types_chaussure : tableau de dictionnaires
                         </select>
                     </label>
 
-                <!-- element temporaire pour modifier la pointure de la chaussure -->
 
-                <label for="pointure_id">Pointure de la chaussure:
-                    <select name="pointure_id" class="form-select">
-                            {% for pointure in pointures %}
-                                 <option value="{{ pointure.id_pointure }}" {% if pointure.id_pointure == chaussure.pointure_id %} selected {% endif %}> {{ pointure.libelle_pointure }}</option>
-                            {% endfor %}
-                        </select>
-                    </label>
-
-                    <label for="stock"> Stock de la chaussure
-
-                        <input  type="number"  min="0.0" name="stock" value="{{ chaussure.stock }}" class="form-control">
-
-                    </label>
 
                     <label for="description">Description :
                         <input name="description" type="text" value="{% if chaussure.description %}{{ chaussure.description}}{% else %}{% endif %}" class="form-control">

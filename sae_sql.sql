@@ -94,7 +94,7 @@
         fournisseur VARCHAR(100),
         marque VARCHAR(30),
         photo VARCHAR(256),
-        descrption TEXT,
+        description TEXT,
         constraint fk_type_chaussure
             foreign key (type_chaussure_id) REFERENCES type_chaussure(id_type_chaussure)
     );
