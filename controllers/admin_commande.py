@@ -34,6 +34,8 @@ GROUP BY commande.id_commande, utilisateur.login, commande.date_achat, etat.libe
 ORDER BY commande.etat_id,commande.date_achat DESC;
  '''
 
+
+
     mycursor.execute(sql_commandes)
     commandes = mycursor.fetchall()
 

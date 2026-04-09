@@ -11,7 +11,7 @@ admin_type_chaussure = Blueprint('admin_type_chaussure', __name__,
 @admin_type_chaussure.route('/admin/type-chaussure/show')
 def show_type_chaussure():
     mycursor = get_db().cursor()
-    # sql = '''         '''
+    # sql = ''' SELECT type_chaussure'''
     # mycursor.execute(sql)
     # types_chaussure = mycursor.fetchall()
     types_chaussure=[]
