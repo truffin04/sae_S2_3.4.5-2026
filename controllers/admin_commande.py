@@ -22,7 +22,7 @@ def admin_commande_show():
     utilisateur.login,
     commande.id_commande,
     commande.date_achat,
-    COUNT(ligne_commande.chaussure_id) AS nbr_chaussures,
+    COUNT(ligne_commande.declinaison_chaussure_id) AS nbr_chaussures,
     SUM(ligne_commande.prix * ligne_commande.quantite) AS prix_total,
     etat.libelle AS libelle,
     commande.etat_id
@@ -31,7 +31,7 @@ JOIN utilisateur ON commande.utilisateur_id = utilisateur.id_utilisateur
 JOIN ligne_commande ON ligne_commande.commande_id = commande.id_commande
 JOIN etat ON commande.etat_id = etat.id_etat
 GROUP BY commande.id_commande, utilisateur.login, commande.date_achat, etat.libelle, commande.etat_id
-ORDER BY commande.date_achat DESC;
+ORDER BY commande.etat_id,commande.date_achat DESC;
  '''
 
     mycursor.execute(sql_commandes)
@@ -41,25 +41,43 @@ ORDER BY commande.date_achat DESC;
     commande_adresses = None
     id_commande = request.args.get('id_commande', None)
     print(id_commande)
-    if id_commande != None:
-        sql_details = '''  SELECT
-                c.nom_chaussure AS nom,
-                lc.quantite,
-                lc.prix,
-                (lc.quantite * lc.prix) AS prix_ligne,
-                lc.commande_id AS id,
-                commande.etat_id,
-                c.id_chaussure
-            FROM ligne_commande lc
-            JOIN commande ON lc.commande_id = commande.id_commande
-            JOIN chaussure c ON lc.chaussure_id = c.id_chaussure
-            WHERE commande.id_commande = %s
-            GROUP BY lc.chaussure_id, lc.quantite, lc.prix, commande.id_commande, commande.etat_id, c.nom_chaussure, c.id_chaussure;  '''
-
-    id_commande = request.args.get('id_commande')
     if id_commande is not None:
-        mycursor.execute(sql_details, (id_commande,))
-        chaussures_commande = mycursor.fetchall()
+        sql_details = '''  SELECT
+                chaussure.nom_chaussure AS nom,
+                ligne_commande.quantite,
+                ligne_commande.prix,
+                (ligne_commande.quantite * ligne_commande.prix) AS prix_ligne,
+                ligne_commande.commande_id AS id,
+                commande.etat_id
+            FROM ligne_commande 
+            JOIN commande ON ligne_commande.commande_id = commande.id_commande
+            JOIN declinaison_chaussure on ligne_commande.declinaison_chaussure_id=declinaison_chaussure.id_declinaison_chaussure
+            JOIN chaussure  ON declinaison_chaussure.chaussure_id = chaussure.id_chaussure
+            WHERE commande.id_commande = %s
+            GROUP BY ligne_commande.quantite, ligne_commande.prix, commande.id_commande, commande.etat_id, chaussure.nom_chaussure, chaussure.id_chaussure;  '''
+
+        sql_adresse = '''          SELECT a1.nom as nom_livraison,
+           a1.rue as rue_livraison,
+           a1.code_postal as code_postal_livraison,
+           a1.ville as ville_livraison,
+           a2.nom as nom_facturation,
+           a2.rue as rue_facturation,
+           a2.code_postal as code_postal_facturation,
+           a2.ville as ville_facturation
+            FROM adresse a1
+            JOIN commande ON commande.adresse_livraison_id = a1.id_adresse
+             JOIN adresse a2 ON a2.id_adresse = commande.adresse_facturation_id
+                                WHERE commande.id_commande = %s
+                            '''
+
+
+        id_commande = request.args.get('id_commande')
+        if id_commande is not None:
+            mycursor.execute(sql_details, (id_commande,))
+            chaussures_commande = mycursor.fetchall()
+
+            mycursor.execute(sql_adresse, (id_commande,))
+            commande_adresses = mycursor.fetchall()
 
     return render_template('admin/commandes/show.html'
                            , commandes=commandes

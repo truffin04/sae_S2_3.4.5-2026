@@ -140,9 +140,9 @@ def client_commande_show():
                     declinaison_chaussure.taille_id,
                     taille.libelle as libelle_taille,
                     (
-                        SELECT COUNT(d.id_declinaison_chaussure) 
-                        FROM declinaison_chaussure d 
-                        WHERE d.chaussure_id = chaussure.id_chaussure
+                        SELECT COUNT(d2.id_declinaison_chaussure) 
+                        FROM declinaison_chaussure d2
+                        WHERE d2.chaussure_id = chaussure.id_chaussure
                     ) as nb_declinaisons
                     FROM ligne_commande
                     JOIN declinaison_chaussure on ligne_commande.declinaison_chaussure_id = declinaison_chaussure.id_declinaison_chaussure
