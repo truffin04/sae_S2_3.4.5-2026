@@ -14,6 +14,8 @@ def add_declinaison_chaussure():
     id_chaussure=request.args.get('id_chaussure')
     mycursor = get_db().cursor()
 
+
+
     sql=''' SELECT chaussure.id_chaussure,
             chaussure.photo as image
             FROM chaussure
@@ -21,19 +23,7 @@ def add_declinaison_chaussure():
     mycursor.execute(sql, (id_chaussure,))
     chaussure=mycursor.fetchone()
 
-    sql=''' SELECT id_couleur,
-            libelle 
-            FROM couleur
-            '''
-    mycursor.execute(sql)
-    couleurs=mycursor.fetchall()
 
-    sql=''' SELECT id_taille,
-            libelle 
-            FROM taille
-        '''
-    mycursor.execute(sql)
-    tailles=mycursor.fetchall()
 
     sql = '''   SELECT COUNT(*) as nb
                 FROM declinaison_chaussure
@@ -42,7 +32,7 @@ def add_declinaison_chaussure():
                 AND taille.id_taille = 1
                 AND declinaison_chaussure.disponible=TRUE'''
     mycursor.execute(sql, (id_chaussure,))
-    d_taille_uniq = 1 if mycursor.fetchone()['nb'] > 0 else None
+    d_taille_uniq = 1 if mycursor.fetchone()['nb'] > 0 else 0
 
 
     sql = '''   SELECT COUNT(*) as nb
@@ -52,7 +42,43 @@ def add_declinaison_chaussure():
                 AND couleur.id_couleur = 1
                 AND declinaison_chaussure.disponible=TRUE'''
     mycursor.execute(sql, (id_chaussure,))
-    d_couleur_uniq = 1 if mycursor.fetchone()['nb'] > 0 else None
+    d_couleur_uniq = 1 if mycursor.fetchone()['nb'] > 0 else 0
+
+    sql=''' SELECT COUNT(id_declinaison_chaussure) as nbr
+            FROM declinaison_chaussure 
+            WHERE declinaison_chaussure.chaussure_id=%s
+            AND disponible=TRUE'''
+    mycursor.execute(sql,(id_chaussure,))
+    nbr_declinaisons=mycursor.fetchone()['nbr']
+
+
+
+
+
+    sql=''' SELECT id_couleur,
+            libelle 
+            FROM couleur
+            '''
+
+    if  nbr_declinaisons!=0 and d_couleur_uniq!=1:
+        sql+=" WHERE id_couleur != 1"
+    mycursor.execute(sql)
+    couleurs=mycursor.fetchall()
+
+    print(sql)
+    sql=''' SELECT id_taille,
+            libelle 
+            FROM taille
+        '''
+
+    if  nbr_declinaisons!=0 and d_taille_uniq!=1:
+        sql+=" WHERE id_taille != 1"
+
+    mycursor.execute(sql)
+    tailles=mycursor.fetchall()
+
+
+
 
 
     return render_template('admin/chaussure/add_declinaison_chaussure.html'
@@ -94,6 +120,7 @@ def valid_add_declinaison_chaussure():
         sql=''' INSERT INTO declinaison_chaussure (stock,chaussure_id,taille_id,couleur_id)
                 VALUES (%s,%s,%s,%s)'''
         mycursor.execute(sql, (stock,id_chaussure,taille,couleur))
+        flash('déclinaison ajoutée, taille_id = '+str(taille)+' - couleur_id : '+str(couleur)+' - stock : '+str(stock), 'alert-success')
 
     get_db().commit()
     return redirect('/admin/chaussure/edit?id_chaussure=' + id_chaussure)
@@ -120,23 +147,45 @@ def edit_declinaison_chaussure():
     declinaison_chaussure=mycursor.fetchone()
 
 
+    d_taille_uniq=1 if declinaison_chaussure['taille_id']==1 else 0
+    d_couleur_uniq=1 if declinaison_chaussure['couleur_id']==1 else 0
+
+
+    sql=''' SELECT COUNT(id_declinaison_chaussure) as nbr
+            FROM declinaison_chaussure
+            WHERE declinaison_chaussure.chaussure_id=(  SELECT d2.chaussure_id
+                                                        FROM declinaison_chaussure AS d2
+                                                        WHERE d2.id_declinaison_chaussure=%s
+            )
+            AND disponible=TRUE'''
+    mycursor.execute(sql,(id_declinaison_chaussure,))
+    nbr_declinaisons=mycursor.fetchone()['nbr']
+
+    print(nbr_declinaisons," ",str(d_taille_uniq),"-"*100)
+
     sql=''' SELECT id_couleur,
             libelle 
             FROM couleur
             '''
+
+    if d_couleur_uniq==0 and nbr_declinaisons>1:
+        sql+="WHERE id_couleur != 1"
     mycursor.execute(sql)
     couleurs=mycursor.fetchall()
 
     sql=''' SELECT id_taille,
-            libelle
-            FROM taille'''
+            libelle 
+            FROM taille
+        '''
+
+    if d_taille_uniq==0 and nbr_declinaisons>1:
+        sql+="WHERE id_taille != 1"
     mycursor.execute(sql)
-    tailles=mycursor.fetchall()
+    tailles = mycursor.fetchall()
 
     print(declinaison_chaussure)
 
-    d_taille_uniq=1 if declinaison_chaussure['taille_id']==1 else 0
-    d_couleur_uniq=1 if declinaison_chaussure['couleur_id']==1 else 0
+
     return render_template('admin/chaussure/edit_declinaison_chaussure.html'
                            , tailles=tailles
                            , couleurs=couleurs
@@ -174,12 +223,8 @@ def valid_edit_declinaison_chaussure():
                  VALUES (%s, %s, %s, %s, TRUE)'''
         mycursor.execute(sql, (stock, taille_id, couleur_id, id_chaussure))
 
-        # sql=''' UPDATE declinaison_chaussure
-        #         SET declinaison_chaussure.stock=%s
-        #         ,declinaison_chaussure.taille_id=%s,
-        #         declinaison_chaussure.couleur_id=%s
-        #         WHERE declinaison_chaussure.id_declinaison_chaussure=%s'''
-        # mycursor.execute(sql,(stock,taille_id,couleur_id,id_declinaison_chaussure))
+
+        flash(u'declinaison déja commandée, l\'ancienne déclinaison a été rendu indisponible, id_declinaison_chaussure : ' + str(id_declinaison_chaussure), 'alert-success')
     else:
         sql = '''   UPDATE declinaison_chaussure
                     SET stock = %s, 
@@ -187,10 +232,10 @@ def valid_edit_declinaison_chaussure():
                     couleur_id = %s
                     WHERE id_declinaison_chaussure = %s'''
         mycursor.execute(sql, (stock, taille_id, couleur_id, id_declinaison_chaussure))
+        message = u'declinaison_chaussure modifié , id:' + str(id_declinaison_chaussure) + '- stock :' + str(
+            stock) + ' - taille_id:' + str(taille_id) + ' - couleur_id:' + str(couleur_id)
+        flash(message, 'alert-success')
     get_db().commit()
-
-    message = u'declinaison_chaussure modifié , id:' + str(id_declinaison_chaussure) + '- stock :' + str(stock) + ' - taille_id:' + str(taille_id) + ' - couleur_id:' + str(couleur_id)
-    flash(message, 'alert-success')
     return redirect('/admin/chaussure/edit?id_chaussure=' + str(id_chaussure))
 
 
@@ -198,7 +243,6 @@ def valid_edit_declinaison_chaussure():
 def admin_delete_declinaison_chaussure():
     id_declinaison_chaussure = request.args.get('id_declinaison_chaussure','')
     id_chaussure = request.args.get('id_chaussure','')
-    print("*"*50, id_chaussure)
     mycursor = get_db().cursor()
 
     sql=''' SELECT COUNT(*) as nb FROM ligne_commande
@@ -208,14 +252,16 @@ def admin_delete_declinaison_chaussure():
     if compte==0:
         sql=''' DELETE FROM declinaison_chaussure
                 WHERE declinaison_chaussure.id_declinaison_chaussure=%s '''
+        flash(u'declinaison supprimée, id_declinaison_chaussure : ' + str(id_declinaison_chaussure), 'alert-success')
         mycursor.execute(sql,(id_declinaison_chaussure,))
     else:
         sql='''UPDATE declinaison_chaussure
                SET declinaison_chaussure.disponible=FALSE
                 WHERE declinaison_chaussure.id_declinaison_chaussure=%s '''
         mycursor.execute(sql,(id_declinaison_chaussure,))
+        flash(u'declinaison déja dans une commande, la déclinaison a été rendu indispoible, id_declinaison_chaussure : ' + str(id_declinaison_chaussure), 'alert-success')
 
     get_db().commit()
 
-    flash(u'declinaison supprimée, id_declinaison_chaussure : ' + str(id_declinaison_chaussure),  'alert-success')
+
     return redirect('/admin/chaussure/edit?id_chaussure=' + str(id_chaussure))
