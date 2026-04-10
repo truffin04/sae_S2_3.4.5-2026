@@ -98,11 +98,13 @@ def delete_chaussure():
     sql = '''   SELECT COUNT(declinaison_chaussure.id_declinaison_chaussure) as nb_declinaison
                 FROM declinaison_chaussure
                 WHERE declinaison_chaussure.chaussure_id=%s'''
+
+
     mycursor.execute(sql, id_chaussure)
     nb_declinaison = mycursor.fetchone()
     print(nb_declinaison)
     if nb_declinaison['nb_declinaison'] > 0:
-        message= u'il y a des declinaisons dans cet chaussure : vous ne pouvez pas le supprimer'
+        message= u'il y a des declinaisons dans cet chaussure ou alors cette chaussure est utilisée dans des lignes de commandes ou de panier : vous ne pouvez pas le supprimer'
         flash(message, 'alert-warning')
     else:
         sql = '''   SELECT chaussure.photo as image

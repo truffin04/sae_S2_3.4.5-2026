@@ -21,7 +21,7 @@ def client_commande_valide():
             WHERE declinaison_chaussure.disponible=FALSE'''
     mycursor.execute(sql)
     if mycursor.fetchone()['nb']>0:
-        flash("une des déclinaisons de chaussure que vous avez selectionné n'est plus dispoible", "alert-warning")
+        flash("une des déclinaisons de chaussure que vous avez selectionné n'est plus disponible", "alert-warning")
         return redirect("/client/chaussure/show")
     sql = '''   SELECT ligne_panier.declinaison_chaussure_id, ligne_panier.quantite, declinaison_chaussure.prix_declinaison as prix, chaussure.nom_chaussure  as nom 
                 FROM ligne_panier 

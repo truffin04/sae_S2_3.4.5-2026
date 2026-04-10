@@ -107,11 +107,23 @@ def fct_fixtures_load():
     mycursor.execute(sql)
 
     sql = '''
-        INSERT INTO commande (date_achat, utilisateur_id, etat_id) VALUES
-        ('2024-01-10', 2, 1),
-        ('2024-01-12', 2, 3),
-        ('2024-01-15', 3, 2),
-        ('2024-01-20', 3, 4);
+INSERT INTO commande (date_achat, utilisateur_id, etat_id) VALUES
+('2024-03-01', 2, 1),
+('2024-03-02', 2, 2),
+('2024-03-03', 2, 3),
+('2024-03-04', 2, 4),
+('2024-03-05', 2, 1),
+('2024-03-06', 2, 2),
+('2024-03-07', 2, 3),
+('2024-03-08', 2, 4),
+('2024-03-01', 3, 1),
+('2024-03-02', 3, 2),
+('2024-03-03', 3, 3),
+('2024-03-04', 3, 4),
+('2024-03-05', 3, 1),
+('2024-03-06', 3, 2),
+('2024-03-07', 3, 3),
+('2024-03-08', 3, 4);
     '''
     mycursor.execute(sql)
 
@@ -184,7 +196,7 @@ def fct_fixtures_load():
 
     sql = '''
     INSERT INTO chaussure (nom_chaussure, sexe, entretien, prix_chaussure, type_chaussure_id, fournisseur, marque, photo) VALUES
-    ('Basket violette',              'femme',   'neuf', 79.99,  1, 'BFl',  'NILE',   'basket_f_violette_rose.jpg'),
+    ('Basket de coureur',              'femme',   'neuf', 79.99,  1, 'BFl',  'NILE',   'basket_f_violette_rose.jpg'),
     ('Basket Adidas',                'homme',   'neuf', 49.99,  1, 'BFL',  'Laco',   'basket_h_addidas.png'),
     ('Basket unisexe',               'unisexe', 'neuf', 99.99,  1, 'BFL',  'uni',    'basket_uni_blanche_noire.png'),
     ('Basket rose',                  'femme',   'neuf', 74.99,  1, 'BFl',  'Laco',   'baskets_f_rose.jpg'),
@@ -221,29 +233,32 @@ def fct_fixtures_load():
     # couleur_id : 1=couleur unique, 2=violet, 3=blanc, 4=rose, 5=marron, 6=brun, 7=noir, 8=rouge, 9=bleu, 10=orange
     # taille_id  : 1=taille unique, 2=35, 3=36, 4=37, 5=38, 6=39, 7=40, 8=41, ...
     sql = '''
-        INSERT INTO declinaison_chaussure (stock, prix_declinaison, chaussure_id, taille_id, couleur_id) VALUES
-        (50, 79.99,  1, 1, 1),   -- Basket violette        : taille unique, violet
-        (5,  49.99,  2, 1, 1),   -- Basket Adidas          : taille unique, noir
-        (6,  99.99,  3, 1, 1),   -- Basket unisexe         : taille unique, blanc
-        (4,  74.99,  4, 1, 1),   -- Basket rose            : taille unique, rose
-        (7,  64.99,  5, 1, 1),   -- Botte marron           : taille unique, marron
-        (3,  74.99,  6, 1, 1),   -- Botte brune            : taille unique, brun
-        (9,  566.99, 7, 1, 1),   -- Classique noire        : taille unique, noir
-        (14, 249.99, 8, 1, 1),   -- Classique rouge        : taille unique, rouge
-        (25, 290.99, 9, 1, 1),   -- Classique brune        : taille unique, brun
-        (18, 229.99, 10, 1, 1),  -- Classique marron       : taille unique, marron
-        (12, 98.99,  11, 5, 8),  -- Ville noire            : taille unique, noir
-        (8,  98.99,  11, 3, 4),  -- Ville noire            : taille unique, bleu
-        (5,  98.99,  11, 2, 6),  -- Ville noire            : taille unique, marron
-        (26, 99.99,  12, 4, 1),  -- Rando rose taille 37   : couleur unique
-        (14, 99.99,  12, 5, 1),  -- Rando rose taille 38   : couleur unique
-        (8,  99.99,  12, 6, 1),  -- Rando rose taille 39   : couleur unique
-        (2,  89.99,  13, 1, 7),  -- Rando noire            : taille unique, noir
-        (41, 79.69,  14, 1, 9),  -- Ville bleue            : taille unique, bleu
-        (9,  69.99,  15, 7, 10), -- Ville orange taille 40 : orange
-        (4,  69.99,  15, 8, 10), -- Ville orange taille 41 : orange
-        (11, 69.99,  15, 7, 7),  -- Ville orange taille 40 : noir
-        (6,  69.99,  15, 8, 7);  -- Ville orange taille 41 : noir
+    INSERT INTO declinaison_chaussure (stock, prix_declinaison, chaussure_id, taille_id, couleur_id) VALUES
+    -- Basket violette (id 1) - taille ET couleur unique
+    (50, 79.99, 1, 1, 7),
+    (50, 79.99, 1, 1, 6),-- violet
+    (5, 49.99, 2, 4, 5),   -- noir
+    (5, 49.99, 2, 2, 9),
+    (6, 99.99, 3, 1, 1),   -- blanc
+    (4, 74.99, 4, 1, 1),   -- rose
+    (7, 64.99, 5, 1, 1),   -- marron
+    (3, 74.99, 6, 1, 1),   -- brun
+    (9, 566.99, 7, 1, 1),  -- noir
+    (14, 249.99, 8, 1, 1), -- rouge
+    (25, 290.99, 9, 1, 1), -- brun
+    (18, 229.99, 10, 1, 1), -- marron
+    (12, 98.99, 11, 5, 8),  -- noir
+    (8,  98.99, 11, 3, 4),  -- bleu
+    (5,  98.99, 11, 2, 6),  -- marron
+    (26, 99.99, 12, 3, 3),  -- taille 37, rose
+    (14, 99.99, 12, 4, 8),  -- taille 38, rose
+    (8,  99.99, 12, 5, 4),  -- taille 39, rose
+    (2, 89.99, 13, 1, 6),   -- noir
+    (41, 79.69, 14, 1, 8),  -- bleu
+    (9,  69.99, 15, 6, 2),  -- taille 40, orange
+    (4,  69.99, 15, 7, 5),  -- taille 41, orange
+    (11, 69.99, 15, 6, 8),  -- taille 40, noir
+    (6,  69.99, 15, 7, 6);  -- taille 41, noir
     '''
     mycursor.execute(sql)
 
@@ -263,14 +278,52 @@ def fct_fixtures_load():
     mycursor.execute(sql)
 
     sql = '''
-    INSERT INTO ligne_commande (commande_id, declinaison_chaussure_id, prix, quantite) VALUES
-    (1, 1,  79.99, 9),
-    (1, 4,  74.99, 5),
-    (2, 2,  49.99, 1),
-    (3, 11, 98.99, 1),
-    (3, 12, 99.99, 8),
-    (4, 14, 79.69, 1),
-    (4, 15, 69.99, 1);
+
+INSERT INTO ligne_commande (commande_id, declinaison_chaussure_id, prix, quantite) VALUES
+-- CHAUSSURE 1 (boosté)
+(1, 1, 79.99, 10),
+(8, 1, 79.99, 8),
+(15, 1, 79.99, 12),
+
+-- CHAUSSURE 2 (boosté)
+(1, 2, 49.99, 9),
+(9, 2, 49.99, 11),
+(15, 2, 49.99, 7),
+
+-- CHAUSSURE 11 (boosté)
+(5, 11, 98.99, 12),
+(12, 11, 98.99, 9),
+
+-- CHAUSSURE 12 (boosté)
+(6, 12, 99.99, 10),
+(13, 12, 99.99, 8),
+
+-- le reste reste "normal"
+(1, 3, 99.99, 1),
+(2, 4, 74.99, 1),
+(2, 5, 64.99, 2),
+(3, 6, 74.99, 1),
+(3, 7, 566.99, 1),
+(4, 8, 249.99, 1),
+(4, 9, 290.99, 1),
+(5, 10, 229.99, 2),
+(6, 13, 89.99, 1),
+(7, 14, 79.69, 1),
+(7, 15, 69.99, 2),
+(8, 3, 99.99, 2),
+(8, 5, 64.99, 1),
+(9, 4, 74.99, 1),
+(10, 6, 74.99, 1),
+(10, 7, 566.99, 1),
+(11, 8, 249.99, 2),
+(11, 9, 290.99, 1),
+(12, 10, 229.99, 1),
+(12, 13, 89.99, 2),
+(13, 14, 79.69, 2),
+(14, 15, 69.99, 1),
+(15, 3, 99.99, 1),
+(16, 4, 74.99, 2),
+(16, 5, 64.99, 1);
     '''
     mycursor.execute(sql)
 

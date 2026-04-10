@@ -228,7 +228,9 @@ def valid_edit_declinaison_chaussure():
             WHERE ligne_panier.declinaison_chaussure_id=%s'''
     mycursor.execute(sql, (id_declinaison_chaussure,))
     compte+= int(mycursor.fetchone()['nb'] )
-    if compte==0:
+
+    print(compte, ' oo'*50)
+    if compte>0:
 
         sql=''' UPDATE declinaison_chaussure
                 SET declinaison_chaussure.disponible=FALSE
@@ -236,9 +238,15 @@ def valid_edit_declinaison_chaussure():
 
         mycursor.execute(sql, (id_declinaison_chaussure,))
 
-        sql = '''INSERT INTO declinaison_chaussure (stock, taille_id, couleur_id, chaussure_id, disponible)
+        sql=''' SELECT declinaisonc_chaussure.prix_declinaison FROM declinaison_chaussure
+                WHERE declinaison_chaussure.id_declinaison_chaussure=%s'''
+
+        mycursor.execute(sql, (id_declinaison_chaussure,))
+        prix = mycursor.fetchone()['prix_declinaison_chaussure']
+
+        sql = '''INSERT INTO declinaison_chaussure (stock, taille_id, couleur_id, chaussure_id, prix_declinaison_chaussure, disponible)
                  VALUES (%s, %s, %s, %s, TRUE)'''
-        mycursor.execute(sql, (stock, taille_id, couleur_id, id_chaussure))
+        mycursor.execute(sql, (stock, taille_id, couleur_id, prix,id_chaussure))
 
 
         flash(u'declinaison déja commandée, l\'ancienne déclinaison a été rendu indisponible, id_declinaison_chaussure : ' + str(id_declinaison_chaussure), 'alert-success')
