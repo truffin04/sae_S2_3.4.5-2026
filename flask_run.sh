@@ -15,7 +15,7 @@
  sed -i "s/password=.*/password=\"${PASSWORD}\",/g" connexion_db.py
  sed -i "s/database=.*/database=\"${DATABASE}\",/g" connexion_db.py
 
- projet=$(ls -l sae_sql.sql)
+ projet=$(ls -l sql_projet.sql)
  if [ $? -ne 0 ]
      then
      echo -e "\033[0;31m \n* pas de fichier sae_sql.sql \033[0m"
@@ -23,7 +23,7 @@
      if [ "${nb_fic_sql}" -eq "1" ]
      then
          NOM_FIC_SQL=$(echo *.sql)
-         cp "$NOM_FIC_SQL" sae_sql.sql
+         cp "$NOM_FIC_SQL" sql_projet.sql
          echo -e "\033[0;32m \n* fichier copier $NOM_FIC_SQL sae_sql.sql \033[0m"
      else
          echo -e "\033[0;31m \n* pas de fichier ****.sql \033[0m"
@@ -35,13 +35,13 @@
 
 
  echo "DROP DATABASE  IF EXISTS ${DATABASE}; CREATE DATABASE ${DATABASE};" | mysql --user=${LOGIN} --password=${PASSWORD} --host=${HOST} ${DATABASE}
- mysql --user=${LOGIN} --password=${PASSWORD} --host=${HOST} ${DATABASE} < sae_sql.sql
+ mysql --user=${LOGIN} --password=${PASSWORD} --host=${HOST} ${DATABASE} < sql_projet.sql
 
  echo "mysql --user=${LOGIN} --password=${PASSWORD} --host=${HOST} ${DATABASE}" > connect.sh
  chmod a+x connect.sh
  gnome-terminal --tab -- ./connect.sh  &
 
- xed sae_sql.sql app.py &
+ xed sql_projet.sql app.py &
 
 
 #python app.py
