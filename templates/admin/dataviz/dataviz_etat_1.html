@@ -164,6 +164,80 @@ var Chart2 = new Chart(ctx2, {
 });
     </script>
 
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <h2>Répartition des ventes par couleur</h2>
+
+
+<canvas id="pie-couleurs"></canvas>
+
+<script>
+var labels = {{ labels3 | safe }};
+var data = {{ values3 | safe }};
+
+// couleurs simples (qui correspondent à peu près)
+var colors = [];
+
+for (var i = 0; i < labels.length; i++) {
+    if (labels[i] == "rouge") colors.push("red");
+    else if (labels[i] == "bleu") colors.push("blue");
+    else if (labels[i] == "noir") colors.push("black");
+    else if (labels[i] == "blanc") colors.push("lightgray");
+    else if (labels[i] == "rose") colors.push("pink");
+    else if (labels[i] == "violet") colors.push("purple");
+    else if (labels[i] == "orange") colors.push("orange");
+    else if (labels[i] == "marron" || labels[i] == "brun") colors.push("brown");
+    else colors.push("gray");
+}
+
+new Chart(document.getElementById("pie-couleurs"), {
+    type: 'pie',
+    data: {
+        labels: labels,
+        datasets: [{
+            data: data,
+            backgroundColor: colors
+        }]
+    }
+});
+</script>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    
+    <h2>Répartition des ventes par taille</h2>
+<canvas id="pie-tailles"></canvas>
+
+<script>
+var labelsTailles = {{ labels4 | safe }};
+var dataTailles = {{ values4 | safe }};
+
+// couleurs simples (pas besoin de logique compliquée ici)
+var colorsTailles = [
+    "#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9",
+    "#c45850", "#faf24c", "#6a6ce7", "#55f68f",
+    "#D0c309", "#c45000"
+];
+
+new Chart(document.getElementById("pie-tailles"), {
+    type: 'pie',
+    data: {
+        labels: labelsTailles,
+        datasets: [{
+            data: dataTailles,
+            backgroundColor: colorsTailles
+        }]
+    }
+});
+</script>
+
 {#    <a href="https://www.youtube.com/watch?v=TcwYXIIM-fs" target="_blank">dataviz, c'est quoi en 1 mn ? (juste la première minute)</a>#}
 {#    <br>#}
 {#    <a href="https://www.youtube.com/watch?v=bZDnSUjfMt8" target="_blank">dataviz, c'est quoi ? (juste la première minute)</a>#}

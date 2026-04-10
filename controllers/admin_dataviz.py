@@ -54,6 +54,41 @@ def show_type_chaussure_stock():
     values2 = [float(row['total_vendu']) for row in datas_show2]
 
 
+    sql=''' SELECT couleur.libelle,
+            SUM(quantite) as nb_ventes
+            FROM couleur
+            JOIN declinaison_chaussure ON couleur.id_couleur = declinaison_chaussure.couleur_id
+            JOIN ligne_commande ON declinaison_chaussure.id_declinaison_chaussure = ligne_commande.declinaison_chaussure_id
+            WHERE NOT id_couleur=1
+            GROUP BY couleur.libelle
+            ORDER BY nb_ventes DESC;'''
+    mycursor.execute(sql)
+    datas_show2=mycursor.fetchall()
+
+    labels3= [str(row['libelle']) for row in datas_show2]
+    values3 = [float(row['nb_ventes']) for row in datas_show2]
+
+    sql = '''   SELECT taille.libelle,
+                SUM(ligne_commande.quantite) AS nb_ventes
+                FROM taille
+                JOIN declinaison_chaussure
+                ON taille.id_taille = declinaison_chaussure.taille_id
+                JOIN ligne_commande
+                ON declinaison_chaussure.id_declinaison_chaussure = ligne_commande.declinaison_chaussure_id
+                WHERE taille.id_taille != 1
+                GROUP BY taille.libelle
+                ORDER BY nb_ventes DESC;'''
+    mycursor.execute(sql)
+    datas_show2=mycursor.fetchall()
+
+    labels4= [str(row['libelle']) for row in datas_show2]
+    values4 = [float(row['nb_ventes']) for row in datas_show2]
+
+
+
+
+
+
     sql=''''''
 
     print(len(labels2), len(values2))
@@ -63,7 +98,11 @@ def show_type_chaussure_stock():
                            , labels=labels
                            , values=values
                            , labels2=labels2,
-                            values2=values2)
+                            values2=values2
+                           ,labels3=labels3,
+                           values3=values3,
+                           labels4=labels4,
+                           values4=values4)
 
 
 # sujet 3 : adresses

@@ -555,12 +555,26 @@ ORDER BY total_vendu DESC;
 
 
 SELECT couleur.libelle,
-       COUNT(id_declinaison_chaussure)*quantite
+SUM(quantite) as nb_ventes
 FROM couleur
 JOIN declinaison_chaussure ON couleur.id_couleur = declinaison_chaussure.couleur_id
 JOIN ligne_commande ON declinaison_chaussure.id_declinaison_chaussure = ligne_commande.declinaison_chaussure_id
 WHERE NOT id_couleur=1
-GROUP BY couleur.libelle,quantite;
+GROUP BY couleur.libelle
+ORDER BY nb_ventes DESC;
+
+
+SELECT taille.libelle,
+SUM(ligne_commande.quantite) AS nb_ventes
+FROM taille
+JOIN declinaison_chaussure
+ON taille.id_taille = declinaison_chaussure.taille_id
+JOIN ligne_commande
+ON declinaison_chaussure.id_declinaison_chaussure = ligne_commande.declinaison_chaussure_id
+WHERE taille.id_taille != 1
+GROUP BY taille.libelle
+ORDER BY nb_ventes DESC;
+
 
 
 
