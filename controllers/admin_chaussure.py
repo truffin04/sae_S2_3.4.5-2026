@@ -228,6 +228,12 @@ def valid_edit_chaussure():
                 WHERE chaussure.id_chaussure = %s'''
     mycursor.execute(sql, (nom, image_nom, prix, type_chaussure_id,description,id_chaussure))
 
+    sql='''UPDATE declinaison_chaussure
+            SET declinaison_chaussure.prix_declinaison=%s
+            WHERE declinaison_chaussure.chaussure_id=%s
+            AND declinaison_chaussure.disponible=TRUE'''
+    mycursor.execute(sql, (prix, id_chaussure,))
+
     get_db().commit()
     if image_nom is None:
         image_nom = ''

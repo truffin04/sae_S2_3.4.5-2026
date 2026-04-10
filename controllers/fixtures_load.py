@@ -183,22 +183,22 @@ def fct_fixtures_load():
     mycursor.execute(sql)
 
     sql = '''
-        INSERT INTO chaussure (nom_chaussure, sexe, entretien, prix_chaussure, type_chaussure_id, fournisseur, marque, photo) VALUES
-        ('Basket violette',              'femme',   'neuf', 79.99,  1, 'BFl',  'NILE',   'basket_f_violette_rose.jpg'),
-        ('Basket Adidas',                'homme',   'neuf', 49.99,  1, 'BFL',  'Laco',   'basket_h_addidas.png'),
-        ('Basket unisexe',               'unisexe', 'neuf', 99.99,  1, 'BFL',  'uni',    'basket_uni_blanche_noire.png'),
-        ('Basket rose',                  'femme',   'neuf', 74.99,  1, 'BFl',  'Laco',   'baskets_f_rose.jpg'),
-        ('Botte marron',                 'femme',   'neuf', 64.99,  2, 'BOFL', 'bolt',   'botte_f_marron.jpg'),
-        ('Botte brune unisexe',          'unisexe', 'neuf', 74.99,  2, 'BOLF', 'bolt',   'botte_uni_brune.png'),
-        ('Chaussure classique noire',    'femme',   'neuf', 566.99, 3, 'CHL',  'conver', 'chaussure_classique_f_noire.jpg'),
-        ('Chaussure classique rouge',    'femme',   'neuf', 249.99, 3, 'CHL',  'conver', 'chaussure_classique_f_rouge.png'),
-        ('Chaussure classique brune',    'homme',   'neuf', 290.99, 3, 'CHL',  'conver', 'chaussure_classique_h_brune.png'),
-        ('Chaussure classique marron',   'homme',   'neuf', 229.99, 3, 'CHL',  'conver', 'chaussure_classique_h_maron_foncée.png'),
-        ('Chaussure de ville noire',     'femme',   'neuf', 98.99,  4, 'VHL',  'villy',  'chaussure_de_ville_f_noire.png'),
-        ('Chaussure de randonnée rose',  'femme',   'neuf', 99.99,  5, 'RHL',  'randim', 'chaussure_rando_f_rose.png'),
-        ('Chaussure de randonnée noire', 'homme',   'neuf', 89.99,  5, 'RHL',  'randim', 'chaussure_rando_h_noire.png'),
-        ('Chaussure de ville bleue',     'unisexe', 'neuf', 79.69,  4, 'VHL',  'villy',  'chaussure_ville_uni_bleue.png'),
-        ('Chaussure de ville orange',    'unisexe', 'neuf', 69.99,  4, 'VHL',  'villy',  'chaussure_ville_uni_orange.png');
+    INSERT INTO chaussure (nom_chaussure, sexe, entretien, prix_chaussure, type_chaussure_id, fournisseur, marque, photo) VALUES
+    ('Basket violette',              'femme',   'neuf', 79.99,  1, 'BFl',  'NILE',   'basket_f_violette_rose.jpg'),
+    ('Basket Adidas',                'homme',   'neuf', 49.99,  1, 'BFL',  'Laco',   'basket_h_addidas.png'),
+    ('Basket unisexe',               'unisexe', 'neuf', 99.99,  1, 'BFL',  'uni',    'basket_uni_blanche_noire.png'),
+    ('Basket rose',                  'femme',   'neuf', 74.99,  1, 'BFl',  'Laco',   'baskets_f_rose.jpg'),
+    ('Botte marron',                 'femme',   'neuf', 64.99,  2, 'BOFL', 'bolt',   'botte_f_marron.jpg'),
+    ('Botte brune unisexe',          'unisexe', 'neuf', 74.99,  2, 'BOLF', 'bolt',   'botte_uni_brune.png'),
+    ('Chaussure classique noire',    'femme',   'neuf', 566.99, 3, 'CHL',  'conver', 'chaussure_classique_f_noire.jpg'),
+    ('Chaussure classique rouge',    'femme',   'neuf', 249.99, 3, 'CHL',  'conver', 'chaussure_classique_f_rouge.png'),
+    ('Chaussure classique brune',    'homme',   'neuf', 290.99, 3, 'CHL',  'conver', 'chaussure_classique_h_brune.png'),
+    ('Chaussure classique marron',   'homme',   'neuf', 229.99, 3, 'CHL',  'conver', 'chaussure_classique_h_maron_foncée.png'),
+    ('Chaussure abibas',     'femme',   'neuf', 98.99,  4, 'VHL',  'villy',  'chaussure_de_ville_f_noire.png'),
+    ('Chaussure de randonnée extra',  'femme',   'neuf', 99.99,  5, 'RHL',  'randim', 'chaussure_rando_f_rose.png'),
+    ('Chaussure de randonnée noire', 'homme',   'neuf', 89.99,  5, 'RHL',  'randim', 'chaussure_rando_h_noire.png'),
+    ('Chaussure de ville bleue',     'unisexe', 'neuf', 79.69,  4, 'VHL',  'villy',  'chaussure_ville_uni_bleue.png'),
+    ('Chaussure de ville mega',    'unisexe', 'neuf', 69.99,  4, 'VHL',  'villy',  'chaussure_ville_uni_orange.png');
     '''
     mycursor.execute(sql)
 
@@ -232,9 +232,9 @@ def fct_fixtures_load():
         (14, 249.99, 8, 1, 1),   -- Classique rouge        : taille unique, rouge
         (25, 290.99, 9, 1, 1),   -- Classique brune        : taille unique, brun
         (18, 229.99, 10, 1, 1),  -- Classique marron       : taille unique, marron
-        (12, 98.99,  11, 1, 1),  -- Ville noire            : taille unique, noir
-        (8,  98.99,  11, 1, 1),  -- Ville noire            : taille unique, bleu
-        (5,  98.99,  11, 1, 1),  -- Ville noire            : taille unique, marron
+        (12, 98.99,  11, 5, 8),  -- Ville noire            : taille unique, noir
+        (8,  98.99,  11, 3, 4),  -- Ville noire            : taille unique, bleu
+        (5,  98.99,  11, 2, 6),  -- Ville noire            : taille unique, marron
         (26, 99.99,  12, 4, 1),  -- Rando rose taille 37   : couleur unique
         (14, 99.99,  12, 5, 1),  -- Rando rose taille 38   : couleur unique
         (8,  99.99,  12, 6, 1),  -- Rando rose taille 39   : couleur unique

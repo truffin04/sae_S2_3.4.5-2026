@@ -16,6 +16,8 @@ def add_declinaison_chaussure():
 
 
 
+
+
     sql=''' SELECT chaussure.id_chaussure,
             chaussure.photo as image
             FROM chaussure
@@ -108,6 +110,9 @@ def valid_add_declinaison_chaussure():
     mycursor.execute(sql,(taille,couleur,id_chaussure))
     doublon=mycursor.fetchall()
     if len(doublon)>=1:
+
+
+
         sql=''' UPDATE declinaison_chaussure
                 SET declinaison_chaussure.stock=%s
                 WHERE declinaison_chaussure.couleur_id=%s 
@@ -117,9 +122,17 @@ def valid_add_declinaison_chaussure():
         mycursor.execute(sql, (stock,couleur,taille,id_chaussure))
         flash('déclinaison déja existante, seul le stock de la déclinaison a été modifié', 'alert-warning')
     else:
-        sql=''' INSERT INTO declinaison_chaussure (stock,chaussure_id,taille_id,couleur_id)
-                VALUES (%s,%s,%s,%s)'''
-        mycursor.execute(sql, (stock,id_chaussure,taille,couleur))
+
+        sql=''' SELECT prix_chaussure 
+                FROM chaussure
+                WHERE chaussure.id_chaussure=%s'''
+        mycursor.execute(sql,(id_chaussure,))
+        prix=mycursor.fetchone()['prix_chaussure']
+
+
+        sql=''' INSERT INTO declinaison_chaussure (stock,chaussure_id,taille_id,couleur_id,prix_declinaison)
+                VALUES (%s,%s,%s,%s,%s)'''
+        mycursor.execute(sql, (stock,id_chaussure,taille,couleur,prix))
         flash('déclinaison ajoutée, taille_id = '+str(taille)+' - couleur_id : '+str(couleur)+' - stock : '+str(stock), 'alert-success')
 
     get_db().commit()

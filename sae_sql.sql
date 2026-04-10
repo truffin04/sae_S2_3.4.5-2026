@@ -310,6 +310,7 @@
         chaussure_id INT,
         taille_id INT,
         couleur_id INT,
+        disponible BOOLEAN DEFAULT TRUE,
         FOREIGN KEY (chaussure_id) REFERENCES chaussure(id_chaussure),
         FOREIGN KEY (taille_id) REFERENCES taille(id_taille),
         FOREIGN KEY (couleur_id) REFERENCES couleur(id_couleur)
@@ -394,11 +395,11 @@
     ('Chaussure classique rouge',    'femme',   'neuf', 249.99, 3, 'CHL',  'conver', 'chaussure_classique_f_rouge.png'),
     ('Chaussure classique brune',    'homme',   'neuf', 290.99, 3, 'CHL',  'conver', 'chaussure_classique_h_brune.png'),
     ('Chaussure classique marron',   'homme',   'neuf', 229.99, 3, 'CHL',  'conver', 'chaussure_classique_h_maron_foncée.png'),
-    ('Chaussure de ville noire',     'femme',   'neuf', 98.99,  4, 'VHL',  'villy',  'chaussure_de_ville_f_noire.png'),
-    ('Chaussure de randonnée rose',  'femme',   'neuf', 99.99,  5, 'RHL',  'randim', 'chaussure_rando_f_rose.png'),
+    ('Chaussure abibas',     'femme',   'neuf', 98.99,  4, 'VHL',  'villy',  'chaussure_de_ville_f_noire.png'),
+    ('Chaussure de randonnée extra',  'femme',   'neuf', 99.99,  5, 'RHL',  'randim', 'chaussure_rando_f_rose.png'),
     ('Chaussure de randonnée noire', 'homme',   'neuf', 89.99,  5, 'RHL',  'randim', 'chaussure_rando_h_noire.png'),
     ('Chaussure de ville bleue',     'unisexe', 'neuf', 79.69,  4, 'VHL',  'villy',  'chaussure_ville_uni_bleue.png'),
-    ('Chaussure de ville orange',    'unisexe', 'neuf', 69.99,  4, 'VHL',  'villy',  'chaussure_ville_uni_orange.png');
+    ('Chaussure de ville mega',    'unisexe', 'neuf', 69.99,  4, 'VHL',  'villy',  'chaussure_ville_uni_orange.png');
 
     -- Stock + taille + couleur sont maintenant ici
     -- taille_id : les ids correspondent aux INSERT taille (1=35 ... 7=41 ... 11=45)
@@ -434,9 +435,9 @@
     (18, 229.99, 10, 1, 1), -- marron
 
     -- Ville noire (id 11) - plusieurs COULEURS, taille unique
-    (12, 98.99, 11, 1, 1),  -- noir
-    (8,  98.99, 11, 1, 1),  -- bleu
-    (5,  98.99, 11, 1, 1),  -- marron
+    (12, 98.99, 11, 5, 8),  -- noir
+    (8,  98.99, 11, 3, 4),  -- bleu
+    (5,  98.99, 11, 2, 6),  -- marron
 
     -- Rando rose (id 12) - plusieurs TAILLES, couleur unique
     (26, 99.99, 12, 3, 3),  -- taille 37, rose

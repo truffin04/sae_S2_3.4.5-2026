@@ -14,7 +14,7 @@ client_commande = Blueprint('client_commande', __name__,
 def client_commande_valide():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    sql = '''   SELECT ligne_panier.declinaison_chaussure_id, ligne_panier.quantite, chaussure.prix_chaussure as prix, chaussure.nom_chaussure  as nom 
+    sql = '''   SELECT ligne_panier.declinaison_chaussure_id, ligne_panier.quantite, declinaison_chaussure.prix_declinaison as prix, chaussure.nom_chaussure  as nom 
                 FROM ligne_panier 
                 JOIN declinaison_chaussure 
                 ON ligne_panier.declinaison_chaussure_id  = declinaison_chaussure.id_declinaison_chaussure
@@ -25,10 +25,9 @@ def client_commande_valide():
     chaussures_panier = mycursor.fetchall()
     print(chaussures_panier)
     if len(chaussures_panier) >= 1:
-        sql = '''   SELECT SUM(chaussure.prix_chaussure * ligne_panier.quantite) as prix_total FROM ligne_panier
+        sql = '''   SELECT SUM(declinaison_chaussure.prix_declinaison * ligne_panier.quantite) as prix_total FROM ligne_panier
                     JOIN declinaison_chaussure 
                     ON ligne_panier.declinaison_chaussure_id  = declinaison_chaussure.id_declinaison_chaussure
-                    JOIN chaussure on declinaison_chaussure.chaussure_id = chaussure.id_chaussure
                     WHERE ligne_panier.utilisateur_id = %s
                     '''
         mycursor.execute(sql, (id_client,))
@@ -59,11 +58,10 @@ def client_commande_add():
     # choix de(s) (l')adresse(s)
 
     id_client = session['id_user']
-    sql = '''   SELECT ligne_panier.declinaison_chaussure_id, ligne_panier.quantite, chaussure.prix_chaussure
+    sql = '''   SELECT ligne_panier.declinaison_chaussure_id, ligne_panier.quantite, declinaison_chaussure.prix_declinaison
                 FROM ligne_panier
                 JOIN declinaison_chaussure 
                 ON ligne_panier.declinaison_chaussure_id  = declinaison_chaussure.id_declinaison_chaussure
-                JOIN chaussure on declinaison_chaussure.chaussure_id = chaussure.id_chaussure
                 WHERE ligne_panier.utilisateur_id = %s;'''
     mycursor.execute(sql, (id_client,))
     items_ligne_panier = mycursor.fetchall()
@@ -95,7 +93,7 @@ def client_commande_add():
 
 
         sql = "  INSERT INTO ligne_commande VALUES (%s, %s, %s, %s)"
-        mycursor.execute(sql, (id_nouvelle_commande, item['declinaison_chaussure_id'], item['prix_chaussure'], item['quantite']))
+        mycursor.execute(sql, (id_nouvelle_commande, item['declinaison_chaussure_id'], item['prix_declinaison'], item['quantite']))
 
     sql=''' DELETE FROM ligne_panier
             where utilisateur_id=%s
