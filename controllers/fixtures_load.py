@@ -263,14 +263,14 @@ def fct_fixtures_load():
     mycursor.execute(sql)
 
     sql = '''
-        INSERT INTO ligne_commande (commande_id, declinaison_chaussure_id, prix, quantite) VALUES
-        (1, 1,  79.99, 1),
-        (1, 4,  74.99, 2),
-        (2, 2,  49.99, 1),
-        (3, 11, 98.99, 1),
-        (3, 14, 99.99, 1),
-        (4, 18, 79.69, 1),
-        (4, 19, 69.99, 1);
+    INSERT INTO ligne_commande (commande_id, declinaison_chaussure_id, prix, quantite) VALUES
+    (1, 1,  79.99, 9),
+    (1, 4,  74.99, 5),
+    (2, 2,  49.99, 1),
+    (3, 11, 98.99, 1),
+    (3, 12, 99.99, 8),
+    (4, 14, 79.69, 1),
+    (4, 15, 69.99, 1);
     '''
     mycursor.execute(sql)
 

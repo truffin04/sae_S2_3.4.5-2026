@@ -467,13 +467,13 @@
 
     -- chaussure_id remplacé par declinaison_chaussure_id
     INSERT INTO ligne_commande (commande_id, declinaison_chaussure_id, prix, quantite) VALUES
-    (1, 1,  79.99, 1),
-    (1, 4,  74.99, 2),
+    (1, 1,  79.99, 9),
+    (1, 4,  74.99, 5),
     (2, 2,  49.99, 1),
     (3, 11, 98.99, 1),
-    (3, 12, 99.99, 1),
+    (3, 12, 99.99, 6),
     (4, 14, 79.69, 1),
-    (4, 15, 69.99, 1);
+    (4, 15, 69.99, 11);
 
     -- idem pour ligne_panier
     INSERT INTO ligne_panier (utilisateur_id, declinaison_chaussure_id, quantite, date_ajout) VALUES
@@ -552,4 +552,43 @@ JOIN chaussure
     ON declinaison_chaussure.chaussure_id = chaussure.id_chaussure
 GROUP BY chaussure.id_chaussure
 ORDER BY total_vendu DESC;
+
+
+SELECT couleur.libelle,
+       COUNT(id_declinaison_chaussure)*quantite
+FROM couleur
+JOIN declinaison_chaussure ON couleur.id_couleur = declinaison_chaussure.couleur_id
+JOIN ligne_commande ON declinaison_chaussure.id_declinaison_chaussure = ligne_commande.declinaison_chaussure_id
+WHERE NOT id_couleur=1
+GROUP BY couleur.libelle,quantite;
+
+
+
+
+
+
+SELECT chaussure.nom_chaussure, SUM(ligne_commande.quantite) as nbr_ventes FROM chaussure
+    JOIN declinaison_chaussure ON chaussure.id_chaussure = declinaison_chaussure.chaussure_id
+    JOIN ligne_commande ON declinaison_chaussure.id_declinaison_chaussure = ligne_commande.declinaison_chaussure_id
+    GROUP BY chaussure.nom_chaussure
+    HAVING nbr_ventes> (
+
+
+        SELECT AVG(vente_par_chaussure)
+        FROM (
+                 SELECT SUM(ligne_commande.quantite) AS vente_par_chaussure
+                 FROM chaussure
+                          JOIN declinaison_chaussure
+                               ON chaussure.id_chaussure = declinaison_chaussure.chaussure_id
+                          JOIN ligne_commande
+                               ON declinaison_chaussure.id_declinaison_chaussure = ligne_commande.declinaison_chaussure_id
+                 GROUP BY chaussure.id_chaussure
+             ) as moyenne_ventes_chaussure)
+
+
+
+
+
+
+
 

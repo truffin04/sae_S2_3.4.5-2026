@@ -20,13 +20,13 @@
 {% block body %}
 <br>
 
-    <h2> nombre de chaussures :
+    <h3> nombre de chaussures :
 {#    <span style="color: red;">{{ cout_total.nbr_chaussures }}</span></h2>#}
 
 <table class="table">
     <thead class="thead-dark">
         <tr>
-           <th>type d'chaussure</th> <th>(id)</th><th>nombre d'chaussures</th>
+           <th>type de chaussure</th> <th>(id)</th><th>nombre de chaussures</th>
         </tr>
     </thead>
     <tbody>
@@ -50,7 +50,7 @@
     <br>
 {#    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>#}
 
-<h2>visualisation de données : graph.js</h2>
+<h2>visualisation de données : nombre de chaussure par type de chaussure</h2>
 {#<h3>Documentation</h3>#}
 {#<br>#}
 {#    <a href="https://tobiasahlin.com/blog/chartjs-charts-to-get-you-started/" target="_blank"> tuto partie1 graph.js</a><br>#}
@@ -93,8 +93,12 @@ var Chart1 = new Chart(ctx1, {
 
     </script>
 
+    <br>
+    <br>
+    <br>
+    <br>
 
-    <h2></h2>
+
 
     <canvas id="pie-chart" width="800" height="450"></canvas>
 
@@ -120,8 +124,12 @@ var Chart1 = new Chart(ctx1, {
     });
     </script>
 
-
-    <h3></h3>
+    <br>
+    <br>
+    <br>
+    <br>
+    <h2>Chaussures plus vendues que la moyenne.</h2>
+    <h5> C'est à dire que'elles apparaissent plus souvent dans une commande que la moyenne.</h5>
 
     <canvas id="Chart2"></canvas>
 
@@ -135,7 +143,7 @@ var Chart2 = new Chart(ctx2, {
     data: {
         labels: {{ labels2 | safe }},
         datasets: [{
-            label: "Top 10 des chaussures les plus vendues",
+            label: "nombre de ventes des chaussures plus vendues que la moyenne",
             data: {{ values2 | safe }},
             backgroundColor: [
                 "#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850",

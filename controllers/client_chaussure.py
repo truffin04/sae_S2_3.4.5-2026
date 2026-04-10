@@ -112,12 +112,10 @@ def client_chaussure_show():                                 # remplace client_i
 
 
     if len(chaussures_panier) >= 1:
-        sql='''SELECT SUM(ligne_panier.quantite*chaussure.prix_chaussure) as prix_total
+        sql='''SELECT SUM(ligne_panier.quantite*declinaison_chaussure.prix_declinaison) as prix_total
                 FROM ligne_panier
                 JOIN declinaison_chaussure
                 ON ligne_panier.declinaison_chaussure_id = declinaison_chaussure.id_declinaison_chaussure
-                JOIN chaussure
-                ON declinaison_chaussure.chaussure_id = chaussure.id_chaussure
                 WHERE ligne_panier.utilisateur_id=%s
                 AND declinaison_chaussure.disponible=TRUE'''
         print(str.format(sql,id_client))

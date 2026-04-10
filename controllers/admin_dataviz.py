@@ -21,6 +21,7 @@ def show_type_chaussure_stock():
                 JOIN declinaison_chaussure
                 ON chaussure.id_chaussure=declinaison_chaussure.chaussure_id
                 GROUP BY type_chaussure.id_type_chaussure, type_chaussure.libelle_type_chaussure
+                ORDER BY nbr_chaussures DESC
            '''
     mycursor.execute(sql)
     datas_show = mycursor.fetchall()
@@ -29,23 +30,31 @@ def show_type_chaussure_stock():
 
     print(datas_show)
 
-    sql = '''   SELECT chaussure.nom_chaussure,
-                SUM(ligne_commande.quantite) AS total_vendu
-                FROM ligne_commande
-                JOIN declinaison_chaussure
-                ON ligne_commande.declinaison_chaussure_id = declinaison_chaussure.id_declinaison_chaussure
-                JOIN chaussure
-                ON declinaison_chaussure.chaussure_id = chaussure.id_chaussure
-                GROUP BY chaussure.id_chaussure
-                ORDER BY total_vendu DESC;
+    sql = '''   SELECT chaussure.nom_chaussure, SUM(ligne_commande.quantite) as total_vendu FROM chaussure
+                JOIN declinaison_chaussure ON chaussure.id_chaussure = declinaison_chaussure.chaussure_id
+                JOIN ligne_commande ON declinaison_chaussure.id_declinaison_chaussure = ligne_commande.declinaison_chaussure_id
+                GROUP BY chaussure.nom_chaussure
+                HAVING total_vendu> (
+                SELECT AVG(vente_par_chaussure)
+                FROM (
+                         SELECT SUM(ligne_commande.quantite) AS vente_par_chaussure
+                         FROM chaussure
+                                  JOIN declinaison_chaussure
+                                       ON chaussure.id_chaussure = declinaison_chaussure.chaussure_id
+                                  JOIN ligne_commande
+                                       ON declinaison_chaussure.id_declinaison_chaussure = ligne_commande.declinaison_chaussure_id
+                         GROUP BY chaussure.id_chaussure
+                     ) as moyenne_ventes_chaussure)
+                ORDER BY total_vendu DESC
            '''
     mycursor.execute(sql)
-    datas_show2=mycursor.fetchall()[:10]
-
-    print("--"*50,'\n',datas_show)
+    datas_show2=mycursor.fetchall()
 
     labels2 = [str(row['nom_chaussure']) for row in datas_show2]
     values2 = [float(row['total_vendu']) for row in datas_show2]
+
+
+    sql=''''''
 
     print(len(labels2), len(values2))
 
