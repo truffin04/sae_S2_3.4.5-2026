@@ -100,7 +100,7 @@ def delete_chaussure():
                 WHERE declinaison_chaussure.chaussure_id=%s'''
 
 
-    mycursor.execute(sql, id_chaussure)
+    mycursor.execute(sql, (id_chaussure,))
     nb_declinaison = mycursor.fetchone()
     print(nb_declinaison)
     if nb_declinaison['nb_declinaison'] > 0:

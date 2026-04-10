@@ -104,7 +104,7 @@ def client_chaussure_show():                                 # remplace client_i
             
             WHERE ligne_panier.utilisateur_id=%s
             AND declinaison_chaussure.disponible=TRUE
-            GROUP BY ligne_panier.utilisateur_id,declinaison_chaussure_id,quantite,date_ajout
+            GROUP BY ligne_panier.utilisateur_id,declinaison_chaussure_id,quantite,date_ajout, prix_chaussure, nom_chaussure, id_couleur, couleur.libelle, id_taille, taille.libelle
             '''
 
     mycursor.execute(sql,(id_client,))

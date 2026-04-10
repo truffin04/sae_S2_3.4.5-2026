@@ -105,7 +105,7 @@ def admin_commande_valider():
         sql = '''      UPDATE commande
             SET etat_id = 2
             WHERE id_commande = %s;     '''
-        mycursor.execute(sql, commande_id)
+        mycursor.execute(sql, (commande_id,))
         get_db().commit()
         flash('Commande validée','success')
     return redirect('/admin/commande/show')

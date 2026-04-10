@@ -44,9 +44,8 @@ def client_commande_valide():
         print(prix_dict)
         prix_total = prix_dict["prix_total"]
     else:
-        prix_total = 0
         flash("erreur, panier vide")
-        redirect('/client/chaussure/show')
+        return redirect('/client/chaussure/show')
     # etape 2 : selection des adresses
     sql='''SELECT * from adresse where adresse.utilisateur_id = %s'''
     mycursor.execute(sql, (id_client,))
