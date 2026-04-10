@@ -542,4 +542,13 @@ ON declinaison_chaussure.couleur_id = couleur.id_couleur
 
 
 
-    SELECT *  FROM commande
+  SELECT chaussure.nom_chaussure,
+       SUM(ligne_commande.quantite) AS total_vendu
+FROM ligne_commande
+JOIN declinaison_chaussure
+    ON ligne_commande.declinaison_chaussure_id = declinaison_chaussure.id_declinaison_chaussure
+JOIN chaussure
+    ON declinaison_chaussure.chaussure_id = chaussure.id_chaussure
+GROUP BY chaussure.id_chaussure
+ORDER BY total_vendu DESC;
+

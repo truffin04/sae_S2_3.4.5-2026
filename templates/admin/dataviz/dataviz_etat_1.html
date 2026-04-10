@@ -51,13 +51,13 @@
 {#    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>#}
 
 <h2>visualisation de données : graph.js</h2>
-<h3>Documentation</h3>
-<br>
-    <a href="https://tobiasahlin.com/blog/chartjs-charts-to-get-you-started/" target="_blank"> tuto partie1 graph.js</a><br>
-    <a href="https://tobiasahlin.com/blog/introduction-to-chartjs" target="_blank"> tuto partie2 graph.js</a>&nbsp;
-<br>
-    <a href="https://www.youtube.com/watch?v=E2hytuQvLlE" target="_blank"> vidéo : flask + graph.js</a>&nbsp;
-    <br>
+{#<h3>Documentation</h3>#}
+{#<br>#}
+{#    <a href="https://tobiasahlin.com/blog/chartjs-charts-to-get-you-started/" target="_blank"> tuto partie1 graph.js</a><br>#}
+{#    <a href="https://tobiasahlin.com/blog/introduction-to-chartjs" target="_blank"> tuto partie2 graph.js</a>&nbsp;#}
+{#<br>#}
+{#    <a href="https://www.youtube.com/watch?v=E2hytuQvLlE" target="_blank"> vidéo : flask + graph.js</a>&nbsp;#}
+{#    <br>#}
 
 {# https://jinja.palletsprojects.com/en/3.0.x/templates/#html-escaping #}
     <div style="width: 900px; height: 500px; border: #0a53be 1px solid;">
@@ -66,31 +66,35 @@
     graphique 1
     <script>
 	var ctx1 = document.getElementById("Chart1").getContext("2d");
-	var Chart1 = new Chart( ctx1, {
-  		type: "bar",
-  		data: {
-  			labels: {{ labels | safe }},
-  			datasets: [
-  				{
-  				label: "Type d'chaussures (nombre)",
-  				data: {{ values | safe }},
-  				fill: false,
-                 backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850",
-             "#faf24c"
-             , "#6a6ce7","#55f68f","#D0c309","#c45000"],
-  				borderColor: "rgb(75,192,192)",
-  				lineTension: 0.1
-  				}
-  			]
-  		},
-  		option: {
-  			responsive: false
-  		}
-	});
+var Chart1 = new Chart(ctx1, {
+    type: "bar",
+    data: {
+        labels: {{ labels | safe }},
+        datasets: [{
+            label: "Type d'chaussures (nombre)",
+            data: {{ values | safe }},
+            fill: false,
+            backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850",
+                "#faf24c","#6a6ce7","#55f68f","#D0c309","#c45000"],
+            borderColor: "rgb(75,192,192)"
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+
     </script>
 
 
-    <h2>demo graphique à secteurs : "camenberd" ,"donut" ( "pie-chart"  "doughtnut")</h2>
+    <h2></h2>
 
     <canvas id="pie-chart" width="800" height="450"></canvas>
 
@@ -100,7 +104,7 @@
     data: {
       labels: {{ labels | safe }},
       datasets: [{
-        label: "Type d'chaussures (nombre)",
+        label: "Type de chaussures (nombre)",
          backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850",
              "#faf24c"
              , "#6a6ce7","#55f68f","#D0c309","#c45000"],
@@ -116,7 +120,43 @@
     });
     </script>
 
-    <a href="https://www.youtube.com/watch?v=TcwYXIIM-fs" target="_blank">dataviz, c'est quoi en 1 mn ? (juste la première minute)</a>
-    <br>
-    <a href="https://www.youtube.com/watch?v=bZDnSUjfMt8" target="_blank">dataviz, c'est quoi ? (juste la première minute)</a>
+
+    <h3></h3>
+
+    <canvas id="Chart2"></canvas>
+
+    <script>
+    var ctx2 = document.getElementById("Chart2").getContext("2d");
+
+var ctx2 = document.getElementById("Chart2").getContext("2d");
+
+var Chart2 = new Chart(ctx2, {
+    type: "bar",
+    data: {
+        labels: {{ labels2 | safe }},
+        datasets: [{
+            label: "Top 10 des chaussures les plus vendues",
+            data: {{ values2 | safe }},
+            backgroundColor: [
+                "#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850",
+                "#faf24c", "#6a6ce7", "#55f68f", "#D0c309", "#c45000"
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+    </script>
+
+{#    <a href="https://www.youtube.com/watch?v=TcwYXIIM-fs" target="_blank">dataviz, c'est quoi en 1 mn ? (juste la première minute)</a>#}
+{#    <br>#}
+{#    <a href="https://www.youtube.com/watch?v=bZDnSUjfMt8" target="_blank">dataviz, c'est quoi ? (juste la première minute)</a>#}
 {% endblock %}

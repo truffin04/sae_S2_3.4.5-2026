@@ -29,17 +29,32 @@ def show_type_chaussure_stock():
 
     print(datas_show)
 
-    # # sql = '''
-    # #
-    # #        '''
-    # datas_show=[]
-    # labels=[]
-    # values=[]
+    sql = '''   SELECT chaussure.nom_chaussure,
+                SUM(ligne_commande.quantite) AS total_vendu
+                FROM ligne_commande
+                JOIN declinaison_chaussure
+                ON ligne_commande.declinaison_chaussure_id = declinaison_chaussure.id_declinaison_chaussure
+                JOIN chaussure
+                ON declinaison_chaussure.chaussure_id = chaussure.id_chaussure
+                GROUP BY chaussure.id_chaussure
+                ORDER BY total_vendu DESC;
+           '''
+    mycursor.execute(sql)
+    datas_show2=mycursor.fetchall()[:10]
+
+    print("--"*50,'\n',datas_show)
+
+    labels2 = [str(row['nom_chaussure']) for row in datas_show2]
+    values2 = [float(row['total_vendu']) for row in datas_show2]
+
+    print(len(labels2), len(values2))
 
     return render_template('admin/dataviz/dataviz_etat_1.html'
                            , types_chaussures_nb=datas_show
                            , labels=labels
-                           , values=values)
+                           , values=values
+                           , labels2=labels2,
+                            values2=values2)
 
 
 # sujet 3 : adresses
