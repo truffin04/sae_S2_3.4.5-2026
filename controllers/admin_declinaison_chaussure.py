@@ -222,9 +222,13 @@ def valid_edit_declinaison_chaussure():
              WHERE declinaison_chaussure_id = %s
              '''
     mycursor.execute(sql, (id_declinaison_chaussure,))
-    commande = mycursor.fetchone()['nb'] > 0
+    compte = mycursor.fetchone()['nb']
 
-    if commande:
+    sql='''SELECT COUNT(*) as nb FROM ligne_panier
+            WHERE ligne_panier.declinaison_chaussure_id=%s'''
+    mycursor.execute(sql, (id_declinaison_chaussure,))
+    compte+= int(mycursor.fetchone()['nb'] )
+    if compte==0:
 
         sql=''' UPDATE declinaison_chaussure
                 SET declinaison_chaussure.disponible=FALSE
@@ -260,8 +264,15 @@ def admin_delete_declinaison_chaussure():
 
     sql=''' SELECT COUNT(*) as nb FROM ligne_commande
             WHERE ligne_commande.declinaison_chaussure_id=%s'''
+
     mycursor.execute(sql, (id_declinaison_chaussure,))
     compte = int(mycursor.fetchone()['nb'] )
+
+    sql='''SELECT COUNT(*) as nb FROM ligne_panier
+            WHERE ligne_panier.declinaison_chaussure_id=%s'''
+    mycursor.execute(sql, (id_declinaison_chaussure,))
+    compte+= int(mycursor.fetchone()['nb'] )
+
     if compte==0:
         sql=''' DELETE FROM declinaison_chaussure
                 WHERE declinaison_chaussure.id_declinaison_chaussure=%s '''
@@ -272,7 +283,7 @@ def admin_delete_declinaison_chaussure():
                SET declinaison_chaussure.disponible=FALSE
                 WHERE declinaison_chaussure.id_declinaison_chaussure=%s '''
         mycursor.execute(sql,(id_declinaison_chaussure,))
-        flash(u'declinaison déja dans une commande, la déclinaison a été rendu indispoible, id_declinaison_chaussure : ' + str(id_declinaison_chaussure), 'alert-success')
+        flash(u'declinaison déja dans une commande ou dans une ligne de panier, la déclinaison a été rendu indispoible, id_declinaison_chaussure : ' + str(id_declinaison_chaussure), 'alert-success')
 
     get_db().commit()
 

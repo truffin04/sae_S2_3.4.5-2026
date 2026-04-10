@@ -14,6 +14,15 @@ client_commande = Blueprint('client_commande', __name__,
 def client_commande_valide():
     mycursor = get_db().cursor()
     id_client = session['id_user']
+
+    sql=''' SELECT COUNT(*) as nb FROM ligne_panier
+            JOIN declinaison_chaussure 
+            ON ligne_panier.declinaison_chaussure_id=declinaison_chaussure.id_declinaison_chaussure
+            WHERE declinaison_chaussure.disponible=FALSE'''
+    mycursor.execute(sql)
+    if mycursor.fetchone()['nb']>0:
+        flash("une des déclinaisons de chaussure que vous avez selectionné n'est plus dispoible", "alert-warning")
+        return redirect("/client/chaussure/show")
     sql = '''   SELECT ligne_panier.declinaison_chaussure_id, ligne_panier.quantite, declinaison_chaussure.prix_declinaison as prix, chaussure.nom_chaussure  as nom 
                 FROM ligne_panier 
                 JOIN declinaison_chaussure 
@@ -36,6 +45,8 @@ def client_commande_valide():
         prix_total = prix_dict["prix_total"]
     else:
         prix_total = 0
+        flash("erreur, panier vide")
+        redirect('/client/chaussure/show')
     # etape 2 : selection des adresses
     sql='''SELECT * from adresse where adresse.utilisateur_id = %s'''
     mycursor.execute(sql, (id_client,))
@@ -153,8 +164,12 @@ def client_commande_show():
                     AND commande.utilisateur_id = %s
             
         '''
+
         mycursor.execute(sql, (id_commande,id_client))
         chaussures_commande = mycursor.fetchall()
+
+        if len(chaussures_commande) == 0:
+            flash("commande non existante ou commande ne vous appartenant pas", "alert-warning")
 
         # partie 2 : selection de l'adresse de livraison et de facturation de la commande selectionnée
         sql = ''' selection des adressses '''
