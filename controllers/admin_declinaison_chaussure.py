@@ -238,14 +238,14 @@ def valid_edit_declinaison_chaussure():
 
         mycursor.execute(sql, (id_declinaison_chaussure,))
 
-        sql=''' SELECT declinaisonc_chaussure.prix_declinaison FROM declinaison_chaussure
+        sql=''' SELECT declinaison_chaussure.prix_declinaison FROM declinaison_chaussure
                 WHERE declinaison_chaussure.id_declinaison_chaussure=%s'''
 
         mycursor.execute(sql, (id_declinaison_chaussure,))
-        prix = mycursor.fetchone()['prix_declinaison_chaussure']
+        prix = mycursor.fetchone()['prix_declinaison']
 
-        sql = '''INSERT INTO declinaison_chaussure (stock, taille_id, couleur_id, chaussure_id, prix_declinaison_chaussure, disponible)
-                 VALUES (%s, %s, %s, %s, TRUE)'''
+        sql = '''INSERT INTO declinaison_chaussure (stock, taille_id, couleur_id,prix_declinaison, chaussure_id, disponible)
+                 VALUES (%s, %s, %s, %s,%s, TRUE)'''
         mycursor.execute(sql, (stock, taille_id, couleur_id, prix,id_chaussure))
 
 

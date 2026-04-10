@@ -25,10 +25,10 @@ def get_db():
         PORT = int(os.getenv('MYSQLPORT') or os.getenv('PORT', '3306'))
 
         db = g._database = pymysql.connect(
-            host=HOST,
-            user=LOGIN,
-            password=PASSWORD,
-            database=DATABASE,
+            host="localhost",
+            user="sofiane",
+            password="secret",
+            database="sofiane_BDD",
             port=PORT,
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
