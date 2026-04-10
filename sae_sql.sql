@@ -532,14 +532,23 @@ ON declinaison_chaussure.couleur_id = couleur.id_couleur
 
             GROUP BY ligne_panier.utilisateur_id,declinaison_chaussure_id,quantite,date_ajout
 
-    SELECT a1.nom as nom_livraison,
-           a1.rue as rue_livraison,
-           a1.code_postal as code_postal_livraison,
-           a1.ville as ville_livraison,
-           a2.nom as nom_facturation,
-           a2.rue as rue_facturation,
-           a2.code_postal as code_postal_facturation,
-           a2.ville as ville_facturation
-            FROM adresse a1
-            JOIN commande ON commande.adresse_livraison_id = a1.id_adresse
-             JOIN adresse a2 ON a2.id_adresse = commande.adresse_facturation_id
+ SELECT
+                chaussure.nom_chaussure AS nom,
+                ligne_commande.quantite,
+                ligne_commande.prix,
+                (ligne_commande.quantite * ligne_commande.prix) AS prix_ligne,
+                ligne_commande.commande_id AS id,
+                commande.etat_id,
+                taille.id_taille,
+                taille.libelle as libelle_taille,
+                couleur.id_couleur,
+                couleur.libelle as libelle_couleur,
+                COUNT(declinaison_chaussure.id_declinaison_chaussure) as nb_declinaisons
+            FROM ligne_commande
+            JOIN commande ON ligne_commande.commande_id = commande.id_commande
+            JOIN declinaison_chaussure on ligne_commande.declinaison_chaussure_id=declinaison_chaussure.id_declinaison_chaussure
+            JOIN chaussure  ON declinaison_chaussure.chaussure_id = chaussure.id_chaussure
+            JOIN taille ON declinaison_chaussure.taille_id=taille.id_taille
+            JOIN couleur ON declinaison_chaussure.couleur_id=couleur.id_couleur
+            WHERE commande.id_commande = 2
+            GROUP BY chaussure.id_chaussure,chaussure.nom_chaussure,ligne_commande.quantite, ligne_commande.prix, commande.id_commande, commande.etat_id, taille.id_taille, taille.libelle, couleur.id_couleur, couleur.libelle;
