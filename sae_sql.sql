@@ -542,4 +542,4 @@ ON declinaison_chaussure.couleur_id = couleur.id_couleur
 
 
 
-    SELECT 
+    SELECT *  FROM commande

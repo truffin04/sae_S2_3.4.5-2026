@@ -169,7 +169,7 @@ def edit_declinaison_chaussure():
             '''
 
     if d_couleur_uniq==0 and nbr_declinaisons>1:
-        sql+="WHERE id_couleur != 1"
+        sql+=" WHERE id_couleur != 1"
     mycursor.execute(sql)
     couleurs=mycursor.fetchall()
 
@@ -179,7 +179,7 @@ def edit_declinaison_chaussure():
         '''
 
     if d_taille_uniq==0 and nbr_declinaisons>1:
-        sql+="WHERE id_taille != 1"
+        sql+=" WHERE id_taille != 1"
     mycursor.execute(sql)
     tailles = mycursor.fetchall()
 
